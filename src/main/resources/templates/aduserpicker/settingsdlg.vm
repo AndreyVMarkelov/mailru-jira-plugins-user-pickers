@@ -1,0 +1,71 @@
+## Created by Andrey Markelov 29-08-2012.
+## Copyright Mail.Ru Group 2012. All rights reserved.
+<div id="errorpart" name="errorpart"></div>
+<form class="aui" id="singlesettingsform" name="singlesettingsform">
+    <input type="hidden" name="atl_token" value="$atl_token"/>
+    <input type="hidden" name="cfId" value="$cfId"/>
+    <table class="justtable">
+        <tr>
+            <td valign="top">
+                <b>$i18n.getText("jrole-group-usercf.cfgroupsroles")<b>
+            </td>
+            <td valign="top">
+                <div id="share_display_div">
+                #foreach($group in $groups)
+                <div id="group$group">
+                    <span>$i18n.getText("jrole-group-usercf.share_group", $group)</span>
+                    <img onclick="removeGroup(event);" id="share_trash" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
+                </div>
+                #end
+                #foreach($pRole in $projRoles)
+                <div id="project$pRole.getProject()role$pRole.getRole()">
+                    #if($pRole.getRole() != "")
+                    <span>$i18n.getText("jrole-group-usercf.share_project_role", $projs.get($pRole.getProject()), $roleProjs.get($pRole.getRole()))</span>
+                    #else
+                    <span>$i18n.getText("jrole-group-usercf.share_project", $projs.get($pRole.getProject()))</span>
+                    #end
+                    <img onclick="removeGroup(event);" id="share_trash" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
+                </div>
+                #end
+                </div>
+                <div id="share_div">
+                    <div id="share_display_component">
+                        <div>
+                            <div>
+                                <input id="sharesel" name="sharesel" onclick="setShareGroup();" type="radio" checked="checked"/><span>$i18n.getText("jrole-group-usercf.cfgroups")</span>&nbsp;&nbsp;
+                                <input id="sharesel" name="sharesel" onclick="setShareProject();" type="radio" /><span>$i18n.getText("jrole-group-usercf.cfroles")</span>
+                            </div>
+                            <span id="share_group">
+                                <select id="groupShare" style="background-color: white;">
+                                #foreach($group in $allGroups)
+                                   <option value="$group.getName()">$group.getName()</option>
+                                #end
+                                </select>
+                                <span onclick="addGroup();" id="share_add_group"><img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                            </span>
+                            <span id="share_project" style="display:none">
+                                <select id="projectShare-project" style="background-color: white;">
+                                #foreach($entry in $projs.entrySet())
+                                    <option roles="$roleProjs.keySet().toString()" value="$entry.key">$entry.value</option>
+                                #end
+                                </select>
+                                <img class="grcf_pointer" src="/jira/images/icons/hierarchy_arrow.gif" alt="Arrow" width="10px" height="10px"/>
+                                <select id="projectShare-role" style="background-color: white;">
+                                    <option value="">All</option>
+                                    <optgroup label="Project Roles" id="projectShare-role-group">
+                                    #foreach($entry in $roleProjs.entrySet())
+                                        <option value="$entry.key">$entry.value</option>
+                                    #end
+                                    </optgroup>
+                                </select>
+                                <span onclick="addProject();" class="addShare grcf_pointer" id="share_add_project"><img src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+     </table>
+    <input id="shares_data" name="shares_data" style="display:none;" value='$storedShares'/>
+    <img onclick="removeGroup(event);" id="share_trash_sh" height="16px" width="16px" style="display: none" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
+</form>
