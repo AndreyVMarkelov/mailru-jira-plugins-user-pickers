@@ -1,0 +1,12 @@
+## Created by Andrey Markelov 12-11-2012.
+## Copyright Mail.Ru Group 2012. All rights reserved.
+$!{auiparams.put("controlHeaderClass", "aui-field-text")}
+#searcherEditHeader ($customField.id $customField.name)
+<select id="$customField.id" name="$customField.id">
+<option></option>
+#foreach($entry in $map.entrySet())
+<option value="$entry.key">$entry.value</option>
+#end
+</select>
+#searcherEditFooter ($customField.id $customField.description)
+$!{auiparams.clear()}
