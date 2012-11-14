@@ -26,7 +26,7 @@ import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.sal.api.ApplicationProperties;
 
 /**
- * Pligun configure page.
+ * Plug-In configure page.
  * 
  * @author Andrey Markelov
  */
@@ -52,6 +52,11 @@ public class UserPickerAdminAction
      * Data manager.
      */
     private final PluginData data;
+
+    /**
+     * Multi fields.
+     */
+    private Map<String, FieldData> multiFields;
 
     /**
      * Project manager.
@@ -84,6 +89,7 @@ public class UserPickerAdminAction
         this.projectRoleManager = projectRoleManager;
         this.data = data;
         this.singleFields = new LinkedHashMap<String, FieldData>();
+        this.multiFields = new LinkedHashMap<String, FieldData>();
     }
 
     @Override
@@ -93,7 +99,8 @@ public class UserPickerAdminAction
         List<CustomField> cgList = cfMgr.getCustomFieldObjects();
         for (CustomField cf : cgList)
         {
-            if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_role_group_usercf"))
+            if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_role_group_usercf") ||
+                cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:multi_role_group_usercf"))
             {
                 FieldData fdata = new FieldData(cf.getId(), cf.getName());
                 if (cf.isAllProjects())
@@ -119,7 +126,14 @@ public class UserPickerAdminAction
                 fdata.addGroups(groups);
                 fdata.addRoles(projRoles);
 
-                singleFields.put(fdata.getFieldId(), fdata);
+                if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_role_group_usercf"))
+                {
+                    singleFields.put(fdata.getFieldId(), fdata);
+                }
+                else
+                {
+                    multiFields.put(fdata.getFieldId(), fdata);
+                }
             }
         }
 
@@ -167,6 +181,11 @@ public class UserPickerAdminAction
     public String getBaseUrl()
     {
         return applicationProperties.getBaseUrl();
+    }
+
+    public Map<String, FieldData> getMultiFields()
+    {
+        return multiFields;
     }
 
     /**

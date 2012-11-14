@@ -5,7 +5,7 @@
 package ru.mail.jira.plugins.up;
 
 /**
- * 
+ * Plug-In data keeper.
  * 
  * @author Andrey Markelov
  */

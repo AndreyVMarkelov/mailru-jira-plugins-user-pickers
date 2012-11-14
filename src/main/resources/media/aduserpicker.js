@@ -1,3 +1,5 @@
+// Created by Andrey Markelov 11-11-2012.
+// Copyright Mail.Ru Group 2012. All rights reserved.
 
 //--> init settings dialog
 function initSettingsDlg(baseUrl, cfId)

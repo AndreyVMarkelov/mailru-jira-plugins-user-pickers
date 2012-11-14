@@ -1,0 +1,13 @@
+## Created by Andrey Markelov 11-11-2012.
+## Copyright Mail.Ru Group 2012. All rights reserved.
+#if ($value)
+    <div class="shorten" id="${customField.id}-field">
+        #foreach ($singleValue in $value)
+            #if ($displayParameters && $displayParameters.nolink)
+                $textutils.htmlEncode($singleValue.fullName)#commaonly ($value)
+            #else
+                <span class="tinylink">$userformat.formatUser($singleValue.name, 'profileLink', "multiuser_cf")</span>#commaonly ($value)
+            #end
+        #end
+    </div>
+#end

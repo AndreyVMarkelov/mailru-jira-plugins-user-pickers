@@ -16,8 +16,9 @@ import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.customfields.converters.UserConverterImpl;
-import com.atlassian.jira.issue.customfields.impl.UserCFType;
+import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
+import com.atlassian.jira.issue.customfields.converters.StringConverter;
+import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
@@ -31,14 +32,15 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
+import com.atlassian.jira.web.FieldVisibilityManager;
 
 /**
- * Role group single custom field.
+ * Role group multi custom field.
  * 
  * @author Andrey Markelov
  */
-public class RoleGroupUserField
-    extends UserCFType
+public class MultiRoleGroupUserField
+    extends MultiUserCFType
 {
     /**
      * Plugin data.
@@ -58,23 +60,27 @@ public class RoleGroupUserField
     /**
      * Constructor.
      */
-    public RoleGroupUserField(
+    public MultiRoleGroupUserField(
         CustomFieldValuePersister customFieldValuePersister,
+        StringConverter stringConverter,
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
+        FieldVisibilityManager fieldVisibilityManager,
         PluginData data,
         GroupManager grMgr,
         ProjectRoleManager projectRoleManager)
     {
         super(
             customFieldValuePersister,
-            new UserConverterImpl(ComponentManager.getInstance().getUserUtil()),
+            stringConverter,
             genericConfigManager,
+            new MultiUserConverterImpl(ComponentManager.getInstance().getUserUtil()),
             applicationProperties,
             authenticationContext,
-            searchService);
+            searchService,
+            fieldVisibilityManager);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
@@ -170,10 +176,9 @@ public class RoleGroupUserField
     @Override
     public Map<String, Object> getVelocityParameters(
         Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
+        CustomField field, FieldLayoutItem fieldLayoutItem)
     {
-        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+    	Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
 
@@ -204,7 +209,20 @@ public class RoleGroupUserField
 
         TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
         sorted_map.putAll(map);
+
+        Object issueValObj = issue.getCustomFieldValue(field);
+        if (issueValObj == null)
+        {
+            params.put("selectVal", "");
+        }
+        else
+        {
+            params.put("selectVal", Utils.removeBrackets(issueValObj.toString()));
+        }
+
         params.put("map", sorted_map);
+        List<String> issueVal = Utils.convertList(issueValObj);
+        params.put("issueVal", issueVal);
 
         return params;
     }

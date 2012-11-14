@@ -1,4 +1,4 @@
-## Created by Andrey Markelov 12-11-2012.
+## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
 <select id="$customField.id" name="$customField.id">

@@ -1,4 +1,4 @@
-## Created by Andrey Markelov 12-11-2012.
+## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #if ($value)
     <span class="tinylink">$userformat.formatUser($value.name, 'profileLink', "user_cf")</span>

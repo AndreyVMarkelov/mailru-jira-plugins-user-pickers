@@ -1,4 +1,4 @@
-## Created by Andrey Markelov 28-10-2012.
+## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 <html>
   <head>
@@ -37,6 +37,61 @@
                     </thead>
                     <tbody>
                     #foreach($entry in $action.getSingleFields().entrySet())
+                      <tr>
+                        <td width="10%">$entry.key</td>
+                        <td width="10%">$entry.value.getFieldName()</td>
+                        <td width="20%">
+                            #if($entry.value.isAllProjects())${action.getText("jrole-group-usercf.cfallprojects")}
+                            #else
+                                #foreach($proj in $entry.value.getProjects())
+                                #if($velocityCount > 1), #end${proj}
+                                #end
+                            #end
+                        </td>
+                        <td width="50%">
+                            <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
+                            #foreach($group in $entry.value.getGroups())
+                            #if($velocityCount > 1), #end$group
+                            #end
+                            </div>
+                            <div><i>$action.getText("jrole-group-usercf.cfroles"):</i>
+                            #foreach($role in $entry.value.getRoles())
+                            #if($velocityCount > 1), #end$action.getProjectMap().get($role.getProject())#if($role.getRole() != "") - $action.getRoleMap().get($role.getRole())#else - $action.getText("jrole-group-usercf.cfallpr")#end
+                            #end
+                            </div>
+                        </td>
+                        <td width="10%"><a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
+                      </tr>
+                    #end
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table class="jiraform maxWidth">
+              <tr>
+                <td class="jiraformheader">
+                  <h3 class="formtitle">$action.getText("jrole-group-usercf.linkingmultifields")</h3>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table class="grid maxWidth">
+                    <thead>
+                      <tr>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
+                        <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
+                        <th width="50%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    #foreach($entry in $action.getMultiFields().entrySet())
                       <tr>
                         <td width="10%">$entry.key</td>
                         <td width="10%">$entry.value.getFieldName()</td>
