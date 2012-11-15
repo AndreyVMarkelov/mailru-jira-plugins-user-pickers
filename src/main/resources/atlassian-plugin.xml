@@ -13,7 +13,7 @@
 
     <!-- role/group users fields -->
     <customfield-type key="single_role_group_usercf" 
-                      name="Project Role or Group User Picker"
+                      name="Project Roles or Groups User Picker"
                       class="ru.mail.jira.plugins.up.RoleGroupUserField">
         <description>This field allows to choose an user from project roles or groups</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
@@ -23,7 +23,7 @@
     </customfield-type>
 
     <customfield-type key="multi_role_group_usercf" 
-                      name="Project Role or Group Multi User Picker"
+                      name="Project Roles or Groups Multi User Picker"
                       class="ru.mail.jira.plugins.up.MultiRoleGroupUserField">
         <description>This field allows to choose multiple users from project roles or groups</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
