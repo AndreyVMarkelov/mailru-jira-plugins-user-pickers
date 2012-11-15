@@ -1,0 +1,18 @@
+## Created by Andrey Markelov 11-11-2012.
+## Copyright Mail.Ru Group 2012. All rights reserved.
+    #requireResourcesForContext("jira.webresources:global-static")
+    #requireResourcesForContext("jira.webresources:jira-global")
+    #requireResourcesForContext("com.atlassian.auiplugin:ajs")
+    #requireResourcesForContext("jira.webresources:autocomplete")
+    #requireResourcesForContext("jira.webresources:autocomplete")
+<div id="errorpart" name="errorpart"></div>
+<form class="aui" id="singlesettingsselform" name="singlesettingsselform">
+    <input type="hidden" name="atl_token" value="$atl_token"/>
+    <input type="hidden" name="cfId" value="$cfId"/>
+    <select name="selUsers" id="selUsers" multiple="multiple" size="8">
+    #foreach($entry in $userMap.entrySet())
+        <option #if($selData.contains($entry.key))selected="selected"#end value="$entry.key">$entry.value</option>
+    #end
+    <option value=""> </option>
+    </select>
+</form>

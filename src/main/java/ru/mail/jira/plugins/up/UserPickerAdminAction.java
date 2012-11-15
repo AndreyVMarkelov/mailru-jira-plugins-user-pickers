@@ -19,9 +19,7 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
-import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.sal.api.ApplicationProperties;
 
@@ -59,6 +57,11 @@ public class UserPickerAdminAction
     private Map<String, FieldData> multiFields;
 
     /**
+     * Multi selected fields.
+     */
+    private Map<String, SelectedFieldData> multiSelectedFields;
+
+    /**
      * Project manager.
      */
     private final ProjectManager prMgr;
@@ -72,6 +75,11 @@ public class UserPickerAdminAction
      * Single fields.
      */
     private Map<String, FieldData> singleFields;
+
+    /**
+     * Single selected fields.
+     */
+    private Map<String, SelectedFieldData> singleSelectedFields;
 
     /**
      * Constructor.
@@ -90,6 +98,8 @@ public class UserPickerAdminAction
         this.data = data;
         this.singleFields = new LinkedHashMap<String, FieldData>();
         this.multiFields = new LinkedHashMap<String, FieldData>();
+        this.singleSelectedFields = new LinkedHashMap<String, SelectedFieldData>();
+        this.multiSelectedFields = new LinkedHashMap<String, SelectedFieldData>();
     }
 
     @Override
@@ -122,7 +132,15 @@ public class UserPickerAdminAction
 
                 List<String> groups = new ArrayList<String>();
                 List<ProjRole> projRoles = new ArrayList<ProjRole>();
-                fillDataLists(data.getRoleGroupFieldData(cf.getId()), groups, projRoles);
+                try
+                {
+                    Utils.fillDataLists(data.getRoleGroupFieldData(cf.getId()), groups, projRoles);
+                }
+                catch (JSONException e)
+                {
+                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
+                    //--> impossible
+                }
                 fdata.addGroups(groups);
                 fdata.addRoles(projRoles);
 
@@ -135,44 +153,40 @@ public class UserPickerAdminAction
                     multiFields.put(fdata.getFieldId(), fdata);
                 }
             }
-        }
-
-        return SUCCESS;
-    }
-
-    private void fillDataLists(
-        String shares_data,
-        List<String> groups,
-        List<ProjRole> projRoles)
-    {
-        if (shares_data == null || shares_data.length() == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            JSONArray jsonObj = new JSONArray(shares_data);
-            for (int i = 0; i < jsonObj.length(); i++)
+            else if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_selected_usercf") ||
+                     cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:multi_selected_usercf"))
             {
-                JSONObject obj = jsonObj.getJSONObject(i);
-                String type = obj.getString("type");
-                if (type.equals("G"))
+                SelectedFieldData fdata = new SelectedFieldData(cf.getId(), cf.getName());
+                fdata.addUsers(data.getStoredUsers(cf.getId()));
+                if (cf.isAllProjects())
                 {
-                    groups.add(obj.getString("group"));
+                    fdata.setAllProjects(true);
                 }
                 else
                 {
-                    ProjRole pr = new ProjRole(obj.getString("proj"), obj.getString("role"));
-                    projRoles.add(pr);
+                    fdata.setAllProjects(false);
+                    List<String> fieldProjs = new ArrayList<String>();
+                    List<GenericValue> projs = cf.getAssociatedProjects();
+                    for (GenericValue proj : projs)
+                    {
+                        fieldProjs.add((String) proj.get("name"));
+                    }
+
+                    fdata.setProjects(fieldProjs);
+                }
+
+                if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_selected_usercf"))
+                {
+                    singleSelectedFields.put(fdata.getFieldId(), fdata);
+                }
+                else
+                {
+                    multiSelectedFields.put(fdata.getFieldId(), fdata);
                 }
             }
         }
-        catch (JSONException e)
-        {
-            log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
-            //--> impossible
-        }
+
+        return SUCCESS;
     }
 
     /**
@@ -186,6 +200,11 @@ public class UserPickerAdminAction
     public Map<String, FieldData> getMultiFields()
     {
         return multiFields;
+    }
+
+    public Map<String, SelectedFieldData> getMultiSelectedFields()
+    {
+        return multiSelectedFields;
     }
 
     /**
@@ -227,6 +246,11 @@ public class UserPickerAdminAction
     public Map<String, FieldData> getSingleFields()
     {
         return singleFields;
+    }
+
+    public Map<String, SelectedFieldData> getSingleSelectedFields()
+    {
+        return singleSelectedFields;
     }
 
     /**

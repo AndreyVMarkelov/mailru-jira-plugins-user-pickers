@@ -3,16 +3,17 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-        <param name="plugin-logo">/images/michen.png</param>
-        <param name="plugin-icon">/images/michen.png</param>
+        <param name="plugin-logo">/images/users.png</param>
+        <param name="plugin-icon">/images/users.png</param>
         <param name="vendor-icon">/images/icon.png</param>
         <param name="vendor-logo">/images/logo.png</param>
     </plugin-info>
 
     <resource type="i18n" name="i18n" location="i18n.adrolegroupuser"/>
 
+    <!-- role/group users fields -->
     <customfield-type key="single_role_group_usercf" 
-                      name="Project Role or Group user picker"
+                      name="Project Role or Group User Picker"
                       class="ru.mail.jira.plugins.up.RoleGroupUserField">
         <description>This field allows to choose an user from project roles or groups</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
@@ -22,14 +23,36 @@
     </customfield-type>
 
     <customfield-type key="multi_role_group_usercf" 
-                      name="Project Role or Group multi user picker"
+                      name="Project Role or Group Multi User Picker"
                       class="ru.mail.jira.plugins.up.MultiRoleGroupUserField">
-        <description>This field allows to choose users from project roles or groups</description>
+        <description>This field allows to choose multiple users from project roles or groups</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
         <resource type="velocity" name="edit" location="templates/aduserpicker/multi-rolegroup-user-edit.vm"/>
         <resource type="velocity" name="column-view" location="templates/aduserpicker/multi-rolegroup-user-column-view.vm"/>
         <resource type="velocity" name="xml" location="templates/aduserpicker/multi-rolegroup-user-xml.vm"/>
     </customfield-type>
+
+    <!-- selected users fields -->
+    <customfield-type key="single_selected_usercf" 
+                      name="Single Selected Users Picker"
+                      class="ru.mail.jira.plugins.up.SelectedUsersCf">
+        <description>This field allows to choose an user from selected users</description>
+        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
+        <resource type="velocity" name="edit" location="templates/aduserpicker/single-rolegroup-user-edit.vm"/>
+        <resource type="velocity" name="column-view" location="templates/aduserpicker/single-rolegroup-user-column-view.vm"/>
+        <resource type="velocity" name="xml" location="templates/aduserpicker/single-rolegroup-user-xml.vm"/>
+    </customfield-type>
+
+    <customfield-type key="multi_selected_usercf" 
+                      name="Multi Selected Users Picker"
+                      class="ru.mail.jira.plugins.up.MultiSelectedUsersCf">
+        <description>This field allows to choose multiple users from selected users</description>
+        <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
+        <resource type="velocity" name="edit" location="templates/aduserpicker/multi-rolegroup-user-edit.vm"/>
+        <resource type="velocity" name="column-view" location="templates/aduserpicker/multi-rolegroup-user-column-view.vm"/>
+        <resource type="velocity" name="xml" location="templates/aduserpicker/multi-rolegroup-user-xml.vm"/>
+    </customfield-type>
+    <!-- End -->
 
     <customfield-searcher key="single_role_group_usercf_searcher"
                           name="User Picker (Pop-up window)"
@@ -50,6 +73,28 @@
         <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
         <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="multi_role_group_usercf"/>
     </customfield-searcher>
+    <!-- End -->
+
+    <customfield-searcher key="single_selected_usercf_searcher"
+                          name="User Picker (Pop-up window)"
+                          class="ru.mail.jira.plugins.up.SingleSearcher">
+        <description>Allow to search for a user using a userpicker.</description>
+        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
+        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
+        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
+        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="single_selected_usercf"/>
+    </customfield-searcher>
+
+    <customfield-searcher key="multi_selected_usercf_searcher"
+                          name="User Picker (Pop-up window)"
+                          class="ru.mail.jira.plugins.up.MultiSearcher">
+        <description>Allow to search for a user using a userpicker.</description>
+        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
+        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
+        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
+        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="multi_selected_usercf"/>
+    </customfield-searcher>
+    <!-- End -->
 
     <web-item key="role-group-usercf-configuration" name="Role Group User Fields configuration" section="system.admin/globalsettings" weight="95">
         <label key="jrole-group-usercf.admin.title"/>
@@ -77,9 +122,13 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>jira.webresources:jira-global</dependency>
+        <dependency>jira.webresources:autocomplete</dependency>
         <resource type="download" name="aduserpicker.js" location="media/aduserpicker.js"/>
         <resource type="download" name="aduserpicker.css" location="media/aduserpicker.css"/>
         <resource type="download" name="jquery.json-2.3.js" location="media/jquery.json-2.3.js"/>
+        <context>atl.admin</context>
     </web-resource>
 
     <!-- Rest resources -->

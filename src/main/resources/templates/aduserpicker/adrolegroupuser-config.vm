@@ -125,6 +125,102 @@
             </table>
           </td>
         </tr>
+        <tr>
+          <td>
+            <table class="jiraform maxWidth">
+              <tr>
+                <td class="jiraformheader">
+                  <h3 class="formtitle">$action.getText("jrole-group-usercf.linkingselfields")</h3>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table class="grid maxWidth">
+                    <thead>
+                      <tr>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
+                        <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
+                        <th width="50%">$action.getText("jrole-group-usercf.cfusers")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    #foreach($entry in $action.getSingleSelectedFields().entrySet())
+                      <tr>
+                        <td width="10%">$entry.key</td>
+                        <td width="10%">$entry.value.getFieldName()</td>
+                        <td width="20%">
+                            #if($entry.value.isAllProjects())${action.getText("jrole-group-usercf.cfallprojects")}
+                            #else
+                                #foreach($proj in $entry.value.getProjects())
+                                #if($velocityCount > 1), #end${proj}
+                                #end
+                            #end
+                        </td>
+                        <td width="50%">
+                            #foreach($user in $entry.value.getUsers())
+                            #if($velocityCount > 1), #end${user}
+                            #end
+                        </td>
+                        <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
+                      </tr>
+                    #end
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table class="jiraform maxWidth">
+              <tr>
+                <td class="jiraformheader">
+                  <h3 class="formtitle">$action.getText("jrole-group-usercf.linkingmultiselfields")</h3>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table class="grid maxWidth">
+                    <thead>
+                      <tr>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
+                        <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
+                        <th width="50%">$action.getText("jrole-group-usercf.cfusers")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    #foreach($entry in $action.getMultiSelectedFields().entrySet())
+                      <tr>
+                        <td width="10%">$entry.key</td>
+                        <td width="10%">$entry.value.getFieldName()</td>
+                        <td width="20%">
+                            #if($entry.value.isAllProjects())${action.getText("jrole-group-usercf.cfallprojects")}
+                            #else
+                                #foreach($proj in $entry.value.getProjects())
+                                #if($velocityCount > 1), #end${proj}
+                                #end
+                            #end
+                        </td>
+                        <td width="50%">
+                            #foreach($user in $entry.value.getUsers())
+                            #if($velocityCount > 1), #end${user}
+                            #end
+                        </td>
+                        <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
+                      </tr>
+                    #end
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
       </tbody>
     </table>
     #else

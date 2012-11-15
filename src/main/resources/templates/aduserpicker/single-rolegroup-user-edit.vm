@@ -3,8 +3,8 @@
 #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
 <select id="$customField.id" name="$customField.id">
 #foreach($entry in $map.entrySet())
-    <option #if($entry.key == $value.name)selected="selected"#end value="$entry.key">$entry.value</option>
+    <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
 #end
-<option></option>
+<option #if(!$value)selected="selected"#end></option>
 </select>
 #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)

@@ -5,7 +5,6 @@
 package ru.mail.jira.plugins.up;
 
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
-import com.atlassian.jira.issue.customfields.converters.UserConverter;
 import com.atlassian.jira.issue.customfields.converters.UserConverterImpl;
 import com.atlassian.jira.issue.customfields.searchers.UserPickerSearcher;
 import com.atlassian.jira.issue.customfields.searchers.transformer.CustomFieldInputHelper;
@@ -30,7 +29,6 @@ public class SingleSearcher
         UserResolver userResolver,
         JqlOperandResolver operandResolver,
         JiraAuthenticationContext context,
-        UserConverter userConverter,
         UserPickerSearchService userPickerSearchService,
         CustomFieldInputHelper customFieldInputHelper,
         UserManager userManager,

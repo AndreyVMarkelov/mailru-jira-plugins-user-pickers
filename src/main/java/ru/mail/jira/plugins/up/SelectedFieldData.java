@@ -4,15 +4,16 @@
  */
 package ru.mail.jira.plugins.up;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * This structure keeps custom field settings.
+ * This structure keeps selected custom field settings.
  * 
  * @author Andrey Markelov
  */
-public class FieldData
+public class SelectedFieldData
 {
     /**
      * Field ID.
@@ -25,11 +26,6 @@ public class FieldData
     private String fieldName;
 
     /**
-     * Groups.
-     */
-    private List<String> groups;
-
-    /**
      * Is project context?
      */
     private boolean isAllProjects;
@@ -40,41 +36,30 @@ public class FieldData
     private List<String> projects;
 
     /**
-     * Project roles.
+     * Groups.
      */
-    private List<ProjRole> roles;
+    private Set<String> users;
 
     /**
      * Constructor.
      */
-    public FieldData(
+    public SelectedFieldData(
         String fieldId,
         String fieldName)
     {
         this.fieldId = fieldId;
         this.fieldName = fieldName;
-        this.groups = new ArrayList<String>();
-        this.roles = new ArrayList<ProjRole>();
+        this.users = new LinkedHashSet<String>();
     }
 
-    public void addGroup(String group)
+    public void addUser(String user)
     {
-        groups.add(group);
+        users.add(user);
     }
 
-    public void addGroups(List<String> groups)
+    public void addUsers(Set<String> users)
     {
-        this.groups.addAll(groups);
-    }
-
-    public void addRole(ProjRole role)
-    {
-        roles.add(role);
-    }
-
-    public void addRoles(List<ProjRole> roles)
-    {
-        this.roles.addAll(roles);
+        this.users.addAll(users);
     }
 
     public String getFieldId()
@@ -87,19 +72,26 @@ public class FieldData
         return fieldName;
     }
 
-    public List<String> getGroups()
-    {
-        return groups;
-    }
-
     public List<String> getProjects()
     {
         return projects;
     }
 
-    public List<ProjRole> getRoles()
+    public String getUsersStr()
     {
-        return roles;
+        StringBuilder sb = new StringBuilder();
+
+        for (String user: users)
+        {
+            sb.append(user).append(",");
+        }
+
+        return sb.toString();
+    }
+
+    public Set<String> getUsers()
+    {
+        return users;
     }
 
     public boolean isAllProjects()
@@ -120,8 +112,8 @@ public class FieldData
     @Override
     public String toString()
     {
-        return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName
-            + ", groups=" + groups + ", isAllProjects=" + isAllProjects
-            + ", projects=" + projects + ", roles=" + roles + "]";
+        return "SelectedFieldData[fieldId=" + fieldId + ", fieldName="
+            + fieldName + ", isAllProjects=" + isAllProjects
+            + ", projects=" + projects + ", users=" + users + "]";
     }
 }

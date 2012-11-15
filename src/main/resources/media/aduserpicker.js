@@ -27,6 +27,32 @@ function initSettingsDlg(baseUrl, cfId)
     return res;
 }
 
+//--> init selected settings dialog
+function initSelectedSettingsDlg(baseUrl, cfId)
+{
+    var res = "";
+    jQuery.ajax({
+        url: baseUrl + "/rest/rolegroupusercfws/1.0/usrpickerssrv/initselectedsettingsdlg",
+        type: "POST",
+        dataType: "json",
+        data: {"cfId": cfId},
+        async: false,
+        error: function(xhr, ajaxOptions, thrownError) {
+            try {
+                var respObj = eval("(" + xhr.responseText + ")");
+                initErrorDlg(respObj.message).show();
+            } catch(e) {
+                initErrorDlg(xhr.responseText).show();
+            }
+        },
+        success: function(result) {
+            res = result.html;
+        }
+    });
+
+    return res;
+}
+
 //--> configure single role/group field
 function configureSingleField(event, baseUrl, cfId) {
     event.preventDefault();
@@ -52,6 +78,60 @@ function configureSingleField(event, baseUrl, cfId) {
             type: "POST",
             dataType: "json",
             data: AJS.$("#singlesettingsform").serialize(),
+            async: false,
+            error: function(xhr, ajaxOptions, thrownError) {
+                var errText;
+                try {
+                    var respObj = eval("(" + xhr.responseText + ")");
+                    if (respObj.message) {
+                        errText = respObj.message;
+                    } else if (respObj.html) {
+                        errText = respObj.html;
+                    } else {
+                        errText = xhr.responseText;
+                    }
+                } catch(e) {
+                    errText = xhr.responseText;
+                }
+                jQuery("#errorpart").empty();
+                jQuery("#errorpart").append("<div class='errdiv'>" + errText + "</div>");
+            },
+            success: function(result) {
+                document.location.reload(true);
+            }
+        });
+    });
+    md.addCancel(AJS.I18n.getText("jrole-group-usercf.closebtn"), function() {
+        md.hide();
+    });
+    md.show();
+}
+
+//--> configure single selected field
+function configureSelectedSingleField(event, baseUrl, cfId) {
+    event.preventDefault();
+
+    var dialogBody = initSelectedSettingsDlg(baseUrl, cfId);
+    if (!dialogBody)
+    {
+        return;
+    }
+
+    jQuery("#configure_jql_dialog").remove();
+    var md = new AJS.Dialog({
+        width:550,
+        height:350,
+        id:"configure_jql_dialog",
+        closeOnOutsideClick: true
+    });
+    md.addHeader(AJS.I18n.getText("jrole-group-usercf.configjqltitle"));
+    md.addPanel("load_panel", dialogBody);
+    md.addButton(AJS.I18n.getText("jrole-group-usercf.applyjqlbtn"), function() {
+        jQuery.ajax({
+            url: baseUrl + "/rest/rolegroupusercfws/1.0/usrpickerssrv/confselectedsettingsdlg",
+            type: "POST",
+            dataType: "json",
+            data: AJS.$("#singlesettingsselform").serialize(),
             async: false,
             error: function(xhr, ajaxOptions, thrownError) {
                 var errText;

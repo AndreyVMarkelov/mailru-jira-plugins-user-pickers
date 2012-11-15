@@ -4,10 +4,7 @@
  */
 package ru.mail.jira.plugins.up;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -22,20 +19,16 @@ import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.security.groups.GroupManager;
-import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.util.UserUtil;
-import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
 /**
- * Role group multi custom field.
+ * Multi selected users field.
  * 
  * @author Andrey Markelov
  */
-public class MultiRoleGroupUserField
+public class MultiSelectedUsersCf
     extends MultiUserCFType
 {
     /**
@@ -44,19 +37,14 @@ public class MultiRoleGroupUserField
     private final PluginData data;
 
     /**
-     * Group manager.
+     * User util.
      */
-    private final GroupManager grMgr;
-
-    /**
-     * Project role manager.
-     */
-    private final ProjectRoleManager projectRoleManager;
+    private final UserUtil userUtil;
 
     /**
      * Constructor.
      */
-    public MultiRoleGroupUserField(
+    public MultiSelectedUsersCf(
         CustomFieldValuePersister customFieldValuePersister,
         StringConverter stringConverter,
         GenericConfigManager genericConfigManager,
@@ -65,8 +53,6 @@ public class MultiRoleGroupUserField
         UserPickerSearchService searchService,
         FieldVisibilityManager fieldVisibilityManager,
         PluginData data,
-        GroupManager grMgr,
-        ProjectRoleManager projectRoleManager,
         UserUtil userUtil)
     {
         super(
@@ -79,8 +65,7 @@ public class MultiRoleGroupUserField
             searchService,
             fieldVisibilityManager);
         this.data = data;
-        this.grMgr = grMgr;
-        this.projectRoleManager = projectRoleManager;
+        this.userUtil = userUtil;
     }
 
     @Override
@@ -89,40 +74,16 @@ public class MultiRoleGroupUserField
         CustomField field,
         FieldLayoutItem fieldLayoutItem)
     {
-    	Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
-
-        List<String> groups = new ArrayList<String>();
-        List<ProjRole> projRoles = new ArrayList<ProjRole>();
-        try
+        Set<String> users = data.getStoredUsers(field.getId());
+        for (String user : users)
         {
-            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles);
-        }
-        catch (JSONException e)
-        {
-            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
-            //--> impossible
-        }
-
-        for (String group : groups)
-        {
-            Collection<User> users = grMgr.getUsersInGroup(group);
-            if (users != null)
+            User userObj = userUtil.getUserObject(user);
+            if (userObj != null)
             {
-                for (User user : users)
-                {
-                    map.put(user.getName(), user.getDisplayName());
-                }
-            }
-        }
-
-        for (ProjRole pr : projRoles)
-        {
-            Project proj = issue.getProjectObject();
-            if (proj != null && proj.getId().toString().equals(pr.getProject()))
-            {
-                map.putAll(Utils.getProjectRoleUsers(projectRoleManager, pr.getRole(), proj));
+            	map.put(userObj.getName(), userObj.getDisplayName());
             }
         }
 
