@@ -18,8 +18,9 @@ import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.user.util.UserManager;
 
 /**
  * Single selected users field.
@@ -30,14 +31,14 @@ public class SelectedUsersCf
     extends UserCFType
 {
     /**
-     * Plugin data.
+     * Plug-In data.
      */
     private final PluginData data;
 
     /**
-     * User util.
+     * User manager.
      */
-    private final UserUtil userUtil;
+    private final UserManager userMgr;
 
     /**
      * Constructor.
@@ -48,18 +49,20 @@ public class SelectedUsersCf
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
+        JiraBaseUrls jiraBaseUrls,
         PluginData data,
-        UserUtil userUtil)
+        UserManager userMgr)
     {
         super(
             customFieldValuePersister,
-            new UserConverterImpl(userUtil),
+            new UserConverterImpl(userMgr),
             genericConfigManager,
             applicationProperties,
             authenticationContext,
-            searchService);
+            searchService,
+            jiraBaseUrls);
         this.data = data;
-        this.userUtil = userUtil;
+        this.userMgr = userMgr;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class SelectedUsersCf
         Set<String> users = data.getStoredUsers(field.getId());
         for (String user : users)
         {
-            User userObj = userUtil.getUserObject(user);
+            User userObj = userMgr.getUserObject(user);
             if (userObj != null)
             {
                 map.put(userObj.getName(), userObj.getDisplayName());

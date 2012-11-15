@@ -12,7 +12,7 @@ import com.atlassian.jira.jql.operand.JqlOperandResolver;
 import com.atlassian.jira.jql.resolver.UserResolver;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.web.FieldVisibilityManager;
 
 /**
  * Multi searcher.
@@ -32,15 +32,17 @@ public class MultiSearcher
         UserPickerSearchService userPickerSearchService,
         CustomFieldInputHelper customFieldInputHelper,
         UserManager userManager,
-        UserUtil userUtil)
+        UserManager userMgr,
+        FieldVisibilityManager fieldVisibilityManager)
     {
         super(
             userResolver,
             operandResolver,
             context,
-            new MultiUserConverterImpl(userUtil),
+            new MultiUserConverterImpl(userMgr),
             userPickerSearchService,
             customFieldInputHelper,
-            userManager);
+            userManager,
+            fieldVisibilityManager);
     }
 }

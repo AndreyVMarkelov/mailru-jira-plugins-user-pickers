@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.apache.log4j.Logger;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -20,11 +21,12 @@ import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 
 /**
@@ -36,7 +38,12 @@ public class RoleGroupUserField
     extends UserCFType
 {
     /**
-     * Plugin data.
+     * Logger.
+     */
+    private final Logger log = Logger.getLogger(RoleGroupUserField.class);
+
+    /**
+     * Plug-In data.
      */
     private final PluginData data;
 
@@ -59,18 +66,20 @@ public class RoleGroupUserField
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
+        JiraBaseUrls jiraBaseUrls,
         PluginData data,
         GroupManager grMgr,
         ProjectRoleManager projectRoleManager,
-        UserUtil userUtil)
+        UserManager userMgr)
     {
         super(
             customFieldValuePersister,
-            new UserConverterImpl(userUtil),
+            new UserConverterImpl(userMgr),
             genericConfigManager,
             applicationProperties,
             authenticationContext,
-            searchService);
+            searchService,
+            jiraBaseUrls);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;

@@ -11,22 +11,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.apache.log4j.Logger;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
@@ -39,7 +40,12 @@ public class MultiRoleGroupUserField
     extends MultiUserCFType
 {
     /**
-     * Plugin data.
+     * Logger.
+     */
+    private final Logger log = Logger.getLogger(MultiRoleGroupUserField.class);
+
+    /**
+     * Plug-In data.
      */
     private final PluginData data;
 
@@ -58,26 +64,26 @@ public class MultiRoleGroupUserField
      */
     public MultiRoleGroupUserField(
         CustomFieldValuePersister customFieldValuePersister,
-        StringConverter stringConverter,
         GenericConfigManager genericConfigManager,
+        UserManager userMgr,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
         FieldVisibilityManager fieldVisibilityManager,
+        JiraBaseUrls jiraBaseUrls,
         PluginData data,
         GroupManager grMgr,
-        ProjectRoleManager projectRoleManager,
-        UserUtil userUtil)
+        ProjectRoleManager projectRoleManager)
     {
         super(
             customFieldValuePersister,
-            stringConverter,
             genericConfigManager,
-            new MultiUserConverterImpl(userUtil),
+            new MultiUserConverterImpl(userMgr),
             applicationProperties,
             authenticationContext,
             searchService,
-            fieldVisibilityManager);
+            fieldVisibilityManager,
+            jiraBaseUrls);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;

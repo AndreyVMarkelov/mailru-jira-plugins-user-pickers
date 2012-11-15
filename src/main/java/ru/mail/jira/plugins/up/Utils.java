@@ -85,7 +85,6 @@ public class Utils
         return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
     }
 
-    @SuppressWarnings({ "rawtypes", "deprecation" })
     public static Map<String, String> getProjectRoleUsers(
         ProjectRoleManager projectRoleManager,
         String role,
@@ -99,19 +98,10 @@ public class Utils
             for (ProjectRole pRole : projRoles)
             {
                 ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
-                Set users = projectRoleActors.getUsers();
-                for (Object obj : users)
+                Set<User> users = projectRoleActors.getUsers();
+                for (User objUser : users)
                 {
-                    if (obj instanceof com.opensymphony.user.User)
-                    {
-                        com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
-                        map.put(objUser.getName(), objUser.getDisplayName());
-                    }
-                    else if (obj instanceof User)
-                    {
-                        User objUser = (User)obj;
-                        map.put(objUser.getName(), objUser.getDisplayName());
-                    }
+                    map.put(objUser.getName(), objUser.getDisplayName());
                 }
             }
         }
@@ -119,19 +109,10 @@ public class Utils
         {
             ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
             ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
-            Set users = projectRoleActors.getUsers();
-            for (Object obj : users)
+            Set<User> users = projectRoleActors.getUsers();
+            for (User objUser : users)
             {
-                if (obj instanceof com.opensymphony.user.User)
-                {
-                    com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
-                    map.put(objUser.getName(), objUser.getDisplayName());
-                }
-                else if (obj instanceof User)
-                {
-                    User objUser = (User)obj;
-                    map.put(objUser.getName(), objUser.getDisplayName());
-                }
+                map.put(objUser.getName(), objUser.getDisplayName());
             }
         }
 

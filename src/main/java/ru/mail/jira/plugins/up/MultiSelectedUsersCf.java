@@ -13,14 +13,14 @@ import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
 /**
@@ -37,35 +37,35 @@ public class MultiSelectedUsersCf
     private final PluginData data;
 
     /**
-     * User util.
+     * User manager.
      */
-    private final UserUtil userUtil;
+    private final UserManager userMgr;
 
     /**
-     * Constructor.
+     * Constrcutor.
      */
     public MultiSelectedUsersCf(
         CustomFieldValuePersister customFieldValuePersister,
-        StringConverter stringConverter,
         GenericConfigManager genericConfigManager,
+        UserManager userMgr,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
         FieldVisibilityManager fieldVisibilityManager,
-        PluginData data,
-        UserUtil userUtil)
+        JiraBaseUrls jiraBaseUrls,
+        PluginData data)
     {
         super(
             customFieldValuePersister,
-            stringConverter,
             genericConfigManager,
-            new MultiUserConverterImpl(userUtil),
+            new MultiUserConverterImpl(userMgr),
             applicationProperties,
             authenticationContext,
             searchService,
-            fieldVisibilityManager);
-        this.data = data;
-        this.userUtil = userUtil;
+            fieldVisibilityManager,
+            jiraBaseUrls);
+        this.userMgr = userMgr;
+        this.data = data; 
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MultiSelectedUsersCf
         Set<String> users = data.getStoredUsers(field.getId());
         for (String user : users)
         {
-            User userObj = userUtil.getUserObject(user);
+            User userObj = userMgr.getUserObject(user);
             if (userObj != null)
             {
             	map.put(userObj.getName(), userObj.getDisplayName());
