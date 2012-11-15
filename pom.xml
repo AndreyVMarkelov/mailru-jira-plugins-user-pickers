@@ -10,12 +10,12 @@
     <version>2.0</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>Andrey Markelov | Mail.Ru Group</name>
+        <url>http://corp.mail.ru/en</url>
     </organization>
 
-    <name>userpickers</name>
-    <description>This is the ru.mail.jira.plugins:userpickers plugin for Atlassian JIRA.</description>
+    <name>Custom User Pickers</name>
+    <description>This plug-In contains custom user pickers that allow to choose users from groups and/or project roles. Also list of users can be configured by "jira-administrator".</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
@@ -36,6 +36,24 @@
             <artifactId>jira-func-tests</artifactId>
             <version>${jira.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins.rest</groupId>
+            <artifactId>atlassian-rest-common</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.3</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
