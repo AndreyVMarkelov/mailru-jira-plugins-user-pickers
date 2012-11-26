@@ -15,7 +15,6 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.customfields.converters.UserConverter;
 import com.atlassian.jira.issue.customfields.converters.UserConverterImpl;
 import com.atlassian.jira.issue.customfields.impl.UserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
@@ -64,7 +63,6 @@ public class RoleGroupUserField
      */
     public RoleGroupUserField(
         CustomFieldValuePersister customFieldValuePersister,
-        UserConverter userConverter,
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
