@@ -20,6 +20,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 
 /**
@@ -50,17 +51,11 @@ public class SelectedUsersCf
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
         JiraBaseUrls jiraBaseUrls,
+        UserHistoryManager userHistoryManager,
         PluginData data,
         UserManager userMgr)
     {
-        super(
-            customFieldValuePersister,
-            new UserConverterImpl(userMgr),
-            genericConfigManager,
-            applicationProperties,
-            authenticationContext,
-            searchService,
-            jiraBaseUrls);
+        super(customFieldValuePersister, new UserConverterImpl(userMgr), genericConfigManager, applicationProperties, authenticationContext, searchService, jiraBaseUrls, userHistoryManager);
         this.data = data;
         this.userMgr = userMgr;
     }

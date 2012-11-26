@@ -53,6 +53,28 @@ function initSelectedSettingsDlg(baseUrl, cfId)
     return res;
 }
 
+//--> initialize error dialog
+function initErrorDlg(bodyText) {
+    var errorDialog = new AJS.Dialog({
+        width:420,
+        height:250,
+        id:"error-dialog",
+        closeOnOutsideClick: true
+    });
+
+    errorDialog.addHeader(AJS.I18n.getText("queryfields.admin.title.error"));
+    errorDialog.addPanel("ErrorMainPanel", '' +
+        '<html><body><div class="error-message errdlg">' +
+        bodyText +
+        '</div></body></html>',
+        "error-panel-body");
+    errorDialog.addCancel(AJS.I18n.getText("queryfields.closebtn"), function() {
+        errorDialog.hide();
+    });
+
+    return errorDialog;
+}
+
 //--> configure single role/group field
 function configureSingleField(event, baseUrl, cfId) {
     event.preventDefault();

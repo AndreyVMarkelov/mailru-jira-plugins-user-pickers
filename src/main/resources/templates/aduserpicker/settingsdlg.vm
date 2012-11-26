@@ -7,7 +7,7 @@
     <table class="justtable">
         <tr>
             <td valign="top">
-                <b>$i18n.getText("jrole-group-usercf.cfgroupsroles")<b>
+                <b>$i18n.getText("jrole-group-usercf.cfgroupsroles")</b>
             </td>
             <td valign="top">
                 <div id="share_display_div">

@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.ofbiz.core.entity.GenericValue;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.fields.CustomField;
@@ -121,10 +120,10 @@ public class UserPickerAdminAction
                 {
                     fdata.setAllProjects(false);
                     List<String> fieldProjs = new ArrayList<String>();
-                    List<GenericValue> projs = cf.getAssociatedProjects();
-                    for (GenericValue proj : projs)
+                    List<Project> projs = cf.getAssociatedProjectObjects();
+                    for (Project proj : projs)
                     {
-                        fieldProjs.add((String) proj.get("name"));
+                        fieldProjs.add(proj.getName());
                     }
 
                     fdata.setProjects(fieldProjs);
@@ -166,10 +165,10 @@ public class UserPickerAdminAction
                 {
                     fdata.setAllProjects(false);
                     List<String> fieldProjs = new ArrayList<String>();
-                    List<GenericValue> projs = cf.getAssociatedProjects();
-                    for (GenericValue proj : projs)
+                    List<Project> projs = cf.getAssociatedProjectObjects();
+                    for (Project proj : projs)
                     {
-                        fieldProjs.add((String) proj.get("name"));
+                        fieldProjs.add(proj.getName());
                     }
 
                     fdata.setProjects(fieldProjs);

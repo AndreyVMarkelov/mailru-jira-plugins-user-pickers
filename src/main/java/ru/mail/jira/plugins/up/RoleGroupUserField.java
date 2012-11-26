@@ -15,6 +15,7 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.customfields.converters.UserConverter;
 import com.atlassian.jira.issue.customfields.converters.UserConverterImpl;
 import com.atlassian.jira.issue.customfields.impl.UserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
@@ -26,6 +27,7 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 
@@ -38,11 +40,6 @@ public class RoleGroupUserField
     extends UserCFType
 {
     /**
-     * Logger.
-     */
-    private final Logger log = Logger.getLogger(RoleGroupUserField.class);
-
-    /**
      * Plug-In data.
      */
     private final PluginData data;
@@ -51,6 +48,11 @@ public class RoleGroupUserField
      * Group manager.
      */
     private final GroupManager grMgr;
+
+    /**
+     * Logger.
+     */
+    private final Logger log = Logger.getLogger(RoleGroupUserField.class);
 
     /**
      * Project role manager.
@@ -62,24 +64,18 @@ public class RoleGroupUserField
      */
     public RoleGroupUserField(
         CustomFieldValuePersister customFieldValuePersister,
+        UserConverter userConverter,
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService,
-        JiraBaseUrls jiraBaseUrls,
+        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
+        UserHistoryManager userHistoryManager,
         PluginData data,
         GroupManager grMgr,
         ProjectRoleManager projectRoleManager,
         UserManager userMgr)
     {
-        super(
-            customFieldValuePersister,
-            new UserConverterImpl(userMgr),
-            genericConfigManager,
-            applicationProperties,
-            authenticationContext,
-            searchService,
-            jiraBaseUrls);
+        super(customFieldValuePersister, new UserConverterImpl(userMgr), genericConfigManager, applicationProperties, authenticationContext, searchService, jiraBaseUrls, userHistoryManager);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;

@@ -22,8 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.apache.velocity.exception.VelocityException;
-import org.ofbiz.core.entity.GenericValue;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -91,7 +89,7 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response configureSelectedSettingsDialog(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
@@ -146,7 +144,7 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response configureSingleField(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
@@ -203,7 +201,7 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response initSelectedSettingsDialog(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
@@ -223,7 +221,7 @@ public class AdRoleGroupUserCfService
         }
 
         Map<String, String> userMap = new LinkedHashMap<String, String>();
-        Collection<User> users = ComponentManager.getInstance().getUserUtil().getUsers();
+        Collection<User> users = ComponentAccessor.getUserUtil().getUsers();
         for (User userObj : users)
         {
             userMap.put(userObj.getName(), userObj.getDisplayName());
@@ -254,7 +252,7 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response initSettingsDialog(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
@@ -274,13 +272,13 @@ public class AdRoleGroupUserCfService
         }
 
         Map<String, String> projs = new TreeMap<String, String>();
-        CustomField cf = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(cfIdStr);
+        CustomField cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(cfIdStr);
         if (!cf.isAllProjects())
         {
-            List<GenericValue> aProjs = cf.getAssociatedProjects();
-            for (GenericValue proj : aProjs)
+            List<Project> aProjs = cf.getAssociatedProjectObjects();
+            for (Project proj : aProjs)
             {
-                projs.put(proj.get("id").toString(), (String) proj.get("name"));
+                projs.put(proj.getId().toString(), proj.getName());
             }
         }
         else
