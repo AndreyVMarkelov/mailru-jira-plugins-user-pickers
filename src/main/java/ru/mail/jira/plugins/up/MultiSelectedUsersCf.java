@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -83,12 +84,9 @@ public class MultiSelectedUsersCf
             User userObj = userUtil.getUserObject(user);
             if (userObj != null)
             {
-            	map.put(userObj.getName(), userObj.getDisplayName());
+                map.put(userObj.getName(), userObj.getDisplayName());
             }
         }
-
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
-        sorted_map.putAll(map);
 
         Object issueValObj = issue.getCustomFieldValue(field);
         if (issueValObj == null)
@@ -100,6 +98,8 @@ public class MultiSelectedUsersCf
             params.put("selectVal", Utils.removeBrackets(issueValObj.toString()));
         }
 
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        sorted_map.putAll(map);
         params.put("map", sorted_map);
         Set<String> issueVal = Utils.convertList(issueValObj);
         params.put("issueVal", issueVal);

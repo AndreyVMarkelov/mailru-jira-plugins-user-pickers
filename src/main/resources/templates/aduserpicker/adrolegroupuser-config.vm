@@ -160,7 +160,7 @@
                         </td>
                         <td width="50%">
                             #foreach($user in $entry.value.getUsers())
-                            #if($velocityCount > 1), #end${user}
+                            #if($velocityCount > 1), #end$userutils.getUser($user).getDisplayName()
                             #end
                         </td>
                         <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
@@ -208,7 +208,7 @@
                         </td>
                         <td width="50%">
                             #foreach($user in $entry.value.getUsers())
-                            #if($velocityCount > 1), #end${user}
+                            #if($velocityCount > 1), #end$userutils.getUser($user).getDisplayName()
                             #end
                         </td>
                         <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
