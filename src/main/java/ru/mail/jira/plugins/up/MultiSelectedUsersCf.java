@@ -83,12 +83,9 @@ public class MultiSelectedUsersCf
             User userObj = userMgr.getUserObject(user);
             if (userObj != null)
             {
-            	map.put(userObj.getName(), userObj.getDisplayName());
+            map.put(userObj.getName(), userObj.getDisplayName());
             }
         }
-
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
-        sorted_map.putAll(map);
 
         Object issueValObj = issue.getCustomFieldValue(field);
         if (issueValObj == null)
@@ -100,6 +97,8 @@ public class MultiSelectedUsersCf
             params.put("selectVal", Utils.removeBrackets(issueValObj.toString()));
         }
 
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        sorted_map.putAll(map);
         params.put("map", sorted_map);
         Set<String> issueVal = Utils.convertList(issueValObj);
         params.put("issueVal", issueVal);
