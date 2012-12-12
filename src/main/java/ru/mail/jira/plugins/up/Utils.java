@@ -31,19 +31,30 @@ public class Utils
     /**
      * Convert string list to java list.
      */
-    public static Set<String> convertList(Object objStr)
+    public static Set<String> convertList(Object obj)
     {
         Set<String> set = new LinkedHashSet<String>();
-        if (objStr == null)
+        if (obj == null)
         {
             return set;
         }
 
-        String str = removeBrackets(objStr.toString());
-        StringTokenizer st = new StringTokenizer(str, ",");
-        while (st.hasMoreTokens())
+        if (obj instanceof Collection<?>)
         {
-            set.add(st.nextToken().trim());
+            Collection<User> users = (Collection<User>)obj;
+            for (User user : users)
+            {
+                set.add(user.getName());
+            }
+        }
+        else
+        {
+            String str = removeBrackets(obj.toString());
+            StringTokenizer st = new StringTokenizer(str, ",");
+            while (st.hasMoreTokens())
+            {
+                set.add(st.nextToken().trim());
+            }
         }
 
         return set;
@@ -140,6 +151,20 @@ public class Utils
         }
 
         return str;
+    }
+
+    public static String setToStr(Set<String> set)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (set != null)
+        {
+            for (String s : set)
+            {
+                sb.append(s).append(",");
+            }
+        }
+
+        return sb.toString();
     }
 
     /**

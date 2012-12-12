@@ -87,21 +87,24 @@ public class MultiSelectedUsersCf
             }
         }
 
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        sorted_map.putAll(map);
+
         Object issueValObj = issue.getCustomFieldValue(field);
+        Set<String> issueVal = Utils.convertList(issueValObj);
         if (issueValObj == null)
         {
             params.put("selectVal", "");
         }
         else
         {
-            params.put("selectVal", Utils.removeBrackets(issueValObj.toString()));
+            params.put("selectVal", Utils.setToStr(issueVal));
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
-        sorted_map.putAll(map);
         params.put("map", sorted_map);
-        Set<String> issueVal = Utils.convertList(issueValObj);
         params.put("issueVal", issueVal);
+
+
 
         return params;
     }
