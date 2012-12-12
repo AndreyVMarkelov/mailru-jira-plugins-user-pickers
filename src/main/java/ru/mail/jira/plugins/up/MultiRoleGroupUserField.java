@@ -95,7 +95,7 @@ public class MultiRoleGroupUserField
         CustomField field,
         FieldLayoutItem fieldLayoutItem)
     {
-    	Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
 
@@ -136,17 +136,17 @@ public class MultiRoleGroupUserField
         sorted_map.putAll(map);
 
         Object issueValObj = issue.getCustomFieldValue(field);
+        Set<String> issueVal = Utils.convertList(issueValObj);
         if (issueValObj == null)
         {
             params.put("selectVal", "");
         }
         else
         {
-            params.put("selectVal", Utils.removeBrackets(issueValObj.toString()));
+            params.put("selectVal", Utils.setToStr(issueVal));
         }
 
         params.put("map", sorted_map);
-        Set<String> issueVal = Utils.convertList(issueValObj);
         params.put("issueVal", issueVal);
 
         return params;
