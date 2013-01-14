@@ -16,7 +16,6 @@ import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -90,7 +89,7 @@ public class RoleGroupUserField
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
+            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
             //--> impossible
         }
 
@@ -102,7 +101,7 @@ public class RoleGroupUserField
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
+            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
             //--> impossible
         }
 
