@@ -173,14 +173,13 @@ public class AdRoleGroupUserCfService
         }
 
         String cfIdStr = req.getParameter("cfId");
-        String shares_data = req.getParameter("shares_data");
-
         if (cfIdStr == null || cfIdStr.length() == 0)
         {
             log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters");
             return Response.status(500).build();
         }
 
+        String shares_data = req.getParameter("shares_data");
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
@@ -193,7 +192,21 @@ public class AdRoleGroupUserCfService
             return Response.status(500).build();
         }
 
+        String highlighted_data = req.getParameter("highlighted_data");
+        List<String> highlightedGroups = new ArrayList<String>();
+        List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
+        try
+        {
+            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles);
+        }
+        catch (JSONException e)
+        {
+            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            return Response.status(500).build();
+        }
+
         data.storeRoleGroupFieldData(cfIdStr, shares_data);
+        data.storeHighlightedRoleGroupFieldData(cfIdStr, highlighted_data);
 
         return Response.ok().build();
     }
@@ -310,12 +323,28 @@ public class AdRoleGroupUserCfService
         {
             sharedData = "[]";
         }
-
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
             Utils.fillDataLists(sharedData, groups, projRoles);
+        }
+        catch (JSONException e)
+        {
+            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            return Response.status(500).build();
+        }
+
+        String highlightedData = data.getHighlightedRoleGroupFieldData(cfIdStr);
+        if (highlightedData == null || highlightedData.length() == 0)
+        {
+            highlightedData = "[]";
+        }
+        List<String> highlightedGroups = new ArrayList<String>();
+        List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
+        try
+        {
+            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles);
         }
         catch (JSONException e)
         {
@@ -334,6 +363,9 @@ public class AdRoleGroupUserCfService
         params.put("storedShares", sharedData);
         params.put("groups", groups);
         params.put("projRoles", projRoles);
+        params.put("highlightedData", highlightedData);
+        params.put("highlightedGroups", highlightedGroups);
+        params.put("highlightedProjRoles", highlightedProjRoles);
 
         try
         {

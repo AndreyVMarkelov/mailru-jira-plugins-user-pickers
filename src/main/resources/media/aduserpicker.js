@@ -65,7 +65,7 @@ function configureSingleField(event, baseUrl, cfId) {
 
     jQuery("#configure_jql_dialog").remove();
     var md = new AJS.Dialog({
-        width:550,
+        width:650,
         height:350,
         id:"configure_jql_dialog",
         closeOnOutsideClick: true
@@ -161,15 +161,15 @@ function configureSelectedSingleField(event, baseUrl, cfId) {
     md.show();
 }
 
-function addGroup() {
-    var sharesObj = jQuery.evalJSON(jQuery("#shares_data").val());
+function addGroup(dataInputId, listDivId, groupsSelectId) {
+    var sharesObj = jQuery.evalJSON(jQuery("#" + dataInputId).val());
 
-    var group = jQuery("#groupShare :selected");
+    var group = jQuery("#" + groupsSelectId + " :selected");
     var grId = "group" + jQuery(group).val();
 
     for (var objId in sharesObj) {
         if (sharesObj[objId]["id"] == grId) {
-            jQuery("#" + grId).animate({backgroundColor: "red"}, 500, function() { jQuery("#" + grId).animate({backgroundColor: "white"}, 500);});
+            jQuery("#" + listDivId + " #" + grId).animate({backgroundColor: "red"}, 500, function() { jQuery(this).animate({backgroundColor: "white"}, 500);});
             return;
         }
     }
@@ -179,23 +179,23 @@ function addGroup() {
     itemObj["type"] = "G";
     itemObj["group"] = jQuery(group).val();
     sharesObj.push(itemObj);
-    jQuery("#shares_data").val(jQuery.toJSON(sharesObj));
+    jQuery("#" + dataInputId).val(jQuery.toJSON(sharesObj));
 
-    var newElem = "<div id='" + grId + "'><span>" + AJS.format(AJS.I18n.getText("jrole-group-usercf.share_group"), jQuery(group).text()) + "</span></div>";
-    jQuery("#share_display_div").append(newElem);
-    jQuery("#share_trash_sh").clone().show().appendTo("#" + grId);
+    var newElem = jQuery("<div id='" + grId + "'><span>" + AJS.format(AJS.I18n.getText("jrole-group-usercf.share_group"), jQuery(group).text()) + "</span></div>");
+    jQuery("#" + listDivId).append(newElem);
+    jQuery("#" + listDivId + " #share_trash_sh").clone().show().appendTo(newElem);
 }
 
-function addProject() {
-    var sharesObj = jQuery.evalJSON(jQuery("#shares_data").val());
+function addProject(dataInputId, listDivId, projectsSelectId, rolesSelectId) {
+    var sharesObj = jQuery.evalJSON(jQuery("#" + dataInputId).val());
 
-    var proj = jQuery("#projectShare-project :selected");
-    var role = jQuery("#projectShare-role :selected");
+    var proj = jQuery("#" + projectsSelectId + " :selected");
+    var role = jQuery("#" + rolesSelectId + " :selected");
     var prId = "project" + jQuery(proj).val() + "role" + jQuery(role).val();
 
     for (var objId in sharesObj) {
         if (sharesObj[objId]["id"] == prId) {
-            jQuery("#" + prId).animate({backgroundColor: "red"}, 500, function() { jQuery("#" + prId).animate({backgroundColor: "white"}, 500);});
+            jQuery("#" + listDivId + " #" + prId).animate({backgroundColor: "red"}, 500, function() { jQuery(this).animate({backgroundColor: "white"}, 500);});
             return;
         }
     }
@@ -206,7 +206,7 @@ function addProject() {
     itemObj["proj"] = jQuery(proj).val();
     itemObj["role"] = jQuery(role).val();
     sharesObj.push(itemObj);
-    jQuery("#shares_data").val(jQuery.toJSON(sharesObj));
+    jQuery("#" + dataInputId).val(jQuery.toJSON(sharesObj));
 
     var textVal;
     if (jQuery(role).val()) {
@@ -215,23 +215,23 @@ function addProject() {
         textVal = AJS.format(AJS.I18n.getText("jrole-group-usercf.share_project"), jQuery(proj).text());
     }
 
-    var newElem = "<div id='" + prId + "'><span>" + textVal + "</span></div>";
-    jQuery("#share_display_div").append(newElem);
-    jQuery("#share_trash_sh").clone().show().appendTo("#" + prId);
+    var newElem = jQuery("<div id='" + prId + "'><span>" + textVal + "</span></div>");
+    jQuery("#" + listDivId).append(newElem);
+    jQuery("#" + listDivId + " #share_trash_sh").clone().show().appendTo(newElem);
 }
 
-function removeGroup(event) {
+function removeGroup(event, dataInputId) {
     var source = event.target || event.srcElement;
     var parent = jQuery(source).parent();
     var parentId = jQuery(parent).attr("id");
 
-    var sharesObj = jQuery.evalJSON(jQuery("#shares_data").val());
+    var sharesObj = jQuery.evalJSON(jQuery("#" + dataInputId).val());
     for (var objId in sharesObj) {
         if (sharesObj[objId]["id"] == parentId) {
             sharesObj.splice(objId, 1);
         }
     }
-    jQuery("#shares_data").val(jQuery.toJSON(sharesObj));
+    jQuery("#" + dataInputId).val(jQuery.toJSON(sharesObj));
     jQuery(parent).remove();
 }
 
@@ -250,6 +250,16 @@ function setShareGroup() {
 function setShareProject() {
     jQuery("#share_group").hide();
     jQuery("#share_project").show();
+}
+
+function adHighlightedGroupsSwitchClick() {
+    jQuery("#ad_highlighted_groups").show();
+    jQuery("#ad_highlighted_roles").hide();
+}
+
+function adHighlightedRolesSwitchClick() {
+    jQuery("#ad_highlighted_groups").hide();
+    jQuery("#ad_highlighted_roles").show();
 }
 //<--
 

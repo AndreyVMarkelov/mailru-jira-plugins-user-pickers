@@ -3,9 +3,26 @@
 #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
 <input type="hidden" name="$customField.id" value="$selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
 <select id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" size="5" onchange="mail_ru_change_multu_user_picker('$customField.id');">
-#foreach($entry in $map.entrySet())
-    <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+#if($highlightedUsersSorted.isEmpty() || $otherUsersSorted.isEmpty())
+    #foreach($entry in $highlightedUsersSorted.entrySet())
+        <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+    #end
+    #foreach($entry in $otherUsersSorted.entrySet())
+        <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+    #end
+    <option value=""> </option>
+#else
+    <optgroup label="Suggestions">
+        #foreach($entry in $highlightedUsersSorted.entrySet())
+            <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+        #end
+    </optgroup>
+    <optgroup label="All users">
+        #foreach($entry in $otherUsersSorted.entrySet())
+            <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+        #end
+        <option value=""> </option>
+    </optgroup>
 #end
-<option value=""> </option>
 </select>
 #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)

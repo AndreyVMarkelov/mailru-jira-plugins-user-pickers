@@ -42,6 +42,12 @@ public class PluginDataImpl
     }
 
     @Override
+    public String getHighlightedRoleGroupFieldData(String cfId)
+    {
+        return getStringProperty(cfId + ".ghrcf");
+    }
+
+    @Override
     public Set<String> getStoredUsers(String cfId)
     {
         Set<String> users = new LinkedHashSet<String>();
@@ -75,6 +81,12 @@ public class PluginDataImpl
     public void storeRoleGroupFieldData(String cfId, String data)
     {
         setStringProperty(cfId + ".grcf", data);
+    }
+
+    @Override
+    public void storeHighlightedRoleGroupFieldData(String cfId, String data)
+    {
+        setStringProperty(cfId + ".ghrcf", data);
     }
 
     @Override

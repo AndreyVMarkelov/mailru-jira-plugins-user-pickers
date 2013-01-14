@@ -19,6 +19,11 @@ public interface PluginData
     String getRoleGroupFieldData(String cfId);
 
     /**
+     * Get highlighted role group field stored data.
+     */
+    String getHighlightedRoleGroupFieldData(String cfId);
+
+    /**
      * Get stored users.
      */
     Set<String> getStoredUsers(String cfId);
@@ -27,6 +32,11 @@ public interface PluginData
      * Store role group field Data.
      */
     void storeRoleGroupFieldData(String cfId, String data);
+
+    /**
+     * Store highlighted role group field Data.
+     */
+    void storeHighlightedRoleGroupFieldData(String cfId, String data);
 
     /**
      * Store users.

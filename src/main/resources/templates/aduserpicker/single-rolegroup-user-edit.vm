@@ -2,9 +2,26 @@
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
 <select id="$customField.id" name="$customField.id">
-#foreach($entry in $map.entrySet())
-    <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
-#end
-<option #if(!$value)selected="selected"#end></option>
+    #if($highlightedUsersSorted.isEmpty() || $otherUsersSorted.isEmpty())
+        #foreach($entry in $highlightedUsersSorted.entrySet())
+            <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+        #end
+        #foreach($entry in $otherUsersSorted.entrySet())
+            <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+        #end
+        <option #if(!$value)selected="selected"#end></option>
+    #else
+        <optgroup label="Suggestions">
+            #foreach($entry in $highlightedUsersSorted.entrySet())
+                <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+            #end
+        </optgroup>
+        <optgroup label="All users">
+            #foreach($entry in $otherUsersSorted.entrySet())
+                <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+            #end
+            <option #if(!$value)selected="selected"#end></option>
+        </optgroup>
+    #end
 </select>
 #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
