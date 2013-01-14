@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.apache.velocity.exception.VelocityException;
 import org.ofbiz.core.entity.GenericValue;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
