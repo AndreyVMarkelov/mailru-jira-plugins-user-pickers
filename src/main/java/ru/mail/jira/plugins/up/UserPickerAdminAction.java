@@ -137,7 +137,7 @@ public class UserPickerAdminAction
                 }
                 catch (JSONException e)
                 {
-                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
+                    log.error("UserPickerAdminAction::fillLists - Incorrect field data", e);
                     //--> impossible
                 }
                 fdata.getGroups().addAll(groups);
@@ -151,7 +151,7 @@ public class UserPickerAdminAction
                 }
                 catch (JSONException e)
                 {
-                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
+                    log.error("UserPickerAdminAction::fillLists - Incorrect field data", e);
                     //--> impossible
                 }
                 fdata.getHighlightedGroups().addAll(highlightedGroups);

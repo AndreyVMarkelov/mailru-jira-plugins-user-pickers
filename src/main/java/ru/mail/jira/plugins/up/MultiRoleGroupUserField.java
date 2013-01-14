@@ -5,7 +5,6 @@
 package ru.mail.jira.plugins.up;
 
 import java.util.*;
-
 import org.apache.log4j.Logger;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -18,7 +17,6 @@ import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersist
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -102,7 +100,7 @@ public class MultiRoleGroupUserField
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
+            log.error("MultiRoleGroupUserField::getVelocityParameters - Incorrect field data", e);
             //--> impossible
         }
 
@@ -114,7 +112,7 @@ public class MultiRoleGroupUserField
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
+            log.error("MultiRoleGroupUserField::getVelocityParameters - Incorrect field data", e);
             //--> impossible
         }
 
