@@ -4,16 +4,11 @@
  */
 package ru.mail.jira.plugins.up;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -96,38 +91,47 @@ public class Utils
         return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
     }
 
-    public static Map<String, String> getProjectRoleUsers(
-        ProjectRoleManager projectRoleManager,
-        String role,
-        Project currProj)
-    {
-        Map<String, String> map = new HashMap<String, String>();
+    public static SortedSet<User> buildUsersList(GroupManager groupManager, ProjectRoleManager projectRoleManager,
+                                                 Project project, List<String> groups, List<ProjRole> projRoles) {
+        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+            }
+        });
 
-        if (role.equals(""))
+        for (String group : groups)
         {
-            Collection<ProjectRole> projRoles = projectRoleManager.getProjectRoles();
-            for (ProjectRole pRole : projRoles)
+            Collection<User> users = groupManager.getUsersInGroup(group);
+            if (users != null)
             {
-                ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
-                Set<User> users = projectRoleActors.getUsers();
-                for (User objUser : users)
+                usersList.addAll(users);
+            }
+        }
+
+        for (ProjRole projRole : projRoles)
+        {
+            if (project != null && project.getId().toString().equals(projRole.getProject()))
+            {
+                if (projRole.getRole().equals(""))
                 {
-                    map.put(objUser.getName(), objUser.getDisplayName());
+                    Collection<ProjectRole> projectRoles = projectRoleManager.getProjectRoles();
+                    for (ProjectRole projectRole : projectRoles)
+                    {
+                        ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                        usersList.addAll(projectRoleActors.getUsers());
+                    }
+                }
+                else
+                {
+                    ProjectRole projectRole = projectRoleManager.getProjectRole(Long.valueOf(projRole.getRole()));
+                    ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                    usersList.addAll(projectRoleActors.getUsers());
                 }
             }
         }
-        else
-        {
-            ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
-            ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
-            Set<User> users = projectRoleActors.getUsers();
-            for (User objUser : users)
-            {
-                map.put(objUser.getName(), objUser.getDisplayName());
-            }
-        }
 
-        return map;
+        return usersList;
     }
 
     /**

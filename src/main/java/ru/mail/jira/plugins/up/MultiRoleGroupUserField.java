@@ -4,13 +4,8 @@
  */
 package ru.mail.jira.plugins.up;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -97,7 +92,7 @@ public class MultiRoleGroupUserField
     {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
-        Map<String, String> map = new HashMap<String, String>();
+        /* Load custom field parameters */
 
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
@@ -111,29 +106,40 @@ public class MultiRoleGroupUserField
             //--> impossible
         }
 
-        for (String group : groups)
+        List<String> highlightedGroups = new ArrayList<String>();
+        List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
+        try
         {
-            Collection<User> users = grMgr.getUsersInGroup(group);
-            if (users != null)
-            {
-                for (User user : users)
-                {
-                    map.put(user.getName(), user.getDisplayName());
-                }
-            }
+            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles);
+        }
+        catch (JSONException e)
+        {
+            log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
+            //--> impossible
         }
 
-        for (ProjRole pr : projRoles)
+        /* Build possible values list */
+
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), highlightedGroups, highlightedProjRoles);
+        highlightedUsers.retainAll(possibleUsers);
+        possibleUsers.removeAll(highlightedUsers);
+
+        Map<String, String> highlightedUsersSorted = new LinkedHashMap<String, String>();
+        Map<String, String> otherUsersSorted = new LinkedHashMap<String, String>();
+        for (User user : highlightedUsers)
         {
-            Project proj = issue.getProjectObject();
-            if (proj != null && proj.getId().toString().equals(pr.getProject()))
-            {
-                map.putAll(Utils.getProjectRoleUsers(projectRoleManager, pr.getRole(), proj));
-            }
+            highlightedUsersSorted.put(user.getName(), user.getDisplayName());
+        }
+        for (User user : possibleUsers)
+        {
+            otherUsersSorted.put(user.getName(), user.getDisplayName());
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
-        sorted_map.putAll(map);
+        params.put("highlightedUsersSorted", highlightedUsersSorted);
+        params.put("otherUsersSorted", otherUsersSorted);
+
+        /* Prepare selected values */
 
         Object issueValObj = issue.getCustomFieldValue(field);
         Set<String> issueVal = Utils.convertList(issueValObj);
@@ -145,8 +151,6 @@ public class MultiRoleGroupUserField
         {
             params.put("selectVal", Utils.setToStr(issueVal));
         }
-
-        params.put("map", sorted_map);
         params.put("issueVal", issueVal);
 
         return params;
