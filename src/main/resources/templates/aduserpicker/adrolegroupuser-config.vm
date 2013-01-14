@@ -31,7 +31,8 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="50%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+                        <th width="25%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+                        <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -48,7 +49,7 @@
                                 #end
                             #end
                         </td>
-                        <td width="50%">
+                        <td width="25%">
                             <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
                             #foreach($group in $entry.value.getGroups())
                             #if($velocityCount > 1), #end$group
@@ -56,6 +57,18 @@
                             </div>
                             <div><i>$action.getText("jrole-group-usercf.cfroles"):</i>
                             #foreach($role in $entry.value.getRoles())
+                            #if($velocityCount > 1), #end$action.getProjectMap().get($role.getProject())#if($role.getRole() != "") - $action.getRoleMap().get($role.getRole())#else - $action.getText("jrole-group-usercf.cfallpr")#end
+                            #end
+                            </div>
+                        </td>
+                        <td width="25%">
+                            <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
+                            #foreach($group in $entry.value.getHighlightedGroups())
+                            #if($velocityCount > 1), #end$group
+                            #end
+                            </div>
+                            <div><i>$action.getText("jrole-group-usercf.cfroles"):</i>
+                            #foreach($role in $entry.value.getHighlightedRoles())
                             #if($velocityCount > 1), #end$action.getProjectMap().get($role.getProject())#if($role.getRole() != "") - $action.getRoleMap().get($role.getRole())#else - $action.getText("jrole-group-usercf.cfallpr")#end
                             #end
                             </div>
@@ -86,7 +99,8 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="50%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+                        <th width="25%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+                        <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -103,7 +117,7 @@
                                 #end
                             #end
                         </td>
-                        <td width="50%">
+                        <td width="25%">
                             <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
                             #foreach($group in $entry.value.getGroups())
                             #if($velocityCount > 1), #end$group
@@ -115,6 +129,18 @@
                             #end
                             </div>
                         </td>
+                        <td width="25%">
+                            <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
+                            #foreach($group in $entry.value.getHighlightedGroups())
+                            #if($velocityCount > 1), #end$group
+                            #end
+                            </div>
+                            <div><i>$action.getText("jrole-group-usercf.cfroles"):</i>
+                            #foreach($role in $entry.value.getHighlightedRoles())
+                            #if($velocityCount > 1), #end$action.getProjectMap().get($role.getProject())#if($role.getRole() != "") - $action.getRoleMap().get($role.getRole())#else - $action.getText("jrole-group-usercf.cfallpr")#end
+                            #end
+                            </div>
+                          </td>
                         <td width="10%"><a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
                       </tr>
                     #end

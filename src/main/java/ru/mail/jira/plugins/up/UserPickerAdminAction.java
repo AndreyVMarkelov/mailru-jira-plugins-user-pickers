@@ -140,8 +140,22 @@ public class UserPickerAdminAction
                     log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
                     //--> impossible
                 }
-                fdata.addGroups(groups);
-                fdata.addRoles(projRoles);
+                fdata.getGroups().addAll(groups);
+                fdata.getRoles().addAll(projRoles);
+
+                List<String> highlightedGroups = new ArrayList<String>();
+                List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
+                try
+                {
+                    Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(cf.getId()), highlightedGroups, highlightedProjRoles);
+                }
+                catch (JSONException e)
+                {
+                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
+                    //--> impossible
+                }
+                fdata.getHighlightedGroups().addAll(highlightedGroups);
+                fdata.getHighlightedRoles().addAll(highlightedProjRoles);
 
                 if (cf.getCustomFieldType().getKey().equals("ru.mail.jira.plugins.userpickers:single_role_group_usercf"))
                 {
