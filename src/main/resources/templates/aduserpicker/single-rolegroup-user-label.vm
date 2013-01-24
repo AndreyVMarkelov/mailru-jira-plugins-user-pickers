@@ -2,8 +2,8 @@
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #if ($value)
 #if ($urlPrefix && $urlPrefix != '')
-<a href="${urlPrefix}">$textutils.htmlEncode($value.fullName)</a>
+<a href="${urlPrefix}">$textutils.htmlEncode($value.displayName)</a>
 #else
-$value.fullName
+$value.displayName
 #end
 #end

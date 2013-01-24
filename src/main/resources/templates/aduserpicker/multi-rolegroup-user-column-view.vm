@@ -4,7 +4,7 @@
     <div class="shorten" id="${customField.id}-field">
         #foreach ($singleValue in $value)
             #if ($displayParameters && $displayParameters.nolink)
-                $textutils.htmlEncode($singleValue.fullName)#commaonly ($value)
+                $textutils.htmlEncode($singleValue.displayName)#commaonly ($value)
             #else
                 <span class="tinylink">$userformat.formatUser($singleValue.name, 'profileLink', "multiuser_cf")</span>#commaonly ($value)
             #end
