@@ -1,0 +1,10 @@
+## Created by Andrey Markelov 11-11-2012.
+## Copyright Mail.Ru Group 2012. All rights reserved.
+#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+<select id="$customField.id" name="$customField.id">
+#foreach($entry in $map.entrySet())
+    <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+#end
+<option #if(!$value)selected="selected"#end></option>
+</select>
+#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)

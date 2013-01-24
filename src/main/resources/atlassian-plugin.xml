@@ -38,7 +38,7 @@
                       class="ru.mail.jira.plugins.up.SelectedUsersCf">
         <description>This field allows to choose an user from selected users</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/single-rolegroup-user-edit.vm"/>
+        <resource type="velocity" name="edit" location="templates/aduserpicker/single-selected-user-edit.vm"/>
         <resource type="velocity" name="column-view" location="templates/aduserpicker/single-rolegroup-user-column-view.vm"/>
         <resource type="velocity" name="xml" location="templates/aduserpicker/single-rolegroup-user-xml.vm"/>
     </customfield-type>
@@ -48,7 +48,7 @@
                       class="ru.mail.jira.plugins.up.MultiSelectedUsersCf">
         <description>This field allows to choose multiple users from selected users</description>
         <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/multi-rolegroup-user-edit.vm"/>
+        <resource type="velocity" name="edit" location="templates/aduserpicker/multi-selected-user-view.vm"/>
         <resource type="velocity" name="column-view" location="templates/aduserpicker/multi-rolegroup-user-column-view.vm"/>
         <resource type="velocity" name="xml" location="templates/aduserpicker/multi-rolegroup-user-xml.vm"/>
     </customfield-type>
