@@ -183,7 +183,7 @@ function addGroup(dataInputId, listDivId, groupsSelectId) {
 
     var newElem = jQuery("<div id='" + grId + "'><span>" + AJS.format(AJS.I18n.getText("jrole-group-usercf.share_group"), jQuery(group).text()) + "</span></div>");
     jQuery("#" + listDivId).append(newElem);
-    jQuery("#" + listDivId + " #share_trash_sh").clone().show().appendTo(newElem);
+    jQuery("#" + listDivId + " #share_trash_sh").clone().attr('id', '').show().appendTo(newElem);
 }
 
 function addProject(dataInputId, listDivId, projectsSelectId, rolesSelectId) {
