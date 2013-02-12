@@ -51,7 +51,7 @@
 		<resource type="velocity" name="view"
 			location="templates/aduserpicker/single-rolegroup-user-view.vm" />
 		<resource type="velocity" name="edit"
-			location="templates/aduserpicker/single-rolegroup-user-edit.vm" />
+			location="templates/aduserpicker/single-selected-user-edit.vm" />
 		<resource type="velocity" name="column-view"
 			location="templates/aduserpicker/single-rolegroup-user-column-view.vm" />
 		<resource type="velocity" name="xml"
@@ -66,7 +66,7 @@
 		<resource type="velocity" name="view"
 			location="templates/aduserpicker/multi-rolegroup-user-view.vm" />
 		<resource type="velocity" name="edit"
-			location="templates/aduserpicker/multi-rolegroup-user-edit.vm" />
+			location="templates/aduserpicker/multi-selected-user-edit.vm" />
 		<resource type="velocity" name="column-view"
 			location="templates/aduserpicker/multi-rolegroup-user-column-view.vm" />
 		<resource type="velocity" name="xml"

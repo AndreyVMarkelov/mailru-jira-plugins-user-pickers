@@ -6,6 +6,7 @@ package ru.mail.jira.plugins.up;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,7 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         /* Build possible values list */
 
         SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        Set<User> allUsers = new HashSet<User>(possibleUsers);
         SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), highlightedGroups, highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
@@ -135,6 +137,7 @@ public class MultiRoleGroupUserField extends MultiUserCFType
             otherUsersSorted.put(user.getName(), user.getDisplayName());
         }
 
+        params.put("allUsers", allUsers);
         params.put("highlightedUsersSorted", highlightedUsersSorted);
         params.put("otherUsersSorted", otherUsersSorted);
 
