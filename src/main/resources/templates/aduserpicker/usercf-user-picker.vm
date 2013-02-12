@@ -1,0 +1,28 @@
+## Created by Dmitry Miroshnichenko 12-02-2013. Copyright Mail.Ru Group 2013. All
+## rights reserved.
+$webResourceManager.requireResource("ru.mail.jira.plugins.userpickers:jrole-group-usercf")
+<h1>$action.getText("jrole-group-usercf.userpicker.header")</h1>
+<div class="content-container">
+    <div class="content-body aui-panel">
+        <table class="aui aui-table-rowhover">
+            <thead>
+                <tr>
+                    <th class="hidden"></th>
+                    <th>$action.getText("jrole-group-usercf.userpicker.value")</th>
+                    <th>$action.getText("jrole-group-usercf.userpicker.comment")</th>
+                </tr>
+            </thead>
+            <tbody>
+                #foreach ($value in $action.cfValues.keySet())
+                    <tr id="value_row_$value" title="$action.getText('jrole-group-usercf.userpicker.hint', $value)" onclick="javascript:selectAndReturnValue(getElementById('id_$value').getAttribute('value'), '$returnid');">
+                        <td class="hidden">
+                            <div id="id_$value" value="$value" style="visibility: hidden"></div>
+                        </td>
+                        <td class="word-wrapper">$value</td>
+                        <td class="word-wrapper">$action.cfValues.get($value).comment</td>
+                    </tr>
+                #end
+            </tbody>
+        </table>
+    </div>
+</div>

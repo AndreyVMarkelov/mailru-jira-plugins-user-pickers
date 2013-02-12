@@ -1,12 +1,14 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * This structure keeps selected custom field settings.
@@ -40,12 +42,12 @@ public class SelectedFieldData
      */
     private Set<String> users;
 
+    private boolean isAutocomplete;
+
     /**
      * Constructor.
      */
-    public SelectedFieldData(
-        String fieldId,
-        String fieldName)
+    public SelectedFieldData(String fieldId, String fieldName)
     {
         this.fieldId = fieldId;
         this.fieldName = fieldName;
@@ -81,7 +83,7 @@ public class SelectedFieldData
     {
         StringBuilder sb = new StringBuilder();
 
-        for (String user: users)
+        for (String user : users)
         {
             sb.append(user).append(",");
         }
@@ -109,11 +111,21 @@ public class SelectedFieldData
         this.projects = projects;
     }
 
+    public boolean isAutocomplete()
+    {
+        return isAutocomplete;
+    }
+
+    public void setAutocomplete(boolean isAutocomplete)
+    {
+        this.isAutocomplete = isAutocomplete;
+    }
+
     @Override
     public String toString()
     {
         return "SelectedFieldData[fieldId=" + fieldId + ", fieldName="
-            + fieldName + ", isAllProjects=" + isAllProjects
-            + ", projects=" + projects + ", users=" + users + "]";
+            + fieldName + ", isAllProjects=" + isAllProjects + ", projects="
+            + projects + ", users=" + users + "]";
     }
 }

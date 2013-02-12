@@ -1,8 +1,9 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
-package ru.mail.jira.plugins.up;
+package ru.mail.jira.plugins.up.structures;
+
 
 /**
  * This structure keeps project role.
@@ -24,9 +25,7 @@ public class ProjRole
     /**
      * Constructor.
      */
-    public ProjRole(
-        String project,
-        String role)
+    public ProjRole(String project, String role)
     {
         this.project = project;
         this.role = role;

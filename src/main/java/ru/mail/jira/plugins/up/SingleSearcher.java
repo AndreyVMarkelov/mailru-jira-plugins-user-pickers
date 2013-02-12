@@ -1,8 +1,9 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.issue.customfields.converters.UserConverterImpl;
@@ -14,33 +15,25 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.user.util.UserUtil;
 
+
 /**
  * Single searcher.
  * 
  * @author Andrey Markelov
  */
-public class SingleSearcher
-    extends UserPickerSearcher
+public class SingleSearcher extends UserPickerSearcher
 {
     /**
      * Constructor.
      */
-    public SingleSearcher(
-        UserResolver userResolver,
-        JqlOperandResolver operandResolver,
-        JiraAuthenticationContext context,
+    public SingleSearcher(UserResolver userResolver,
+        JqlOperandResolver operandResolver, JiraAuthenticationContext context,
         UserPickerSearchService userPickerSearchService,
-        CustomFieldInputHelper customFieldInputHelper,
-        UserManager userManager,
+        CustomFieldInputHelper customFieldInputHelper, UserManager userManager,
         UserUtil userUtil)
     {
-        super(
-            userResolver,
-            operandResolver,
-            context,
-            new UserConverterImpl(userUtil),
-            userPickerSearchService,
-            customFieldInputHelper,
+        super(userResolver, operandResolver, context, new UserConverterImpl(
+            userUtil), userPickerSearchService, customFieldInputHelper,
             userManager);
     }
 }

@@ -110,7 +110,7 @@ function configureSingleField(event, baseUrl, cfId) {
 //--> configure single selected field
 function configureSelectedSingleField(event, baseUrl, cfId) {
     event.preventDefault();
-
+ 
     var dialogBody = initSelectedSettingsDlg(baseUrl, cfId);
     if (!dialogBody)
     {
@@ -252,4 +252,24 @@ function setShareProject() {
     jQuery("#share_project").show();
 }
 //<--
+
+function selectAndReturnValue(value, returnId) {
+	var returnElem = window.opener.jQuery("#" + returnId);
+
+	if (returnElem.length > 0) {
+		if ('INPUT' == returnElem.attr('tagName').toString()) {
+			returnElem.val(value);
+			returnElem.trigger('input');
+		} else if ('SELECT' == returnElem.attr('tagName').toString()) {
+			var option = window.opener.jQuery("#" + returnId
+					+ " option:contains(" + value + ")");
+			if (option != null) {
+				option.attr('selected', 'selected');
+				returnElem.change();
+			}
+		}
+
+	}
+	window.close();
+};
 

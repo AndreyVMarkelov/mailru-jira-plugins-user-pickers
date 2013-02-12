@@ -1,14 +1,15 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.Comparator;
 import java.util.Map;
 
-class ValueComparator
-    implements Comparator<String>
+
+class ValueComparator implements Comparator<String>
 {
     Map<String, String> base;
 

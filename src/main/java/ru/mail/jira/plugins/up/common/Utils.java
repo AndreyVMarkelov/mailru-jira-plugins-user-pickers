@@ -1,8 +1,9 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
-package ru.mail.jira.plugins.up;
+package ru.mail.jira.plugins.up.common;
+
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServletRequest;
+
+import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.roles.ProjectRole;
@@ -21,6 +26,7 @@ import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
 
+
 /**
  * This class contains utility methods.
  * 
@@ -28,6 +34,38 @@ import com.atlassian.jira.util.json.JSONObject;
  */
 public class Utils
 {
+    public static boolean isValidStr(String str)
+    {
+        return (str != null && str.length() > 0);
+    }
+
+    public static boolean isValidLongParam(String str)
+    {
+        boolean isValidLong = true;
+
+        try
+        {
+            Long.valueOf(str);
+        }
+        catch (NumberFormatException e)
+        {
+            isValidLong = false;
+        }
+        return isValidLong;
+    }
+
+    public static boolean isOfMultiUserType(String cfType)
+    {
+        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
+            || Consts.CF_KEY_MULTI_USER_SELECT.equals(cfType);
+    }
+
+    public static boolean isOfGroupRoleUserPickerType(String cfType)
+    {
+        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
+            || Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT.equals(cfType);
+    }
+
     /**
      * Convert string list to java list.
      */
@@ -49,11 +87,8 @@ public class Utils
         return set;
     }
 
-    public static void fillDataLists(
-        String shares_data,
-        List<String> groups,
-        List<ProjRole> projRoles)
-    throws JSONException
+    public static void fillDataLists(String shares_data, List<String> groups,
+        List<ProjRole> projRoles) throws JSONException
     {
         if (shares_data == null || shares_data.length() == 0)
         {
@@ -71,7 +106,8 @@ public class Utils
             }
             else
             {
-                ProjRole pr = new ProjRole(obj.getString("proj"), obj.getString("role"));
+                ProjRole pr = new ProjRole(obj.getString("proj"),
+                    obj.getString("role"));
                 projRoles.add(pr);
             }
         }
@@ -82,34 +118,35 @@ public class Utils
      */
     public static String getBaseUrl(HttpServletRequest req)
     {
-        return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
+        return (req.getScheme() + "://" + req.getServerName() + ":"
+            + req.getServerPort() + req.getContextPath());
     }
 
-    @SuppressWarnings({ "rawtypes", "deprecation" })
+    @SuppressWarnings({"rawtypes", "deprecation"})
     public static Map<String, String> getProjectRoleUsers(
-        ProjectRoleManager projectRoleManager,
-        String role,
-        Project currProj)
+        ProjectRoleManager projectRoleManager, String role, Project currProj)
     {
         Map<String, String> map = new HashMap<String, String>();
 
         if (role.equals(""))
         {
-            Collection<ProjectRole> projRoles = projectRoleManager.getProjectRoles();
+            Collection<ProjectRole> projRoles = projectRoleManager
+                .getProjectRoles();
             for (ProjectRole pRole : projRoles)
             {
-                ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
+                ProjectRoleActors projectRoleActors = projectRoleManager
+                    .getProjectRoleActors(pRole, currProj);
                 Set users = projectRoleActors.getUsers();
                 for (Object obj : users)
                 {
                     if (obj instanceof com.opensymphony.user.User)
                     {
-                        com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
+                        com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                     else if (obj instanceof User)
                     {
-                        User objUser = (User)obj;
+                        User objUser = (User) obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                 }
@@ -117,19 +154,21 @@ public class Utils
         }
         else
         {
-            ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
-            ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
+            ProjectRole projRole = projectRoleManager.getProjectRole(Long
+                .valueOf(role));
+            ProjectRoleActors projectRoleActors = projectRoleManager
+                .getProjectRoleActors(projRole, currProj);
             Set users = projectRoleActors.getUsers();
             for (Object obj : users)
             {
                 if (obj instanceof com.opensymphony.user.User)
                 {
-                    com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
+                    com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
                 else if (obj instanceof User)
                 {
-                    User objUser = (User)obj;
+                    User objUser = (User) obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
             }
@@ -164,5 +203,7 @@ public class Utils
     /**
      * Private constructor.
      */
-    private Utils() {}
+    private Utils()
+    {
+    }
 }
