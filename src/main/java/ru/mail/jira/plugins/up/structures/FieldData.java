@@ -1,13 +1,11 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up.structures;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * This structure keeps custom field settings.
@@ -16,67 +14,22 @@ import java.util.List;
  */
 public class FieldData
 {
-    /**
-     * Field ID.
-     */
-    private String fieldId;
-
-    /**
-     * Field name.
-     */
-    private String fieldName;
-
-    /**
-     * Groups.
-     */
-    private List<String> groups;
-
-    /**
-     * Is project context?
-     */
+    private final String fieldId;
+    private final String fieldName;
+    private final List<String> groups = new ArrayList<String>();
+    private final List<ProjRole> roles = new ArrayList<ProjRole>();
+    private final List<String> highlightedGroups = new ArrayList<String>();
+    private final List<ProjRole> highlightedRoles = new ArrayList<ProjRole>();
     private boolean isAllProjects;
-
-    /**
-     * Projects.
-     */
     private List<String> projects;
-
-    /**
-     * Project roles.
-     */
-    private List<ProjRole> roles;
-
     private boolean isAutocomplete;
 
-    /**
-     * Constructor.
-     */
-    public FieldData(String fieldId, String fieldName)
+    public FieldData(
+        String fieldId,
+        String fieldName)
     {
         this.fieldId = fieldId;
         this.fieldName = fieldName;
-        this.groups = new ArrayList<String>();
-        this.roles = new ArrayList<ProjRole>();
-    }
-
-    public void addGroup(String group)
-    {
-        groups.add(group);
-    }
-
-    public void addGroups(List<String> groups)
-    {
-        this.groups.addAll(groups);
-    }
-
-    public void addRole(ProjRole role)
-    {
-        roles.add(role);
-    }
-
-    public void addRoles(List<ProjRole> roles)
-    {
-        this.roles.addAll(roles);
     }
 
     public String getFieldId()
@@ -94,14 +47,19 @@ public class FieldData
         return groups;
     }
 
-    public List<String> getProjects()
-    {
-        return projects;
-    }
-
     public List<ProjRole> getRoles()
     {
         return roles;
+    }
+
+    public List<String> getHighlightedGroups()
+    {
+        return highlightedGroups;
+    }
+
+    public List<ProjRole> getHighlightedRoles()
+    {
+        return highlightedRoles;
     }
 
     public boolean isAllProjects()
@@ -114,11 +72,16 @@ public class FieldData
         this.isAllProjects = isAllProjects;
     }
 
+    public List<String> getProjects()
+    {
+        return projects;
+    }
+
     public void setProjects(List<String> projects)
     {
         this.projects = projects;
     }
-
+    
     public boolean isAutocomplete()
     {
         return isAutocomplete;
@@ -132,8 +95,9 @@ public class FieldData
     @Override
     public String toString()
     {
-        return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName
-            + ", groups=" + groups + ", isAllProjects=" + isAllProjects
-            + ", projects=" + projects + ", roles=" + roles + "]";
+        return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName +
+                ", groups=" + groups + ", roles=" + roles +
+                ", highlightedGroups=" + highlightedGroups + ", highlightedRoles=" + highlightedRoles +
+                ", isAllProjects=" + isAllProjects + ", projects=" + projects + "]";
     }
 }

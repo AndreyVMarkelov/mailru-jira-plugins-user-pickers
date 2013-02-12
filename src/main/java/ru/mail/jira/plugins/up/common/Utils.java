@@ -6,12 +6,15 @@ package ru.mail.jira.plugins.up.common;
 
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +22,7 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -87,8 +91,11 @@ public class Utils
         return set;
     }
 
-    public static void fillDataLists(String shares_data, List<String> groups,
-        List<ProjRole> projRoles) throws JSONException
+    public static void fillDataLists(
+        String shares_data,
+        List<String> groups,
+        List<ProjRole> projRoles)
+    throws JSONException
     {
         if (shares_data == null || shares_data.length() == 0)
         {
@@ -106,8 +113,7 @@ public class Utils
             }
             else
             {
-                ProjRole pr = new ProjRole(obj.getString("proj"),
-                    obj.getString("role"));
+                ProjRole pr = new ProjRole(obj.getString("proj"), obj.getString("role"));
                 projRoles.add(pr);
             }
         }
@@ -118,35 +124,77 @@ public class Utils
      */
     public static String getBaseUrl(HttpServletRequest req)
     {
-        return (req.getScheme() + "://" + req.getServerName() + ":"
-            + req.getServerPort() + req.getContextPath());
+        return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
     }
 
-    @SuppressWarnings({"rawtypes", "deprecation"})
+    public static SortedSet<User> buildUsersList(GroupManager groupManager, ProjectRoleManager projectRoleManager,
+                                                 Project project, List<String> groups, List<ProjRole> projRoles) {
+        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+            }
+        });
+
+        for (String group : groups)
+        {
+            Collection<User> users = groupManager.getUsersInGroup(group);
+            if (users != null)
+            {
+                usersList.addAll(users);
+            }
+        }
+
+        for (ProjRole projRole : projRoles)
+        {
+            if (project != null && project.getId().toString().equals(projRole.getProject()))
+            {
+                if (projRole.getRole().equals(""))
+                {
+                    Collection<ProjectRole> projectRoles = projectRoleManager.getProjectRoles();
+                    for (ProjectRole projectRole : projectRoles)
+                    {
+                        ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                        usersList.addAll(projectRoleActors.getUsers());
+                    }
+                }
+                else
+                {
+                    ProjectRole projectRole = projectRoleManager.getProjectRole(Long.valueOf(projRole.getRole()));
+                    ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                    usersList.addAll(projectRoleActors.getUsers());
+                }
+            }
+        }
+
+        return usersList;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "deprecation" })
     public static Map<String, String> getProjectRoleUsers(
-        ProjectRoleManager projectRoleManager, String role, Project currProj)
+        ProjectRoleManager projectRoleManager,
+        String role,
+        Project currProj)
     {
         Map<String, String> map = new HashMap<String, String>();
 
         if (role.equals(""))
         {
-            Collection<ProjectRole> projRoles = projectRoleManager
-                .getProjectRoles();
+            Collection<ProjectRole> projRoles = projectRoleManager.getProjectRoles();
             for (ProjectRole pRole : projRoles)
             {
-                ProjectRoleActors projectRoleActors = projectRoleManager
-                    .getProjectRoleActors(pRole, currProj);
+                ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
                 Set users = projectRoleActors.getUsers();
                 for (Object obj : users)
                 {
                     if (obj instanceof com.opensymphony.user.User)
                     {
-                        com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
+                        com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                     else if (obj instanceof User)
                     {
-                        User objUser = (User) obj;
+                        User objUser = (User)obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                 }
@@ -154,21 +202,19 @@ public class Utils
         }
         else
         {
-            ProjectRole projRole = projectRoleManager.getProjectRole(Long
-                .valueOf(role));
-            ProjectRoleActors projectRoleActors = projectRoleManager
-                .getProjectRoleActors(projRole, currProj);
+            ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
+            ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
             Set users = projectRoleActors.getUsers();
             for (Object obj : users)
             {
                 if (obj instanceof com.opensymphony.user.User)
                 {
-                    com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
+                    com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
                 else if (obj instanceof User)
                 {
-                    User objUser = (User) obj;
+                    User objUser = (User)obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
             }
@@ -176,6 +222,8 @@ public class Utils
 
         return map;
     }
+
+
 
     /**
      * Remove brackets from string.
@@ -203,7 +251,5 @@ public class Utils
     /**
      * Private constructor.
      */
-    private Utils()
-    {
-    }
+    private Utils() {}
 }

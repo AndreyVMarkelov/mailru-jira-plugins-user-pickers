@@ -86,10 +86,6 @@ public class MultiSelectedUsersCf extends MultiUserCFType
             }
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
-            new ValueComparator(map));
-        sorted_map.putAll(map);
-
         Object issueValObj = issue.getCustomFieldValue(field);
         if (issueValObj == null)
         {
@@ -101,6 +97,8 @@ public class MultiSelectedUsersCf extends MultiUserCFType
                 Utils.removeBrackets(issueValObj.toString()));
         }
 
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        sorted_map.putAll(map);
         params.put("map", sorted_map);
         Set<String> issueVal = Utils.convertList(issueValObj);
         params.put("issueVal", issueVal);

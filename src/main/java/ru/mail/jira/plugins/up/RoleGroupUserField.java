@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+import java.util.*;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -25,7 +26,6 @@ import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -85,7 +85,7 @@ public class RoleGroupUserField extends UserCFType
         Map<String, Object> params = super.getVelocityParameters(issue, field,
             fieldLayoutItem);
 
-        Map<String, String> map = new HashMap<String, String>();
+        /* Load custom field parameters */
 
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
@@ -96,40 +96,44 @@ public class RoleGroupUserField extends UserCFType
         }
         catch (JSONException e)
         {
-            log.error(
-                "AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data",
-                e);
-            // --> impossible
+            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
+            //--> impossible
         }
 
-        for (String group : groups)
+        List<String> highlightedGroups = new ArrayList<String>();
+        List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
+        try
         {
-            Collection<User> users = grMgr.getUsersInGroup(group);
-            if (users != null)
-            {
-                for (User user : users)
-                {
-                    map.put(user.getName(), user.getDisplayName());
-                }
-            }
+            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles);
         }
-
-        for (ProjRole pr : projRoles)
+        catch (JSONException e)
         {
-            Project proj = issue.getProjectObject();
-            if (proj != null && proj.getId().toString().equals(pr.getProject()))
-            {
-                map.putAll(Utils.getProjectRoleUsers(projectRoleManager,
-                    pr.getRole(), proj));
-            }
+            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
+            //--> impossible
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
-            new ValueComparator(map));
-        sorted_map.putAll(map);
-        params.put("map", sorted_map);
+        /* Build possible values list */
+
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), highlightedGroups, highlightedProjRoles);
+        highlightedUsers.retainAll(possibleUsers);
+        possibleUsers.removeAll(highlightedUsers);
+
+        Map<String, String> highlightedUsersSorted = new LinkedHashMap<String, String>();
+        Map<String, String> otherUsersSorted = new LinkedHashMap<String, String>();
+        for (User user : highlightedUsers)
+        {
+            highlightedUsersSorted.put(user.getName(), user.getDisplayName());
+        }
+        for (User user : possibleUsers)
+        {
+            otherUsersSorted.put(user.getName(), user.getDisplayName());
+        }
+
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
+        params.put("highlightedUsersSorted", highlightedUsersSorted);
+        params.put("otherUsersSorted", otherUsersSorted);
 
         return params;
     }

@@ -20,7 +20,7 @@ class ValueComparator implements Comparator<String>
 
     public int compare(String a, String b)
     {
-        if (base.get(a).compareTo(base.get(b)) >= 0)
+        if (base.get(a).compareTo(base.get(b)) <= 0)
         {
             return -1;
         }
