@@ -1,13 +1,15 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -22,13 +24,13 @@ import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
 
+
 /**
  * Single selected users field.
  * 
  * @author Andrey Markelov
  */
-public class SelectedUsersCf
-    extends UserCFType
+public class SelectedUsersCf extends UserCFType
 {
     /**
      * Plug-In data.
@@ -39,6 +41,8 @@ public class SelectedUsersCf
      * User manager.
      */
     private final UserManager userMgr;
+
+    private final String baseUrl;
 
     /**
      * Constructor.
@@ -51,7 +55,7 @@ public class SelectedUsersCf
         UserPickerSearchService searchService,
         JiraBaseUrls jiraBaseUrls,
         PluginData data,
-        UserManager userMgr)
+        UserManager userMgr, com.atlassian.sal.api.ApplicationProperties appProp)
     {
         super(
             customFieldValuePersister,
@@ -63,15 +67,15 @@ public class SelectedUsersCf
             jiraBaseUrls);
         this.data = data;
         this.userMgr = userMgr;
+        baseUrl = appProp.getBaseUrl();
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(
-        Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
+    public Map<String, Object> getVelocityParameters(Issue issue,
+        CustomField field, FieldLayoutItem fieldLayoutItem)
     {
-        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field,
+            fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
         Set<String> users = data.getStoredUsers(field.getId());
@@ -84,9 +88,12 @@ public class SelectedUsersCf
             }
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
+            new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
+        params.put("isautocomplete", data.isAutocompleteView(field.getId()));
+        params.put("baseUrl", baseUrl);
 
         return params;
     }

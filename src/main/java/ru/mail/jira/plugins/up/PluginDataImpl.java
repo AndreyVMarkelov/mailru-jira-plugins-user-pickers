@@ -1,26 +1,30 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+
 
 /**
  * Implementation of <code>PluginData</code>.
  * 
  * @author Andrey Markelov
  */
-public class PluginDataImpl
-    implements PluginData
+public class PluginDataImpl implements PluginData
 {
     /**
      * PlugIn key.
      */
     private static final String PLUGIN_KEY = "MAIL_RU_USER_PICKER";
+
+    private static final String POSTFIX_AUTOCOMPLETE = ".grcfisautocomp";
 
     /**
      * Plug-In settings factory.
@@ -69,7 +73,8 @@ public class PluginDataImpl
 
     private String getStringProperty(String key)
     {
-        return (String) pluginSettingsFactory.createSettingsForKey(PLUGIN_KEY).get(key);
+        return (String) pluginSettingsFactory.createSettingsForKey(PLUGIN_KEY)
+            .get(key);
     }
 
     private void setStringProperty(String key, String value)
@@ -104,5 +109,19 @@ public class PluginDataImpl
         }
 
         setStringProperty(cfId + ".grscf", sb.toString());
+    }
+
+    @Override
+    public boolean isAutocompleteView(String cfId)
+    {
+        String value = getStringProperty(cfId + POSTFIX_AUTOCOMPLETE);
+
+        return Boolean.valueOf(value);
+    }
+
+    @Override
+    public void setAutocompleteView(String cfId, boolean flag)
+    {
+        setStringProperty(cfId + POSTFIX_AUTOCOMPLETE, String.valueOf(flag));
     }
 }

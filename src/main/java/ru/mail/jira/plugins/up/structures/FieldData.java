@@ -2,7 +2,7 @@
  * Created by Andrey Markelov 11-11-2012.
  * Copyright Mail.Ru Group 2012. All rights reserved.
  */
-package ru.mail.jira.plugins.up;
+package ru.mail.jira.plugins.up.structures;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ public class FieldData
     private final List<ProjRole> highlightedRoles = new ArrayList<ProjRole>();
     private boolean isAllProjects;
     private List<String> projects;
+    private boolean isAutocomplete;
 
     public FieldData(
         String fieldId,
@@ -79,6 +80,16 @@ public class FieldData
     public void setProjects(List<String> projects)
     {
         this.projects = projects;
+    }
+    
+    public boolean isAutocomplete()
+    {
+        return isAutocomplete;
+    }
+
+    public void setAutocomplete(boolean isAutocomplete)
+    {
+        this.isAutocomplete = isAutocomplete;
     }
 
     @Override

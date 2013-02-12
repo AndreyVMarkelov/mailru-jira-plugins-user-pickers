@@ -13,4 +13,8 @@
             <option value=""> </option>
         </select>
     </div>
+	<div class="field-group">
+		<label for="autocomplete-flag">$i18n.getText("jrole-group-usercf.cfautocomplete")</label>
+		<input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
+	</div>
 </form>

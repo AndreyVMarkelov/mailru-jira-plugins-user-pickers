@@ -1,11 +1,21 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+
 import org.apache.log4j.Logger;
+
+import ru.mail.jira.plugins.up.common.Utils;
+import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -23,13 +33,13 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 
+
 /**
  * Role group single custom field.
  * 
  * @author Andrey Markelov
  */
-public class RoleGroupUserField
-    extends UserCFType
+public class RoleGroupUserField extends UserCFType
 {
     /**
      * Logger.
@@ -51,6 +61,8 @@ public class RoleGroupUserField
      */
     private final ProjectRoleManager projectRoleManager;
 
+    private final String baseUrl;
+
     /**
      * Constructor.
      */
@@ -59,33 +71,26 @@ public class RoleGroupUserField
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService,
-        JiraBaseUrls jiraBaseUrls,
-        PluginData data,
-        GroupManager grMgr,
-        ProjectRoleManager projectRoleManager,
-        UserManager userMgr)
+        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
+        PluginData data, GroupManager grMgr,
+        ProjectRoleManager projectRoleManager, UserManager userMgr,
+        com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(
-            customFieldValuePersister,
-            new UserConverterImpl(userMgr),
-            genericConfigManager,
-            applicationProperties,
-            authenticationContext,
-            searchService,
-            jiraBaseUrls);
+        super(customFieldValuePersister, new UserConverterImpl(userMgr),
+            genericConfigManager, applicationProperties, authenticationContext,
+            searchService, jiraBaseUrls);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
+        this.baseUrl = appProp.getBaseUrl();
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(
-        Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
+    public Map<String, Object> getVelocityParameters(Issue issue,
+        CustomField field, FieldLayoutItem fieldLayoutItem)
     {
-        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field,
+            fieldLayoutItem);
 
         /* Load custom field parameters */
 
@@ -93,30 +98,40 @@ public class RoleGroupUserField
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles);
+            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()),
+                groups, projRoles);
         }
         catch (JSONException e)
         {
-            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
-            //--> impossible
+            log.error(
+                "RoleGroupUserField::getVelocityParameters - Incorrect field data",
+                e);
+            // --> impossible
         }
 
         List<String> highlightedGroups = new ArrayList<String>();
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(
+                data.getHighlightedRoleGroupFieldData(field.getId()),
+                highlightedGroups, highlightedProjRoles);
         }
         catch (JSONException e)
         {
-            log.error("RoleGroupUserField::getVelocityParameters - Incorrect field data", e);
-            //--> impossible
+            log.error(
+                "RoleGroupUserField::getVelocityParameters - Incorrect field data",
+                e);
+            // --> impossible
         }
 
         /* Build possible values list */
 
-        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), groups, projRoles);
-        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), highlightedGroups, highlightedProjRoles);
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr,
+            projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr,
+            projectRoleManager, issue.getProjectObject(), highlightedGroups,
+            highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
 
@@ -131,6 +146,8 @@ public class RoleGroupUserField
             otherUsersSorted.put(user.getName(), user.getDisplayName());
         }
 
+        params.put("isautocomplete", data.isAutocompleteView(field.getId()));
+        params.put("baseUrl", baseUrl);
         params.put("highlightedUsersSorted", highlightedUsersSorted);
         params.put("otherUsersSorted", otherUsersSorted);
 

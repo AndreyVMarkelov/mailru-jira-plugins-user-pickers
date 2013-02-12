@@ -1,148 +1,218 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-        <param name="plugin-logo">/images/users.png</param>
-        <param name="plugin-icon">/images/users.png</param>
-        <param name="vendor-icon">/images/icon.png</param>
-        <param name="vendor-logo">/images/logo.png</param>
-    </plugin-info>
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+		<param name="plugin-logo">/images/users.png</param>
+		<param name="plugin-icon">/images/users.png</param>
+		<param name="vendor-icon">/images/icon.png</param>
+		<param name="vendor-logo">/images/logo.png</param>
+	</plugin-info>
 
-    <resource type="i18n" name="i18n" location="i18n.adrolegroupuser"/>
+	<resource type="i18n" name="i18n" location="i18n.adrolegroupuser" />
 
-    <!-- role/group users fields -->
-    <customfield-type key="single_role_group_usercf" 
-                      name="Project Roles or Groups User Picker"
-                      class="ru.mail.jira.plugins.up.RoleGroupUserField">
-        <description>This field allows to choose an user from project roles or groups</description>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/single-rolegroup-user-edit.vm"/>
-        <resource type="velocity" name="column-view" location="templates/aduserpicker/single-rolegroup-user-column-view.vm"/>
-        <resource type="velocity" name="xml" location="templates/aduserpicker/single-rolegroup-user-xml.vm"/>
-    </customfield-type>
+	<!-- role/group users fields -->
+	<customfield-type key="single_role_group_usercf"
+		name="Project Roles or Groups User Picker" class="ru.mail.jira.plugins.up.RoleGroupUserField">
+		<description>This field allows to choose an user from project roles or
+			groups
+		</description>
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view.vm" />
+		<resource type="velocity" name="edit"
+			location="templates/aduserpicker/single-rolegroup-user-edit.vm" />
+		<resource type="velocity" name="column-view"
+			location="templates/aduserpicker/single-rolegroup-user-column-view.vm" />
+		<resource type="velocity" name="xml"
+			location="templates/aduserpicker/single-rolegroup-user-xml.vm" />
+	</customfield-type>
 
-    <customfield-type key="multi_role_group_usercf" 
-                      name="Project Roles or Groups Multi User Picker"
-                      class="ru.mail.jira.plugins.up.MultiRoleGroupUserField">
-        <description>This field allows to choose multiple users from project roles or groups</description>
-        <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/multi-rolegroup-user-edit.vm"/>
-        <resource type="velocity" name="column-view" location="templates/aduserpicker/multi-rolegroup-user-column-view.vm"/>
-        <resource type="velocity" name="xml" location="templates/aduserpicker/multi-rolegroup-user-xml.vm"/>
-    </customfield-type>
+	<customfield-type key="multi_role_group_usercf"
+		name="Project Roles or Groups Multi User Picker" class="ru.mail.jira.plugins.up.MultiRoleGroupUserField">
+		<description>This field allows to choose multiple users from project
+			roles or groups
+		</description>
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/multi-rolegroup-user-view.vm" />
+		<resource type="velocity" name="edit"
+			location="templates/aduserpicker/multi-rolegroup-user-edit.vm" />
+		<resource type="velocity" name="column-view"
+			location="templates/aduserpicker/multi-rolegroup-user-column-view.vm" />
+		<resource type="velocity" name="xml"
+			location="templates/aduserpicker/multi-rolegroup-user-xml.vm" />
+	</customfield-type>
 
-    <!-- selected users fields -->
-    <customfield-type key="single_selected_usercf" 
-                      name="Single Selected Users Picker"
-                      class="ru.mail.jira.plugins.up.SelectedUsersCf">
-        <description>This field allows to choose an user from selected users</description>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/single-selected-user-edit.vm"/>
-        <resource type="velocity" name="column-view" location="templates/aduserpicker/single-rolegroup-user-column-view.vm"/>
-        <resource type="velocity" name="xml" location="templates/aduserpicker/single-rolegroup-user-xml.vm"/>
-    </customfield-type>
+	<!-- selected users fields -->
+	<customfield-type key="single_selected_usercf" name="Single Selected Users Picker"
+		class="ru.mail.jira.plugins.up.SelectedUsersCf">
+		<description>This field allows to choose an user from selected users
+		</description>
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view.vm" />
+		<resource type="velocity" name="edit"
+			location="templates/aduserpicker/single-selected-user-edit.vm" />
+		<resource type="velocity" name="column-view"
+			location="templates/aduserpicker/single-rolegroup-user-column-view.vm" />
+		<resource type="velocity" name="xml"
+			location="templates/aduserpicker/single-rolegroup-user-xml.vm" />
+	</customfield-type>
 
-    <customfield-type key="multi_selected_usercf" 
-                      name="Multi Selected Users Picker"
-                      class="ru.mail.jira.plugins.up.MultiSelectedUsersCf">
-        <description>This field allows to choose multiple users from selected users</description>
-        <resource type="velocity" name="view" location="templates/aduserpicker/multi-rolegroup-user-view.vm"/>
-        <resource type="velocity" name="edit" location="templates/aduserpicker/multi-selected-user-edit.vm"/>
-        <resource type="velocity" name="column-view" location="templates/aduserpicker/multi-rolegroup-user-column-view.vm"/>
-        <resource type="velocity" name="xml" location="templates/aduserpicker/multi-rolegroup-user-xml.vm"/>
-    </customfield-type>
-    <!-- End -->
+	<customfield-type key="multi_selected_usercf" name="Multi Selected Users Picker"
+		class="ru.mail.jira.plugins.up.MultiSelectedUsersCf">
+		<description>This field allows to choose multiple users from selected
+			users
+		</description>
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/multi-rolegroup-user-view.vm" />
+		<resource type="velocity" name="edit"
+			location="templates/aduserpicker/multi-selected-user-edit.vm" />
+		<resource type="velocity" name="column-view"
+			location="templates/aduserpicker/multi-rolegroup-user-column-view.vm" />
+		<resource type="velocity" name="xml"
+			location="templates/aduserpicker/multi-rolegroup-user-xml.vm" />
+	</customfield-type>
+	<!-- End -->
 
-    <customfield-searcher key="single_role_group_usercf_searcher"
-                          name="User Picker (Pop-up window)"
-                          class="ru.mail.jira.plugins.up.SingleSearcher">
-        <description>Allow to search for a user using a userpicker.</description>
-        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
-        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
-        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="single_role_group_usercf"/>
-    </customfield-searcher>
+	<customfield-searcher key="single_role_group_usercf_searcher"
+		name="User Picker (Pop-up window)" class="ru.mail.jira.plugins.up.SingleSearcher">
+		<description>Allow to search for a user using a userpicker.
+		</description>
+		<resource type="velocity" name="label"
+			location="templates/aduserpicker/single-rolegroup-user-label.vm" />
+		<resource type="velocity" name="search"
+			location="templates/aduserpicker/single-rolegroup-user-search.vm" />
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view-search.vm" />
+		<valid-customfield-type package="${project.groupId}.${project.artifactId}"
+			key="single_role_group_usercf" />
+	</customfield-searcher>
 
-    <customfield-searcher key="multi_role_group_usercf_searcher"
-                          name="User Picker (Pop-up window)"
-                          class="ru.mail.jira.plugins.up.MultiSearcher">
-        <description>Allow to search for a user using a userpicker.</description>
-        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
-        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
-        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="multi_role_group_usercf"/>
-    </customfield-searcher>
-    <!-- End -->
+	<customfield-searcher key="multi_role_group_usercf_searcher"
+		name="User Picker (Pop-up window)" class="ru.mail.jira.plugins.up.MultiSearcher">
+		<description>Allow to search for a user using a userpicker.
+		</description>
+		<resource type="velocity" name="label"
+			location="templates/aduserpicker/single-rolegroup-user-label.vm" />
+		<resource type="velocity" name="search"
+			location="templates/aduserpicker/single-rolegroup-user-search.vm" />
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view-search.vm" />
+		<valid-customfield-type package="${project.groupId}.${project.artifactId}"
+			key="multi_role_group_usercf" />
+	</customfield-searcher>
+	<!-- End -->
 
-    <customfield-searcher key="single_selected_usercf_searcher"
-                          name="User Picker (Pop-up window)"
-                          class="ru.mail.jira.plugins.up.SingleSearcher">
-        <description>Allow to search for a user using a userpicker.</description>
-        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
-        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
-        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="single_selected_usercf"/>
-    </customfield-searcher>
+	<customfield-searcher key="single_selected_usercf_searcher"
+		name="User Picker (Pop-up window)" class="ru.mail.jira.plugins.up.SingleSearcher">
+		<description>Allow to search for a user using a userpicker.
+		</description>
+		<resource type="velocity" name="label"
+			location="templates/aduserpicker/single-rolegroup-user-label.vm" />
+		<resource type="velocity" name="search"
+			location="templates/aduserpicker/single-rolegroup-user-search.vm" />
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view-search.vm" />
+		<valid-customfield-type package="${project.groupId}.${project.artifactId}"
+			key="single_selected_usercf" />
+	</customfield-searcher>
 
-    <customfield-searcher key="multi_selected_usercf_searcher"
-                          name="User Picker (Pop-up window)"
-                          class="ru.mail.jira.plugins.up.MultiSearcher">
-        <description>Allow to search for a user using a userpicker.</description>
-        <resource type="velocity" name="label" location="templates/aduserpicker/single-rolegroup-user-label.vm"/>
-        <resource type="velocity" name="search" location="templates/aduserpicker/single-rolegroup-user-search.vm"/>
-        <resource type="velocity" name="view" location="templates/aduserpicker/single-rolegroup-user-view-search.vm"/>
-        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="multi_selected_usercf"/>
-    </customfield-searcher>
-    <!-- End -->
+	<customfield-searcher key="multi_selected_usercf_searcher"
+		name="User Picker (Pop-up window)" class="ru.mail.jira.plugins.up.MultiSearcher">
+		<description>Allow to search for a user using a userpicker.
+		</description>
+		<resource type="velocity" name="label"
+			location="templates/aduserpicker/single-rolegroup-user-label.vm" />
+		<resource type="velocity" name="search"
+			location="templates/aduserpicker/single-rolegroup-user-search.vm" />
+		<resource type="velocity" name="view"
+			location="templates/aduserpicker/single-rolegroup-user-view-search.vm" />
+		<valid-customfield-type package="${project.groupId}.${project.artifactId}"
+			key="multi_selected_usercf" />
+	</customfield-searcher>
+	<!-- End -->
 
-    <web-item key="role-group-usercf-configuration" name="Role Group User Fields configuration" section="system.admin/globalsettings" weight="95">
-        <label key="jrole-group-usercf.admin.title"/>
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-            <param name="permission">admin</param>
-        </condition>
-        <link linkId="role-group-usercf-configuration">/secure/UserPickerAdminAction!default.jspa</link>
-    </web-item>
+	<web-item key="role-group-usercf-configuration" name="Role Group User Fields configuration"
+		section="system.admin/globalsettings" weight="95">
+		<label key="jrole-group-usercf.admin.title" />
+		<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+			<param name="permission">admin</param>
+		</condition>
+		<link linkId="role-group-usercf-configuration">/secure/UserPickerAdminAction!default.jspa</link>
+	</web-item>
 
-    <webwork1 key="role-group-usercf-action" name="Role Group User Fields configure action" class="java.lang.Object">
-        <actions>
-            <action name="ru.mail.jira.plugins.up.UserPickerAdminAction" alias="UserPickerAdminAction">
-                <view name="input">/templates/aduserpicker/adrolegroupuser-config.vm</view>
-                <view name="success">/templates/aduserpicker/adrolegroupuser-config.vm</view>
-            </action>
-        </actions>
-    </webwork1>
+	<webwork1 key="role-group-usercf-action" name="Role Group User Fields configure action"
+		class="java.lang.Object">
+		<actions>
+			<action name="ru.mail.jira.plugins.up.UserPickerAdminAction"
+				alias="UserPickerAdminAction">
+				<view name="input">/templates/aduserpicker/adrolegroupuser-config.vm
+				</view>
+				<view name="success">/templates/aduserpicker/adrolegroupuser-config.vm
+				</view>
+			</action>
+		</actions>
+	</webwork1>
 
-    <web-resource key="jrole-group-usercf-field" name="Role Group User Fields Resources For Fields">
-        <resource type="download" name="aduserpicker-field.js" location="media/aduserpicker-field.js"/>
-        <context>atl.general</context>
-    </web-resource>
+	<webwork1 key="mailru-usercf-userpicker-action" name="usercf user picker"
+		class="java.lang.Object">
+		<actions>
+			<action name="ru.mail.jira.plugins.up.MailRuUserPickerValuePickerAction"
+				alias="MailRuUserPickerValuePickerAction">
+				<view name="input">/templates/aduserpicker/usercf-user-picker.vm</view>
+				<view name="success">/templates/aduserpicker/usercf-user-picker.vm</view>
+			</action>
+		</actions>
+	</webwork1>
 
-    <web-resource key="jrole-group-usercf" name="Role Group User Fields Resources">
-        <transformation extension="js">
-            <transformer key="jsI18n"/>
-        </transformation>
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>jira.webresources:jira-global</dependency>
-        <dependency>jira.webresources:autocomplete</dependency>
-        <resource type="download" name="aduserpicker.js" location="media/aduserpicker.js"/>
-        <resource type="download" name="aduserpicker.css" location="media/aduserpicker.css"/>
-        <resource type="download" name="jquery.json-2.3.js" location="media/jquery.json-2.3.js"/>
-        <context>atl.admin</context>
-    </web-resource>
+	<web-resource key="jrole-group-usercf-field"
+		name="Role Group User Fields Resources For Fields">
+		<transformation extension="js">
+			<transformer key="jsI18n" />
+		</transformation>
+		<resource type="download" name="aduserpicker-field.js"
+			location="media/aduserpicker-field.js" />
+		<resource type="download" name="mail-cf-up-autocomplete-lib.js"
+			location="media/mail-cf-up-autocomplete-lib.js" />
+		<resource type="download" name="mail-cf-up-choose-values.js"
+			location="media/mail-cf-up-choose-values.js" />
+		<context>atl.general</context>
+	</web-resource>
 
-    <!-- Rest resources -->
-    <rest key="role-group-usercf-resources" path="/rolegroupusercfws" version="1.0">
-        <description>Provides the REST resource for the "ru.mail.jira.plugins.userpickers" plugin.</description>
-    </rest>
-    <!-- End rest -->
+	<web-resource key="jrole-group-usercf" name="Role Group User Fields Resources">
+		<transformation extension="js">
+			<transformer key="jsI18n" />
+		</transformation>
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<dependency>jira.webresources:jira-global</dependency>
+		<dependency>jira.webresources:autocomplete</dependency>
+		<resource type="download" name="aduserpicker.js" location="media/aduserpicker.js" />
+		<resource type="download" name="aduserpicker.css" location="media/aduserpicker.css" />
+		<resource type="download" name="jquery.json-2.3.js" location="media/jquery.json-2.3.js" />
+		<context>atl.admin</context>
+	</web-resource>
 
-    <!-- Components -->
-    <component key="role-group-usercf-manager" name="Manager of role group user fields" class="ru.mail.jira.plugins.up.PluginDataImpl"/>
-    <component-import key="pluginSettingsFactory">
-        <interface>com.atlassian.sal.api.pluginsettings.PluginSettingsFactory</interface>
-    </component-import>
-    <component-import key="applicationProperties">
-        <interface>com.atlassian.sal.api.ApplicationProperties</interface>
-    </component-import>
+	<!-- Rest resources -->
+	<rest key="role-group-usercf-resources" path="/rolegroupusercfws"
+		version="1.0">
+		<description>Provides the REST resource for the
+			"ru.mail.jira.plugins.userpickers" plugin.
+		</description>
+	</rest>
+	<rest key="upautocompletesrv" path="/upautocompletesrv" version="1.0">
+		<description>REST for User pickers autocomplete</description>
+	</rest>
+	<!-- End rest -->
+
+	<!-- Components -->
+	<component key="role-group-usercf-manager" name="Manager of role group user fields"
+		class="ru.mail.jira.plugins.up.PluginDataImpl" />
+	<component-import key="pluginSettingsFactory">
+		<interface>com.atlassian.sal.api.pluginsettings.PluginSettingsFactory
+		</interface>
+	</component-import>
+	<component-import key="applicationProperties">
+		<interface>com.atlassian.sal.api.ApplicationProperties</interface>
+	</component-import>
 </atlassian-plugin>
