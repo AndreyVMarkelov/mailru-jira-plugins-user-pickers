@@ -6,15 +6,13 @@ package ru.mail.jira.plugins.up;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.SortedSet;
 
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
-import java.util.*;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;

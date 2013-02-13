@@ -7,7 +7,7 @@
                 <input class="text long-field" type="text" id="autocomp-user-input-$customField.id" autocomplete="off">
                     <div class="mail-user-picker-elements" cf-id="$customField.id" base-url="$baseUrl">
                         <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
-                            #foreach($entry in $otherUsersSorted.entrySet())
+                            #foreach($entry in $map.entrySet())
 								#if($issueVal.contains(${entry.key}))
 									<option id="${customField.id}_${entry.key}" class="mail-multiuserpicker-element" value="${entry.key}" selected="selected">${entry.key}</option>
 								#end
