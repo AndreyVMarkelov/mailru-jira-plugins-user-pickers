@@ -23,7 +23,6 @@ import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
@@ -34,7 +33,6 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.FieldVisibilityManager;
 

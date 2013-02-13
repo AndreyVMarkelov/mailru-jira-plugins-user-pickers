@@ -83,6 +83,7 @@ public class Utils
 
         if (obj instanceof Collection<?>)
         {
+            @SuppressWarnings("unchecked")
             Collection<User> users = (Collection<User>)obj;
             for (User user : users)
             {
@@ -180,7 +181,7 @@ public class Utils
         return usersList;
     }
     
-    @SuppressWarnings({ "rawtypes", "deprecation" })
+    @SuppressWarnings({ "rawtypes" })
     public static Map<String, String> getProjectRoleUsers(
         ProjectRoleManager projectRoleManager,
         String role,

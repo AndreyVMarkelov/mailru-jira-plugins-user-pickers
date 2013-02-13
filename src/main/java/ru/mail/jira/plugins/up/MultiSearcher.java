@@ -13,7 +13,6 @@ import com.atlassian.jira.jql.operand.JqlOperandResolver;
 import com.atlassian.jira.jql.resolver.UserResolver;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
 
