@@ -60,7 +60,7 @@ function initDependantUsersList(classname) {
 	}
 };
 
-function chooseValFromNewWindow(cfId, baseUrl, returnCfId) {
+function upChooseValFromNewWindow(cfId, baseUrl, returnCfId) {
 	var marginTop = 100;
 	var marginLeft = 500;
 
