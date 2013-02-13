@@ -66,6 +66,16 @@
                 </div>
             </td>
         </tr>
+		</tr>
+		    <td valign="top">
+                <b>$i18n.getText("jrole-group-usercf.cfautocomplete")<b>
+            </td>
+			<td valign="top">
+				<input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
+			</td>
+		</tr>
+    ##<input id="shares_data" name="shares_data" style="display:none;" value='$storedShares'/>
+    ##<img onclick="removeGroup(event);" id="share_trash_sh" height="16px" width="16px" style="display: none" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
         <tr>
             <td valign="top">
                 <b>$i18n.getText("jrole-group-usercf.cfhighlightedgroupsroles")</b>

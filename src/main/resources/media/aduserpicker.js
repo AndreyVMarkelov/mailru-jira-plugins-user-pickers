@@ -132,7 +132,7 @@ function configureSingleField(event, baseUrl, cfId) {
 //--> configure single selected field
 function configureSelectedSingleField(event, baseUrl, cfId) {
     event.preventDefault();
-
+ 
     var dialogBody = initSelectedSettingsDlg(baseUrl, cfId);
     if (!dialogBody)
     {
@@ -205,7 +205,7 @@ function addGroup(dataInputId, listDivId, groupsSelectId) {
 
     var newElem = jQuery("<div id='" + grId + "'><span>" + AJS.format(AJS.I18n.getText("jrole-group-usercf.share_group"), jQuery(group).text()) + "</span></div>");
     jQuery("#" + listDivId).append(newElem);
-    jQuery("#" + listDivId + " #share_trash_sh").clone().attr('id', '').show().appendTo(newElem);
+    jQuery("#" + listDivId + " #share_trash_sh").eq(0).clone().attr('id', '').show().appendTo(newElem);
 }
 
 function addProject(dataInputId, listDivId, projectsSelectId, rolesSelectId) {
@@ -239,7 +239,7 @@ function addProject(dataInputId, listDivId, projectsSelectId, rolesSelectId) {
 
     var newElem = jQuery("<div id='" + prId + "'><span>" + textVal + "</span></div>");
     jQuery("#" + listDivId).append(newElem);
-    jQuery("#" + listDivId + " #share_trash_sh").clone().attr('id', '').show().appendTo(newElem);
+    jQuery("#" + listDivId + " #share_trash_sh").eq(0).clone().attr('id', '').show().appendTo(newElem);
 }
 
 function removeGroup(event, dataInputId) {
@@ -284,4 +284,24 @@ function adHighlightedRolesSwitchClick() {
     jQuery("#ad_highlighted_roles").show();
 }
 //<--
+
+function selectAndReturnValue(value, returnId) {
+	var returnElem = window.opener.jQuery("#" + returnId);
+
+	if (returnElem.length > 0) {
+		if ('INPUT' == returnElem.prop('tagName').toString()) {
+			returnElem.val(value);
+			returnElem.trigger('input');
+		} else if ('SELECT' == returnElem.prop('tagName').toString()) {
+			var option = window.opener.jQuery("#" + returnId
+					+ " option:contains(" + value + ")");
+			if (option != null) {
+				option.attr('selected', 'selected');
+				returnElem.change();
+			}
+		}
+
+	}
+	window.close();
+};
 

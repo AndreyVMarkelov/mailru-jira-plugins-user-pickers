@@ -31,8 +31,9 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="25%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
-                        <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
+                        <th width="40%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+						<th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
+                        <th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -49,7 +50,7 @@
                                 #end
                             #end
                         </td>
-                        <td width="25%">
+                        <td width="40%">
                             <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
                             #foreach($group in $entry.value.getGroups())
                             #if($velocityCount > 1), #end$group
@@ -73,6 +74,13 @@
                             #end
                             </div>
                         </td>
+						<td width="10%">
+							#if($entry.value.isAutocomplete())
+								<p style="color:#009933"><b>$action.getText("jrole-group-usercf.statuson")</b></p>
+							#else
+								<p style="color:#CC0000"><b>$action.getText("jrole-group-usercf.statusoff")</b></p>
+							#end
+						</td>
                         <td width="10%"><a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
                       </tr>
                     #end
@@ -99,8 +107,9 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="25%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
-                        <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
+                        <th width="40%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
+						<th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
+						<th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -117,7 +126,7 @@
                                 #end
                             #end
                         </td>
-                        <td width="25%">
+                        <td width="40%">
                             <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
                             #foreach($group in $entry.value.getGroups())
                             #if($velocityCount > 1), #end$group
@@ -129,7 +138,7 @@
                             #end
                             </div>
                         </td>
-                        <td width="25%">
+						<td width="25%">
                             <div><i>$action.getText("jrole-group-usercf.cfgroups"):</i>
                             #foreach($group in $entry.value.getHighlightedGroups())
                             #if($velocityCount > 1), #end$group
@@ -140,7 +149,14 @@
                             #if($velocityCount > 1), #end$action.getProjectMap().get($role.getProject())#if($role.getRole() != "") - $action.getRoleMap().get($role.getRole())#else - $action.getText("jrole-group-usercf.cfallpr")#end
                             #end
                             </div>
-                          </td>
+                        </td>
+						<td width="10%">
+							#if($entry.value.isAutocomplete())
+								<p style="color:#009933"><b>$action.getText("jrole-group-usercf.statuson")</b></p>
+							#else
+								<p style="color:#CC0000"><b>$action.getText("jrole-group-usercf.statusoff")</b></p>
+							#end
+						</td>
                         <td width="10%"><a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
                       </tr>
                     #end
@@ -167,7 +183,8 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="50%">$action.getText("jrole-group-usercf.cfusers")</th>
+                        <th width="40%">$action.getText("jrole-group-usercf.cfusers")</th>
+						<th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -184,11 +201,18 @@
                                 #end
                             #end
                         </td>
-                        <td width="50%">
+                        <td width="40%">
                             #foreach($user in $entry.value.getUsers())
                             #if($velocityCount > 1), #end$userutils.getUser($user).getDisplayName()
                             #end
                         </td>
+						<td width="10%">
+							#if($entry.value.isAutocomplete())
+								<p style="color:#009933"><b>$action.getText("jrole-group-usercf.statuson")</b></p>
+							#else
+								<p style="color:#CC0000"><b>$action.getText("jrole-group-usercf.statusoff")</b></p>
+							#end
+						</td>
                         <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
                       </tr>
                     #end
@@ -215,7 +239,8 @@
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldid")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.customfieldname")</th>
                         <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
-                        <th width="50%">$action.getText("jrole-group-usercf.cfusers")</th>
+                        <th width="40%">$action.getText("jrole-group-usercf.cfusers")</th>
+						<th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
                         <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                       </tr>
                     </thead>
@@ -232,11 +257,18 @@
                                 #end
                             #end
                         </td>
-                        <td width="50%">
+                        <td width="40%">
                             #foreach($user in $entry.value.getUsers())
                             #if($velocityCount > 1), #end$userutils.getUser($user).getDisplayName()
                             #end
                         </td>
+						<td width="10%">
+							#if($entry.value.isAutocomplete())
+								<p style="color:#009933"><b>$action.getText("jrole-group-usercf.statuson")</b></p>
+							#else
+								<p style="color:#CC0000"><b>$action.getText("jrole-group-usercf.statusoff")</b></p>
+							#end
+						</td>
                         <td width="10%"><a href="#" onclick="configureSelectedSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a></td>
                       </tr>
                     #end

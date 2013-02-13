@@ -1,11 +1,33 @@
 ## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
-#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
-<input type="hidden" name="$customField.id" value="$selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
-<select id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" size="5" onchange="mail_ru_change_multu_user_picker('$customField.id');">
-#foreach($entry in $map.entrySet())
-    <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+#if ($isautocomplete)
+	#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+        <div class="cf-multiuserpicker-autocomplete" input-id="autocomp-user-input-$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
+            <div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
+                <input class="text long-field" type="text" id="autocomp-user-input-$customField.id" autocomplete="off">
+                    <div class="mail-user-picker-elements" cf-id="$customField.id" base-url="$baseUrl">
+                        <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+                            #foreach($entry in $map.entrySet())
+								#if($issueVal.contains(${entry.key}))
+									<option id="${customField.id}_${entry.key}" class="mail-multiuserpicker-element" value="${entry.key}" selected="selected">${entry.key}</option>
+								#end
+                            #end
+                        </select>
+                    </div>
+                    <div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
+        </div>
+            </div>
+     #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+            <dl class="${customField.id}-userpicker-representation links-list long-field field-group">
+            </dl>
+#else
+    #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+    <input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
+    <select id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" size="5" onchange="mail_ru_change_multu_user_picker('$customField.id');">
+            #foreach($entry in $map.entrySet())
+                <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+            #end
+            <option value=""> </option>
+    </select>
+    #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
 #end
-<option value=""> </option>
-</select>
-#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)

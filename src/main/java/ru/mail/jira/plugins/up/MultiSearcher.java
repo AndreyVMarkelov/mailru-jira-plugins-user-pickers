@@ -1,8 +1,9 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
@@ -14,35 +15,25 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
+
 /**
  * Multi searcher.
  * 
  * @author Andrey Markelov
  */
-public class MultiSearcher
-    extends UserPickerSearcher
+public class MultiSearcher extends UserPickerSearcher
 {
     /**
      * Constructor.
      */
-    public MultiSearcher(
-        UserResolver userResolver,
-        JqlOperandResolver operandResolver,
-        JiraAuthenticationContext context,
+    public MultiSearcher(UserResolver userResolver,
+        JqlOperandResolver operandResolver, JiraAuthenticationContext context,
         UserPickerSearchService userPickerSearchService,
-        CustomFieldInputHelper customFieldInputHelper,
-        UserManager userManager,
-        UserManager userMgr,
-        FieldVisibilityManager fieldVisibilityManager)
+        CustomFieldInputHelper customFieldInputHelper, UserManager userManager,
+        UserManager userMgr, FieldVisibilityManager fieldVisibilityManager)
     {
-        super(
-            userResolver,
-            operandResolver,
-            context,
-            new MultiUserConverterImpl(userMgr),
-            userPickerSearchService,
-            customFieldInputHelper,
-            userManager,
-            fieldVisibilityManager);
+        super(userResolver, operandResolver, context,
+            new MultiUserConverterImpl(userMgr), userPickerSearchService,
+            customFieldInputHelper, userManager, fieldVisibilityManager);
     }
 }
