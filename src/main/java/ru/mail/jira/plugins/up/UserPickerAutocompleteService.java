@@ -169,7 +169,7 @@ public class UserPickerAutocompleteService
                     user = userUtil.getUserObject(username);
                     if (user.getName().toUpperCase().indexOf(pattern) != -1
                         || (user.getDisplayName() != null && user
-                            .getDisplayName().indexOf(pattern) != -1))
+                            .getDisplayName().toUpperCase().indexOf(pattern) != -1))
                     {
                         data = new AutocompleteUniversalData();
                         data.setName(user.getName());
