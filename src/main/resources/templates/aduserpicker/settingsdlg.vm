@@ -50,7 +50,7 @@
                                         <option roles="$roleProjs.keySet().toString()" value="$entry.key">$entry.value</option>
                                     #end
                                 </select>
-                                <img class="grcf_pointer" src="/jira/images/icons/hierarchy_arrow.gif" alt="Arrow" width="10px" height="10px"/>
+                                <img class="grcf_pointer" src="$baseUrl/images/icons/hierarchy_arrow.gif" alt="Arrow" width="10px" height="10px"/>
                                 <select id="projectShare-role">
                                     <option value="">All</option>
                                     <optgroup label="Project Roles" id="projectShare-role-group">
@@ -119,7 +119,7 @@
                                 <option value="$entry.key">$entry.value</option>
                             #end
                         </select>
-                        <img src="/jira/images/icons/hierarchy_arrow.gif" alt="&gt;" width="10px" height="10px"/>
+                        <img src="$baseUrl/images/icons/hierarchy_arrow.gif" alt="&gt;" width="10px" height="10px"/>
                         <select id="ad_highlighted_roles_select">
                             <option value="">All</option>
                             <optgroup label="Project Roles">
