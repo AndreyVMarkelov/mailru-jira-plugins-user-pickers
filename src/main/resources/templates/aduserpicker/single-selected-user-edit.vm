@@ -22,11 +22,15 @@
         #end
         #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
 	#else
-		#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
-		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
-			<input style="background-color: #CCCCCC" class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
-		</span>
-		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+		#if($value && $value != "")
+    		#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+    		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
+    			<input style="background-color: #CCCCCC" class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
+    		</span>
+    		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+		#else
+			<input class="hidden" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
+		#end
 	#end
 #else
 	#if ($isautocomplete)

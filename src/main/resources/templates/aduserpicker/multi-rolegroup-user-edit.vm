@@ -54,7 +54,35 @@
 	#else
 		#set ($selectsize = $!allUsers.size() + 2)
 		#if($isautocomplete)
-			#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+			#if ($selectVal && $selectVal != "")
+    			#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+    				<select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+    					#foreach($entry in $allUsers)
+    						#if($issueVal.contains(${entry.name}))
+            					<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" selected="selected">${entry.name}</option>
+            				#end
+                        #end
+                    </select>
+        		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+        		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
+    				<dl class="${customField.id}-userpicker-representation links-list long-field field-group">
+            			#foreach($entry in $allUsers)
+    						#if($issueVal.contains(${entry.name}))
+                                <dd style="background-color: #CCCCCC" class="mail_simple_user" id="internal-${customField.id}_${entry.name}">
+                                    <div class="link-content">
+        								<img src="$usersAvatars.get($entry.name)" width="16" height="16" title="${entry.name} avatar" alt="${entry.name} avatar">
+                                        <span title="${entry.name}: $!{entry.displayName}">
+        									<a href="$baseUrl/secure/ViewProfile.jspa?name=${entry.name}" class="link-title">${entry.name}</a>
+                                            <span class="link-summary">$!{entry.displayName}</span>
+                                        </span>
+        							</div>
+        						</dd>
+    						#end
+            			#end
+                    </dl>
+        		</span>
+    			<br>
+			#else
 				<select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
 					#foreach($entry in $allUsers)
 						#if($issueVal.contains(${entry.name}))
@@ -62,25 +90,7 @@
         				#end
                     #end
                 </select>
-    		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
-    		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
-				<dl class="${customField.id}-userpicker-representation links-list long-field field-group">
-        			#foreach($entry in $allUsers)
-						#if($issueVal.contains(${entry.name}))
-                            <dd style="background-color: #CCCCCC" class="mail_simple_user" id="internal-${customField.id}_${entry.name}">
-                                <div class="link-content">
-    								<img src="$usersAvatars.get($entry.name)" width="16" height="16" title="${entry.name} avatar" alt="${entry.name} avatar">
-                                    <span title="${entry.name}: $!{entry.displayName}">
-    									<a href="$baseUrl/secure/ViewProfile.jspa?name=${entry.name}" class="link-title">${entry.name}</a>
-                                        <span class="link-summary">$!{entry.displayName}</span>
-                                    </span>
-    							</div>
-    						</dd>
-						#end
-        			#end
-                </dl>
-    		</span>
-			<br>
+			#end
 		#else
 			#if ($selectVal && $selectVal != "")
 				#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)

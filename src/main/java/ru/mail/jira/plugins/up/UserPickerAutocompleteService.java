@@ -33,7 +33,6 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
-import com.atlassian.jira.avatar.AvatarServiceImpl;
 import com.atlassian.jira.avatar.Avatar.Size;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
@@ -60,16 +59,12 @@ public class UserPickerAutocompleteService
 
     private final ProjectRoleManager projectRoleManager;
     
-    private final AvatarServiceImpl avatarService;
-    
     public UserPickerAutocompleteService(PluginData settings,
         GroupManager grMgr, ProjectRoleManager projectRoleManager)
     {
         this.settings = settings;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
-        this.avatarService = ComponentManager
-                .getComponentInstanceOfType(AvatarServiceImpl.class);
     }
 
     @POST
@@ -77,7 +72,7 @@ public class UserPickerAutocompleteService
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCfVals(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
+        JiraAuthenticationContext authCtx = ComponentAccessor
             .getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User currentUser = authCtx.getLoggedInUser();
@@ -182,7 +177,7 @@ public class UserPickerAutocompleteService
                         data = new AutocompleteUniversalData();
                         data.setName(user.getName());
                         data.setDescription(user.getDisplayName());
-                        URI uri = avatarService.getAvatarURL(user,
+                        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(user,
                             user.getName(), Size.SMALL);
                         if (uri != null)
                         {
@@ -279,7 +274,7 @@ public class UserPickerAutocompleteService
             {
                 entity.setName(userParam.getName());
                 entity.setDescription(userParam.getDisplayName());
-                URI uri = avatarService.getAvatarURL(userParam,
+                URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(userParam,
                     userParam.getName(), Size.SMALL);
                 if (uri != null)
                 {
