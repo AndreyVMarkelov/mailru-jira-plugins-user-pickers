@@ -267,10 +267,10 @@ function selectAndReturnValue(value, returnId) {
 	var returnElem = window.opener.jQuery("#" + returnId);
 
 	if (returnElem.length > 0) {
-		if ('INPUT' == returnElem.prop('tagName').toString()) {
+		if ('INPUT' == returnElem.attr('tagName').toString()) {
 			returnElem.val(value);
 			returnElem.trigger('input');
-		} else if ('SELECT' == returnElem.prop('tagName').toString()) {
+		} else if ('SELECT' == returnElem.attr('tagName').toString()) {
 			var option = window.opener.jQuery("#" + returnId
 					+ " option:contains(" + value + ")");
 			if (option != null) {

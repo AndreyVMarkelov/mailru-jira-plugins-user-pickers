@@ -1,50 +1,139 @@
 ## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
-#if ($isautocomplete)
-	#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
-        <div class="cf-multiuserpicker-autocomplete" input-id="autocomp-user-input-$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
-            <div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
-                <input class="text long-field" type="text" id="autocomp-user-input-$customField.id" autocomplete="off">
-                    <div class="mail-user-picker-elements" cf-id="$customField.id" base-url="$baseUrl">
-                        <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
-                            #foreach($entry in $allUsers)
-								#if($issueVal.contains(${entry.name}))
-									<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" selected="selected">${entry.name}</option>
-								#end
-                            #end
-                        </select>
-                    </div>
-                    <div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
-        </div>
-            </div>
-     #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
-            <dl class="${customField.id}-userpicker-representation links-list long-field field-group">
-            </dl>
-#else
-    #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
-    <input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
-    <select id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" size="5" onchange="mail_ru_change_multu_user_picker('$customField.id');">
-		#if($highlightedUsersSorted.isEmpty() || $otherUsersSorted.isEmpty())
-            #foreach($entry in $highlightedUsersSorted.entrySet())
-                <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
-            #end
-            #foreach($entry in $otherUsersSorted.entrySet())
-                <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
-            #end
-            <option value=""> </option>
+#if($canView)
+	#if($canEdit)
+        #if ($isautocomplete)
+        	#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+                <div class="cf-multiuserpicker-autocomplete" input-id="autocomp-user-input-$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
+                    <div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
+                        <input class="text long-field" type="text" id="autocomp-user-input-$customField.id" autocomplete="off">
+                            <div class="mail-user-picker-elements" cf-id="$customField.id" base-url="$baseUrl">
+                                <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+                                    #foreach($entry in $allUsers)
+        								#if($issueVal.contains(${entry.name}))
+        									<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" selected="selected">${entry.name}</option>
+        								#end
+                                    #end
+                                </select>
+                            </div>
+							<div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
+               		</div>
+                </div>
+             #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+                    <dl class="${customField.id}-userpicker-representation links-list long-field field-group">
+                    </dl>
+					<br>
         #else
-            <optgroup label="Suggestions">
-                #foreach($entry in $highlightedUsersSorted.entrySet())
-                    <option #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+            #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+            <input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
+            <select id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" size="5" onchange="mail_ru_change_multu_user_picker('$customField.id');">
+        		#if($highlightedUsersSorted.isEmpty() || $otherUsersSorted.isEmpty())
+                    #foreach($entry in $highlightedUsersSorted.entrySet())
+                        <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+                    #end
+                    #foreach($entry in $otherUsersSorted.entrySet())
+                        <option #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+                    #end
+                    <option value=""> </option>
+                #else
+                    <optgroup label="$i18n.getText("jrole-group-usercf.optgroup.suggestions")">
+                        #foreach($entry in $highlightedUsersSorted.entrySet())
+                            <option #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+                        #end
+                    </optgroup>
+                    <optgroup label="$i18n.getText("jrole-group-usercf.optgroup.all")">
+                        #foreach($entry in $otherUsersSorted.entrySet())
+                            <option #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+                        #end
+                        <option value=""> </option>
+                    </optgroup>
                 #end
-            </optgroup>
-            <optgroup label="All users">
-                #foreach($entry in $otherUsersSorted.entrySet())
-                    <option #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
-                #end
-                <option value=""> </option>
-            </optgroup>
+            </select>
+            #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
         #end
-    </select>
-    #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+	#else
+		#set ($selectsize = $!allUsers.size() + 2)
+		#if($isautocomplete)
+			#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+				<select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+					#foreach($entry in $allUsers)
+						#if($issueVal.contains(${entry.name}))
+        					<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" selected="selected">${entry.name}</option>
+        				#end
+                    #end
+                </select>
+    		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+    		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
+				<dl class="${customField.id}-userpicker-representation links-list long-field field-group">
+        			#foreach($entry in $allUsers)
+						#if($issueVal.contains(${entry.name}))
+                            <dd style="background-color: #CCCCCC" class="mail_simple_user" id="internal-${customField.id}_${entry.name}">
+                                <div class="link-content">
+    								<img src="$usersAvatars.get($entry.name)" width="16" height="16" title="${entry.name} avatar" alt="${entry.name} avatar">
+                                    <span title="${entry.name}: $!{entry.displayName}">
+    									<a href="$baseUrl/secure/ViewProfile.jspa?name=${entry.name}" class="link-title">${entry.name}</a>
+                                        <span class="link-summary">$!{entry.displayName}</span>
+                                    </span>
+    							</div>
+    						</dd>
+						#end
+        			#end
+                </dl>
+    		</span>
+			<br>
+		#else
+			#if ($selectVal && $selectVal != "")
+				#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+					<input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
+					<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
+					<select disabled style="background-color: #CCCCCC" id="mail_ru_select_$customField.id" size="$selectsize" name="mail_ru_select_$customField.id" multiple="multiple" readonly="readonly">
+			#else
+					<input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
+					<select disabled class="hidden" id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" onchange="mail_ru_change_multu_user_picker('$customField.id');" readonly="readonly">
+			#end	
+						#if($highlightedUsersSorted.isEmpty() || $otherUsersSorted.isEmpty())
+							#foreach($entry in $highlightedUsersSorted.entrySet())
+								<option style="color:white;" #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+							#end
+							#foreach($entry in $otherUsersSorted.entrySet())
+								<option style="color:white;" #if($issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+							#end
+							<option value=""> </option>
+						#else
+							<optgroup label="$i18n.getText("jrole-group-usercf.optgroup.suggestions")">
+								#foreach($entry in $highlightedUsersSorted.entrySet())
+									<option style="color:white;" #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+								#end
+							</optgroup>
+							<optgroup label="$i18n.getText("jrole-group-usercf.optgroup.all")">
+								#foreach($entry in $otherUsersSorted.entrySet())
+									<option style="color:white;" #if($!issueVal.contains(${entry.key}))selected="selected"#end value="$entry.key">$entry.value</option>
+								#end
+								<option value=""> </option>
+							</optgroup>
+						#end
+					</select>
+			#if ($selectVal && $selectVal != "")
+				</span>
+				#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
+			#end
+		#end
+	#end
+#else
+	#if ($isautocomplete)
+	    <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+    		#foreach($entry in $allUsers)
+    			#if($issueVal.contains(${entry.name}))
+    				<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" selected="selected">${entry.name}</option>
+            	#end
+            #end
+        </select>
+	#else
+		<input type="hidden" name="$customField.id" value="$!selectVal" id="$customField.id" class="textfield" readonly="readonly"/>
+		<select class="hidden" id="mail_ru_select_$customField.id" name="mail_ru_select_$customField.id" multiple="multiple" onchange="mail_ru_change_multu_user_picker('$customField.id');">
+			#foreach($entry in $allUsers)
+    			<option id="${customField.id}_${entry.name}" class="mail-multiuserpicker-element" value="${entry.name}" #if($issueVal.contains(${entry.name})) selected="selected" #end>${entry.name}</option>
+            #end                        
+        </select>
+	#end
 #end

@@ -131,7 +131,6 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 											var stylePart = '';
 											if (obj_typeimage) {
 												stylePart = "style=\"background-image: url("
-														+ baseUrl
 														+ obj_typeimage
 														+ "); text-overflow: ellipsis; overflow: hidden;\"";
 											}
@@ -163,13 +162,13 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 									if (displayRowsCount > 0) {
 										// TODO revise i18n in Jira 4.3
 										listHeader = "<h5>"
-												+ /*upCfHistorySearchHint*/ "History Search"
+												+ /* upCfHistorySearchHint */"History Search"
 												+ "<span class=\"aui-section-description\"> ("
-												+ /*upCFShowingElementsHint*/ "Showing "
+												+ /* upCFShowingElementsHint */"Showing "
 												+ displayRowsCount
-												+ /*upCFMatchingElementsHint*/  " matching elements.";
+												+ /* upCFMatchingElementsHint */" matching elements.";
 										if (i < data.length) {
-											listHeader += /*upCfMoreElemsHint*/ " There are more elements."
+											listHeader += /* upCfMoreElemsHint */" There are more elements."
 													+ ")</span></h5>";
 										} else {
 											listHeader += ")</span></h5>";
