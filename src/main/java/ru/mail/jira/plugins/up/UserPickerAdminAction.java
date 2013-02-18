@@ -158,12 +158,16 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
                 try
                 {
-                    Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(cf.getId()), highlightedGroups, highlightedProjRoles);
+                    Utils.fillDataLists(
+                        data.getHighlightedRoleGroupFieldData(cf.getId()),
+                        highlightedGroups, highlightedProjRoles);
                 }
                 catch (JSONException e)
                 {
-                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
-                    //--> impossible
+                    log.error(
+                        "AdRoleGroupUserCfService::fillLists - Incorrect field data",
+                        e);
+                    // --> impossible
                 }
                 fdata.getHighlightedGroups().addAll(highlightedGroups);
                 fdata.getHighlightedRoles().addAll(highlightedProjRoles);

@@ -228,11 +228,14 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(highlighted_data, highlightedGroups,
+                highlightedProjRoles);
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            log.error(
+                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
+                e);
             return Response.status(500).build();
         }
 
@@ -380,7 +383,9 @@ public class AdRoleGroupUserCfService
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            log.error(
+                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
+                e);
             return Response.status(500).build();
         }
 
@@ -393,7 +398,8 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(highlightedData, highlightedGroups,
+                highlightedProjRoles);
         }
         catch (JSONException e)
         {

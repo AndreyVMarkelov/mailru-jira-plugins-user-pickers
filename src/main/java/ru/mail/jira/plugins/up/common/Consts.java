@@ -16,4 +16,8 @@ public interface Consts
     String CF_KEY_SINGLE_USER_GR_ROLE_SELECT = "ru.mail.jira.plugins.userpickers:single_role_group_usercf";
 
     String CF_KEY_SINGLE_USER_SELECT = "ru.mail.jira.plugins.userpickers:single_selected_usercf";
+
+    String EMPTY_STRING = "";
+
+    String ELEMENTS_DIVIDER = ", ";
 }

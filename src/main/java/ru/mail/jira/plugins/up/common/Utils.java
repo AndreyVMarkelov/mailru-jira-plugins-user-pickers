@@ -5,6 +5,8 @@
 package ru.mail.jira.plugins.up.common;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,22 +15,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.user.UserProjectHistoryManager;
 import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
+import com.atlassian.plugin.PluginAccessor;
 
 
 /**
@@ -38,6 +47,153 @@ import com.atlassian.jira.util.json.JSONObject;
  */
 public class Utils
 {
+    private static final String CF_RIGHTS_CLASS_NAME = "ru.mail.jira.plugins.settings.IMailRuCFRights";
+    private static final String CF_RIGHTS_METHOD_CAN_EDIT_NAME = "canEdit";
+    private static final String CF_RIGHTS_METHOD_CAN_VIEW_NAME = "canView";
+
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+
+    private static Object cfRightsInstance;
+
+    private static Object getCfRightsClass()
+    {
+        if (cfRightsInstance == null)
+        {
+            PluginAccessor pluginAccessor = ComponentManager.getInstance()
+                .getPluginAccessor();
+            Class<?> mailRuCfRightsClass;
+            try
+            {
+                mailRuCfRightsClass = pluginAccessor.getClassLoader()
+                    .loadClass(CF_RIGHTS_CLASS_NAME);
+            }
+            catch (ClassNotFoundException e)
+            {
+                log.info("Utils::getCfRightsClass - ClassNotfoundException "
+                    + CF_RIGHTS_CLASS_NAME
+                    + " not found. It is possible that plugin is turned off");
+                return null;
+            }
+            cfRightsInstance = ComponentManager
+                .getOSGiComponentInstanceOfType(mailRuCfRightsClass);
+            if (cfRightsInstance == null)
+            {
+                log.info("Utils::getCfRightsClass - Class "
+                    + CF_RIGHTS_CLASS_NAME
+                    + ". Method getOSGiComponentInstanceOfType failed to load component");
+            }
+        }
+        return cfRightsInstance;
+    }
+
+    private static boolean canEditCF(User user, String cfId, Project project)
+    {
+        return getPermission(user, cfId, project,
+            CF_RIGHTS_METHOD_CAN_EDIT_NAME, "canEditCF");
+    }
+
+    private static boolean canViewCF(User user, String cfId, Project project)
+    {
+        return getPermission(user, cfId, project,
+            CF_RIGHTS_METHOD_CAN_VIEW_NAME, "canViewCF");
+    }
+
+    /**
+     * adds "canView" and "canEdit" keys to map
+     */
+    public static void addViewAndEditParameters(Map<String, Object> params,
+        String cfId)
+    {
+        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+            .getComponentInstanceOfType(UserProjectHistoryManager.class);
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
+            .getJiraAuthenticationContext();
+        User currentUser = authCtx.getLoggedInUser();
+        Project currentProject = userProjectHistoryManager.getCurrentProject(
+            Permissions.BROWSE, currentUser);
+
+        boolean canEdit = Utils.canEditCF(currentUser, cfId, currentProject);
+        params.put("canEdit", canEdit);
+        if (canEdit)
+        {
+            params.put("canView", true);
+        }
+        else
+        {
+            params.put("canView",
+                Utils.canViewCF(currentUser, cfId, currentProject));
+        }
+    }
+
+    private static boolean getPermission(User user, String cfId,
+        Project project, String externalMethodName, String internalMethodName)
+    {
+        Object cfRights = getCfRightsClass();
+
+        // occurs only if class not found or not load
+        // it's possible that parent plugin was disabled manually
+        // so we should return true
+        if (cfRights == null)
+        {
+            return true;
+        }
+
+        Method[] methods = cfRights.getClass().getMethods();
+        for (int i = 0; i < methods.length; i++)
+        {
+            if (externalMethodName.equals(methods[i].getName()))
+            {
+                Boolean result = Boolean.FALSE;
+                try
+                {
+                    result = (Boolean) methods[i].invoke(cfRights, user, cfId,
+                        project);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "IllegalArgumentException"));
+                }
+                catch (IllegalAccessException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "IllegalAccessException"));
+                }
+                catch (InvocationTargetException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "InvocationTargetException"));
+                    cfRightsInstance = null; // set instance to null it's
+                                             // possible that class was disabled
+                }
+
+                return result;
+            }
+        }
+        return false;
+    }
+
+    private static String getErrorMessage(User user, String cfId,
+        Project project, String internalMethodName, String externalMethodName,
+        String exception)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Utils::");
+        sb.append(internalMethodName);
+        sb.append(" - Class ");
+        sb.append(CF_RIGHTS_CLASS_NAME);
+        sb.append(". ");
+        sb.append(exception);
+        sb.append(" occured invoking ");
+        sb.append(externalMethodName);
+        sb.append(" method ");
+
+        return sb.toString();
+    }
+
     public static boolean isValidStr(String str)
     {
         return (str != null && str.length() > 0);
@@ -73,29 +229,64 @@ public class Utils
     /**
      * Convert string list to java list.
      */
-    public static Set<String> convertList(Object objStr)
+    public static Set<String> convertList(Object obj)
     {
         Set<String> set = new LinkedHashSet<String>();
-        if (objStr == null)
+        if (obj == null)
         {
             return set;
         }
 
-        String str = removeBrackets(objStr.toString());
-        StringTokenizer st = new StringTokenizer(str, ",");
-        while (st.hasMoreTokens())
+        if (obj instanceof Collection<?>)
         {
-            set.add(st.nextToken().trim());
+            @SuppressWarnings("unchecked")
+            Collection<User> users = (Collection<User>) obj;
+            for (User user : users)
+            {
+                set.add(user.getName());
+            }
+        }
+        else if (obj instanceof List<?>)
+        {
+            @SuppressWarnings("unchecked")
+            List<User> users = (List<User>) obj;
+            for (User user : users)
+            {
+                set.add(user.getName());
+            }
         }
 
         return set;
     }
 
-    public static void fillDataLists(
-        String shares_data,
-        List<String> groups,
-        List<ProjRole> projRoles)
-    throws JSONException
+    public static String convertSetToString(Set<String> set)
+    {
+        StringBuilder result = new StringBuilder(Consts.EMPTY_STRING);
+
+        if (set == null || set.size() <= 0)
+        {
+            return result.toString();
+        }
+
+        boolean isFirstPassed = false;
+        for (String str : set)
+        {
+            if (isFirstPassed)
+            {
+                result.append(Consts.ELEMENTS_DIVIDER);
+            }
+            else
+            {
+                isFirstPassed = true;
+            }
+            result.append(str);
+        }
+
+        return result.toString();
+    }
+
+    public static void fillDataLists(String shares_data, List<String> groups,
+        List<ProjRole> projRoles) throws JSONException
     {
         if (shares_data == null || shares_data.length() == 0)
         {
@@ -113,7 +304,8 @@ public class Utils
             }
             else
             {
-                ProjRole pr = new ProjRole(obj.getString("proj"), obj.getString("role"));
+                ProjRole pr = new ProjRole(obj.getString("proj"),
+                    obj.getString("role"));
                 projRoles.add(pr);
             }
         }
@@ -124,15 +316,21 @@ public class Utils
      */
     public static String getBaseUrl(HttpServletRequest req)
     {
-        return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
+        return (req.getScheme() + "://" + req.getServerName() + ":"
+            + req.getServerPort() + req.getContextPath());
     }
 
-    public static SortedSet<User> buildUsersList(GroupManager groupManager, ProjectRoleManager projectRoleManager,
-                                                 Project project, List<String> groups, List<ProjRole> projRoles) {
-        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>() {
+    public static SortedSet<User> buildUsersList(GroupManager groupManager,
+        ProjectRoleManager projectRoleManager, Project project,
+        List<String> groups, List<ProjRole> projRoles)
+    {
+        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>()
+        {
             @Override
-            public int compare(User o1, User o2) {
-                return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+            public int compare(User o1, User o2)
+            {
+                return o1.getDisplayName().compareToIgnoreCase(
+                    o2.getDisplayName());
             }
         });
 
@@ -147,21 +345,26 @@ public class Utils
 
         for (ProjRole projRole : projRoles)
         {
-            if (project != null && project.getId().toString().equals(projRole.getProject()))
+            if (project != null
+                && project.getId().toString().equals(projRole.getProject()))
             {
                 if (projRole.getRole().equals(""))
                 {
-                    Collection<ProjectRole> projectRoles = projectRoleManager.getProjectRoles();
+                    Collection<ProjectRole> projectRoles = projectRoleManager
+                        .getProjectRoles();
                     for (ProjectRole projectRole : projectRoles)
                     {
-                        ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                        ProjectRoleActors projectRoleActors = projectRoleManager
+                            .getProjectRoleActors(projectRole, project);
                         usersList.addAll(projectRoleActors.getUsers());
                     }
                 }
                 else
                 {
-                    ProjectRole projectRole = projectRoleManager.getProjectRole(Long.valueOf(projRole.getRole()));
-                    ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                    ProjectRole projectRole = projectRoleManager
+                        .getProjectRole(Long.valueOf(projRole.getRole()));
+                    ProjectRoleActors projectRoleActors = projectRoleManager
+                        .getProjectRoleActors(projectRole, project);
                     usersList.addAll(projectRoleActors.getUsers());
                 }
             }
@@ -169,32 +372,32 @@ public class Utils
 
         return usersList;
     }
-    
-    @SuppressWarnings({ "rawtypes", "deprecation" })
+
+    @SuppressWarnings({"rawtypes", "deprecation"})
     public static Map<String, String> getProjectRoleUsers(
-        ProjectRoleManager projectRoleManager,
-        String role,
-        Project currProj)
+        ProjectRoleManager projectRoleManager, String role, Project currProj)
     {
         Map<String, String> map = new HashMap<String, String>();
 
         if (role.equals(""))
         {
-            Collection<ProjectRole> projRoles = projectRoleManager.getProjectRoles();
+            Collection<ProjectRole> projRoles = projectRoleManager
+                .getProjectRoles();
             for (ProjectRole pRole : projRoles)
             {
-                ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
+                ProjectRoleActors projectRoleActors = projectRoleManager
+                    .getProjectRoleActors(pRole, currProj);
                 Set users = projectRoleActors.getUsers();
                 for (Object obj : users)
                 {
                     if (obj instanceof com.opensymphony.user.User)
                     {
-                        com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
+                        com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                     else if (obj instanceof User)
                     {
-                        User objUser = (User)obj;
+                        User objUser = (User) obj;
                         map.put(objUser.getName(), objUser.getDisplayName());
                     }
                 }
@@ -202,19 +405,21 @@ public class Utils
         }
         else
         {
-            ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
-            ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
+            ProjectRole projRole = projectRoleManager.getProjectRole(Long
+                .valueOf(role));
+            ProjectRoleActors projectRoleActors = projectRoleManager
+                .getProjectRoleActors(projRole, currProj);
             Set users = projectRoleActors.getUsers();
             for (Object obj : users)
             {
                 if (obj instanceof com.opensymphony.user.User)
                 {
-                    com.opensymphony.user.User objUser = (com.opensymphony.user.User)obj;
+                    com.opensymphony.user.User objUser = (com.opensymphony.user.User) obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
                 else if (obj instanceof User)
                 {
-                    User objUser = (User)obj;
+                    User objUser = (User) obj;
                     map.put(objUser.getName(), objUser.getDisplayName());
                 }
             }
@@ -223,33 +428,24 @@ public class Utils
         return map;
     }
 
-
-
-    /**
-     * Remove brackets from string.
-     */
-    public static String removeBrackets(String str)
+    public static String setToStr(Set<String> set)
     {
-        if (str == null || str.length() == 0)
+        StringBuilder sb = new StringBuilder();
+        if (set != null)
         {
-            return "";
+            for (String s : set)
+            {
+                sb.append(s).append(",");
+            }
         }
 
-        if (str.startsWith("["))
-        {
-            str = str.substring(1);
-        }
-
-        if (str.endsWith("]"))
-        {
-            str = str.substring(0, str.length() - 1);
-        }
-
-        return str;
+        return sb.toString();
     }
 
     /**
      * Private constructor.
      */
-    private Utils() {}
+    private Utils()
+    {
+    }
 }

@@ -5,6 +5,7 @@
 package ru.mail.jira.plugins.up;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.avatar.Avatar.Size;
+import com.atlassian.jira.avatar.AvatarServiceImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.project.Project;
@@ -57,12 +60,16 @@ public class UserPickerAutocompleteService
 
     private final ProjectRoleManager projectRoleManager;
 
+    private final AvatarServiceImpl avatarService;
+
     public UserPickerAutocompleteService(PluginData settings,
         GroupManager grMgr, ProjectRoleManager projectRoleManager)
     {
         this.settings = settings;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
+        this.avatarService = ComponentManager
+            .getComponentInstanceOfType(AvatarServiceImpl.class);
     }
 
     @POST
@@ -175,6 +182,12 @@ public class UserPickerAutocompleteService
                         data = new AutocompleteUniversalData();
                         data.setName(user.getName());
                         data.setDescription(user.getDisplayName());
+                        URI uri = avatarService.getAvatarURL(user,
+                            user.getName(), Size.SMALL);
+                        if (uri != null)
+                        {
+                            data.setTypeimage(uri.toString());
+                        }
 
                         values.add(data);
                         elemsAdded++;
@@ -266,6 +279,12 @@ public class UserPickerAutocompleteService
             {
                 entity.setName(userParam.getName());
                 entity.setDescription(userParam.getDisplayName());
+                URI uri = avatarService.getAvatarURL(userParam,
+                    userParam.getName(), Size.SMALL);
+                if (uri != null)
+                {
+                    entity.setTypeimage(uri.toString());
+                }
 
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("cfid", cfId);

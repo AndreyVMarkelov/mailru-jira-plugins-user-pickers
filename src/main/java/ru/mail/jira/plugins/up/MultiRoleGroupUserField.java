@@ -5,7 +5,9 @@
 package ru.mail.jira.plugins.up;
 
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +19,9 @@ import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.avatar.Avatar.Size;
+import com.atlassian.jira.avatar.AvatarServiceImpl;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
@@ -59,6 +64,10 @@ public class MultiRoleGroupUserField extends MultiUserCFType
 
     private final String baseUrl;
 
+    private Map<String, String> usersAvatars;
+
+    private final AvatarServiceImpl avatarService;
+
     /**
      * Constructor.
      */
@@ -79,7 +88,10 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
-        baseUrl = appProp.getBaseUrl();
+        this.baseUrl = appProp.getBaseUrl();
+
+        this.avatarService = ComponentManager
+            .getComponentInstanceOfType(AvatarServiceImpl.class);
     }
 
     @Override
@@ -110,19 +122,26 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(
+                data.getHighlightedRoleGroupFieldData(field.getId()),
+                highlightedGroups, highlightedProjRoles);
         }
         catch (JSONException e)
         {
-            log.error("MultiRoleGroupUserField::getVelocityParameters - Incorrect field data", e);
-            //--> impossible
+            log.error(
+                "MultiRoleGroupUserField::getVelocityParameters - Incorrect field data",
+                e);
+            // --> impossible
         }
 
         /* Build possible values list */
 
-        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr,
+            projectRoleManager, issue.getProjectObject(), groups, projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
-        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, issue.getProjectObject(), highlightedGroups, highlightedProjRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr,
+            projectRoleManager, issue.getProjectObject(), highlightedGroups,
+            highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
 
@@ -143,20 +162,29 @@ public class MultiRoleGroupUserField extends MultiUserCFType
 
         /* Prepare selected values */
         Object issueValObj = issue.getCustomFieldValue(field);
-        if (issueValObj == null)
-        {
-            params.put("selectVal", "");
-        }
-        else
-        {
-            params.put("selectVal",
-                Utils.removeBrackets(issueValObj.toString()));
-        }
         Set<String> issueVal = Utils.convertList(issueValObj);
+
+        params.put("selectVal", Utils.convertSetToString(issueVal));
         params.put("issueVal", issueVal);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 
+        usersAvatars = new HashMap<String, String>(allUsers.size());
+        for (User user : allUsers)
+        {
+            usersAvatars.put(user.getName(), getUserAvatarUrl(user));
+        }
+        params.put("usersAvatars", usersAvatars);
+
+        Utils.addViewAndEditParameters(params, field.getId());
+
         return params;
+    }
+
+    private String getUserAvatarUrl(User user)
+    {
+        URI uri = avatarService.getAvatarURL(user, user.getName(), Size.SMALL);
+
+        return uri.toString();
     }
 }
