@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import ru.mail.jira.plugins.up.common.Utils;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -88,6 +90,8 @@ public class SelectedUsersCf extends UserCFType
         params.put("map", sorted_map);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
+
+        Utils.addViewAndEditParameters(params, field.getId());
 
         return params;
     }

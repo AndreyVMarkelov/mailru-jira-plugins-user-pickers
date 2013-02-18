@@ -71,8 +71,8 @@ public class MailRuUserPickerValuePickerAction extends JiraWebActionSupport
     @Override
     protected String doExecute() throws Exception
     {
-        JiraAuthenticationContext authCtx = ComponentAccessor.
-            getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor
+            .getJiraAuthenticationContext();
         UserProjectHistoryManager userProjectHistoryManager = ComponentManager
             .getComponentInstanceOfType(UserProjectHistoryManager.class);
         Project currentProject = userProjectHistoryManager.getCurrentProject(

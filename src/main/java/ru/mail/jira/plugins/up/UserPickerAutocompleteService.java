@@ -5,6 +5,7 @@
 package ru.mail.jira.plugins.up;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.avatar.Avatar.Size;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.project.Project;
@@ -70,7 +72,8 @@ public class UserPickerAutocompleteService
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCfVals(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor
+            .getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User currentUser = authCtx.getLoggedInUser();
         UserProjectHistoryManager userProjectHistoryManager = ComponentManager
@@ -95,8 +98,8 @@ public class UserPickerAutocompleteService
         if (Utils.isValidStr(cfId) && issueKey != null
             && Utils.isValidLongParam(rowCount) && pattern != null)
         {
-            CustomField cf = ComponentAccessor
-                .getCustomFieldManager().getCustomFieldObject(cfId);
+            CustomField cf = ComponentAccessor.getCustomFieldManager()
+                .getCustomFieldObject(cfId);
             if (cf == null)
             {
                 log.error("UserPickerAutocompleteService::getCfVals - Custom field is null. Incorrect data in plugin settings");
@@ -156,8 +159,7 @@ public class UserPickerAutocompleteService
 
             if (storedData != null)
             {
-                UserUtil userUtil = ComponentAccessor
-                    .getUserUtil();
+                UserUtil userUtil = ComponentAccessor.getUserUtil();
                 values = new ArrayList<ISQLDataBean>();
                 User user;
 
@@ -174,6 +176,12 @@ public class UserPickerAutocompleteService
                         data = new AutocompleteUniversalData();
                         data.setName(user.getName());
                         data.setDescription(user.getDisplayName());
+                        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(user,
+                            user.getName(), Size.SMALL);
+                        if (uri != null)
+                        {
+                            data.setTypeimage(uri.toString());
+                        }
 
                         values.add(data);
                         elemsAdded++;
@@ -255,8 +263,8 @@ public class UserPickerAutocompleteService
         AutocompleteUniversalData entity = new AutocompleteUniversalData();
         if (Utils.isOfMultiUserType(cf.getCustomFieldType().getKey()))
         {
-            User userParam = ComponentAccessor.getUserUtil()
-                .getUserObject(cfValue);
+            User userParam = ComponentAccessor.getUserUtil().getUserObject(
+                cfValue);
             if (userParam == null)
             {
                 // nothing to do. Sending object with empty key
@@ -265,6 +273,12 @@ public class UserPickerAutocompleteService
             {
                 entity.setName(userParam.getName());
                 entity.setDescription(userParam.getDisplayName());
+                URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(userParam,
+                    userParam.getName(), Size.SMALL);
+                if (uri != null)
+                {
+                    entity.setTypeimage(uri.toString());
+                }
 
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("cfid", cfId);

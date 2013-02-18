@@ -5,7 +5,9 @@
 package ru.mail.jira.plugins.up;
 
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +21,9 @@ import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.avatar.Avatar.Size;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
@@ -65,6 +69,8 @@ public class MultiRoleGroupUserField extends MultiUserCFType
     private final ProjectRoleManager projectRoleManager;
 
     private final String baseUrl;
+
+    private Map<String, String> usersAvatars;
 
     /**
      * Constructor.
@@ -152,10 +158,6 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         {
             otherUsersSorted.put(user.getName(), user.getDisplayName());
         }
-        for (User user : possibleUsers)
-        {
-            otherUsersSorted.put(user.getName(), user.getDisplayName());
-        }
 
         params.put("allUsers", allUsers);
         params.put("highlightedUsersSorted", highlightedUsersSorted);
@@ -163,20 +165,30 @@ public class MultiRoleGroupUserField extends MultiUserCFType
 
         /* Prepare selected values */
         Object issueValObj = issue.getCustomFieldValue(field);
-        if (issueValObj == null)
-        {
-            params.put("selectVal", "");
-        }
-        else
-        {
-            params.put("selectVal",
-                Utils.removeBrackets(issueValObj.toString()));
-        }
         Set<String> issueVal = Utils.convertList(issueValObj);
+
+        params.put("selectVal", Utils.convertSetToString(issueVal));
         params.put("issueVal", issueVal);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 
+        usersAvatars = new HashMap<String, String>(allUsers.size());
+        for (User user : allUsers)
+        {
+            usersAvatars.put(user.getName(), getUserAvatarUrl(user));
+        }
+        params.put("usersAvatars", usersAvatars);
+
+        Utils.addViewAndEditParameters(params, field.getId());
+
         return params;
+    }
+
+    private String getUserAvatarUrl(User user)
+    {
+        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(
+            user, user.getName(), Size.SMALL);
+
+        return uri.toString();
     }
 }

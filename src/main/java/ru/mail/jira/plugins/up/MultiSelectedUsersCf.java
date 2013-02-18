@@ -5,6 +5,7 @@
 package ru.mail.jira.plugins.up;
 
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +14,9 @@ import java.util.TreeMap;
 import ru.mail.jira.plugins.up.common.Utils;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.avatar.Avatar.Size;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverterImpl;
@@ -46,6 +49,8 @@ public class MultiSelectedUsersCf extends MultiUserCFType
     private final UserManager userMgr;
 
     private final String baseUrl;
+
+    private Map<String, String> usersAvatars;
 
     /**
      * Constrcutor.
@@ -89,14 +94,7 @@ public class MultiSelectedUsersCf extends MultiUserCFType
 
         Object issueValObj = issue.getCustomFieldValue(field);
         Set<String> issueVal = Utils.convertList(issueValObj);
-        if (issueValObj == null)
-        {
-            params.put("selectVal", "");
-        }
-        else
-        {
-            params.put("selectVal", Utils.setToStr(issueVal));
-        }
+        params.put("selectVal", Utils.convertSetToString(issueVal));
 
         TreeMap<String, String> sorted_map = new TreeMap<String, String>(
             new ValueComparator(map));
@@ -106,6 +104,27 @@ public class MultiSelectedUsersCf extends MultiUserCFType
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 
+        usersAvatars = new HashMap<String, String>(users.size());
+        for (String userName : users)
+        {
+            User user = ComponentAccessor.getUserUtil().getUserObject(userName);
+            if (user != null)
+            {
+                usersAvatars.put(user.getName(), getUserAvatarUrl(user));
+            }
+        }
+        params.put("usersAvatars", usersAvatars);
+
+        Utils.addViewAndEditParameters(params, field.getId());
+
         return params;
+    }
+
+    private String getUserAvatarUrl(User user)
+    {
+        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(
+            user, user.getName(), Size.SMALL);
+
+        return uri.toString();
     }
 }

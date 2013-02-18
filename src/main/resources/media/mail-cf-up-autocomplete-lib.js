@@ -131,7 +131,6 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 											var stylePart = '';
 											if (obj_typeimage) {
 												stylePart = "style=\"background-image: url("
-														+ baseUrl
 														+ obj_typeimage
 														+ "); text-overflow: ellipsis; overflow: hidden;\"";
 											}

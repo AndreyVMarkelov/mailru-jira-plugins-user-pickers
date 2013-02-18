@@ -5,6 +5,8 @@
 package ru.mail.jira.plugins.up.common;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,22 +15,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.user.UserProjectHistoryManager;
 import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
+import com.atlassian.plugin.PluginAccessor;
 
 
 /**
@@ -38,6 +48,153 @@ import com.atlassian.jira.util.json.JSONObject;
  */
 public class Utils
 {
+    private static final String CF_RIGHTS_CLASS_NAME = "ru.mail.jira.plugins.settings.IMailRuCFRights";
+    private static final String CF_RIGHTS_METHOD_CAN_EDIT_NAME = "canEdit";
+    private static final String CF_RIGHTS_METHOD_CAN_VIEW_NAME = "canView";
+
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+
+    private static Object cfRightsInstance;
+
+    private static Object getCfRightsClass()
+    {
+        if (cfRightsInstance == null)
+        {
+            PluginAccessor pluginAccessor = ComponentAccessor
+                .getPluginAccessor();
+            Class<?> mailRuCfRightsClass;
+            try
+            {
+                mailRuCfRightsClass = pluginAccessor.getClassLoader()
+                    .loadClass(CF_RIGHTS_CLASS_NAME);
+            }
+            catch (ClassNotFoundException e)
+            {
+                log.info("Utils::getCfRightsClass - ClassNotfoundException "
+                    + CF_RIGHTS_CLASS_NAME
+                    + " not found. It is possible that plugin is turned off");
+                return null;
+            }
+            cfRightsInstance = ComponentManager
+                .getOSGiComponentInstanceOfType(mailRuCfRightsClass);
+            if (cfRightsInstance == null)
+            {
+                log.info("Utils::getCfRightsClass - Class "
+                    + CF_RIGHTS_CLASS_NAME
+                    + ". Method getOSGiComponentInstanceOfType failed to load component");
+            }
+        }
+        return cfRightsInstance;
+    }
+
+    private static boolean canEditCF(User user, String cfId, Project project)
+    {
+        return getPermission(user, cfId, project,
+            CF_RIGHTS_METHOD_CAN_EDIT_NAME, "canEditCF");
+    }
+
+    private static boolean canViewCF(User user, String cfId, Project project)
+    {
+        return getPermission(user, cfId, project,
+            CF_RIGHTS_METHOD_CAN_VIEW_NAME, "canViewCF");
+    }
+
+    /**
+     * adds "canView" and "canEdit" keys to map
+     */
+    public static void addViewAndEditParameters(Map<String, Object> params,
+        String cfId)
+    {
+        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+            .getComponentInstanceOfType(UserProjectHistoryManager.class);
+        JiraAuthenticationContext authCtx = ComponentAccessor
+            .getJiraAuthenticationContext();
+        User currentUser = authCtx.getLoggedInUser();
+        Project currentProject = userProjectHistoryManager.getCurrentProject(
+            Permissions.BROWSE, currentUser);
+
+        boolean canEdit = Utils.canEditCF(currentUser, cfId, currentProject);
+        params.put("canEdit", canEdit);
+        if (canEdit)
+        {
+            params.put("canView", true);
+        }
+        else
+        {
+            params.put("canView",
+                Utils.canViewCF(currentUser, cfId, currentProject));
+        }
+    }
+
+    private static boolean getPermission(User user, String cfId,
+        Project project, String externalMethodName, String internalMethodName)
+    {
+        Object cfRights = getCfRightsClass();
+
+        // occurs only if class not found or not load
+        // it's possible that parent plugin was disabled manually
+        // so we should return true
+        if (cfRights == null)
+        {
+            return true;
+        }
+
+        Method[] methods = cfRights.getClass().getMethods();
+        for (int i = 0; i < methods.length; i++)
+        {
+            if (externalMethodName.equals(methods[i].getName()))
+            {
+                Boolean result = Boolean.FALSE;
+                try
+                {
+                    result = (Boolean) methods[i].invoke(cfRights, user, cfId,
+                        project);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "IllegalArgumentException"));
+                }
+                catch (IllegalAccessException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "IllegalAccessException"));
+                }
+                catch (InvocationTargetException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project,
+                        internalMethodName, externalMethodName,
+                        "InvocationTargetException"));
+                    cfRightsInstance = null; // set instance to null it's
+                                             // possible that class was disabled
+                }
+
+                return result;
+            }
+        }
+        return false;
+    }
+
+    private static String getErrorMessage(User user, String cfId,
+        Project project, String internalMethodName, String externalMethodName,
+        String exception)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Utils::");
+        sb.append(internalMethodName);
+        sb.append(" - Class ");
+        sb.append(CF_RIGHTS_CLASS_NAME);
+        sb.append(". ");
+        sb.append(exception);
+        sb.append(" occured invoking ");
+        sb.append(externalMethodName);
+        sb.append(" method ");
+
+        return sb.toString();
+    }
+
     public static boolean isValidStr(String str)
     {
         return (str != null && str.length() > 0);
@@ -90,17 +247,43 @@ public class Utils
                 set.add(user.getName());
             }
         }
-        else
+        else if (obj instanceof List<?>)
         {
-            String str = removeBrackets(obj.toString());
-            StringTokenizer st = new StringTokenizer(str, ",");
-            while (st.hasMoreTokens())
+            @SuppressWarnings("unchecked")
+            List<User> users = (List<User>) obj;
+            for (User user : users)
             {
-                set.add(st.nextToken().trim());
+                set.add(user.getName());
             }
         }
 
         return set;
+    }
+
+    public static String convertSetToString(Set<String> set)
+    {
+        StringBuilder result = new StringBuilder(Consts.EMPTY_STRING);
+
+        if (set == null || set.size() <= 0)
+        {
+            return result.toString();
+        }
+
+        boolean isFirstPassed = false;
+        for (String str : set)
+        {
+            if (isFirstPassed)
+            {
+                result.append(Consts.ELEMENTS_DIVIDER);
+            }
+            else
+            {
+                isFirstPassed = true;
+            }
+            result.append(str);
+        }
+
+        return result.toString();
     }
 
     public static void fillDataLists(String shares_data, List<String> groups,
@@ -233,29 +416,6 @@ public class Utils
         }
 
         return map;
-    }
-
-    /**
-     * Remove brackets from string.
-     */
-    public static String removeBrackets(String str)
-    {
-        if (str == null || str.length() == 0)
-        {
-            return "";
-        }
-
-        if (str.startsWith("["))
-        {
-            str = str.substring(1);
-        }
-
-        if (str.endsWith("]"))
-        {
-            str = str.substring(0, str.length() - 1);
-        }
-
-        return str;
     }
 
     public static String setToStr(Set<String> set)
