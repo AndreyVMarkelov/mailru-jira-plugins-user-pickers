@@ -33,8 +33,10 @@
             <option value=""> </option>
     </select>
     #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
-#end	#else
+		#end
+	#else
 		#if($isautocomplete)
+			#if ($selectVal && $selectVal != "")
 			#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
 				<select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
                     #foreach($entry in $map.entrySet())
@@ -62,6 +64,15 @@
                 </dl>
     		</span>
 			<br>
+		#else
+			    <select class="hidden" name="$customField.id" id="$customField.id" multiple="multiple">
+                    #foreach($entry in $map.entrySet())
+						#if($issueVal.contains(${entry.key}))
+							<option id="${customField.id}_${entry.key}" class="mail-multiuserpicker-element" value="${entry.key}" selected="selected">${entry.key}</option>
+						#end
+                    #end
+                </select>
+			#end
 		#else
 			#if ($selectVal && $selectVal != "")
 				#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
