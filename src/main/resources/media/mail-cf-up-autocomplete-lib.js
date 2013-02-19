@@ -10,9 +10,8 @@ var UP_AUTOCOMPLETE_STARTS_AFTER = 2;
 var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 
 (function($) {
-	$.fn.upcfautocomplete = function(cfId, issueId, baseUrl, restUrlPart,
-			minlength) {
-		callback = typeof minlength == "function" ? minlength
+    $.fn.upcfautocomplete = function(cfId, issueId, baseUrl, restUrlPart, minlength) {
+        callback = typeof minlength == "function" ? minlength
 				: (typeof callback == "function" ? callback : function() {
 				});
 		minlength = !isNaN(Number(minlength)) ? minlength

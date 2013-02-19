@@ -1,9 +1,8 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,16 +20,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.log4j.Logger;
 import org.apache.velocity.exception.VelocityException;
 import org.ofbiz.core.entity.GenericValue;
-
 import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.HtmlEntity;
 import ru.mail.jira.plugins.up.structures.ProjRole;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -45,7 +40,6 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.security.xsrf.XsrfTokenGenerator;
 import com.atlassian.jira.util.I18nHelper;
 import com.atlassian.jira.util.json.JSONException;
-
 
 /**
  * Plug-In service.
@@ -83,8 +77,11 @@ public class AdRoleGroupUserCfService
     /**
      * Constructor.
      */
-    public AdRoleGroupUserCfService(PluginData data, GroupManager groupMgr,
-        ProjectManager prMgr, ProjectRoleManager projectRoleManager)
+    public AdRoleGroupUserCfService(
+        PluginData data,
+        GroupManager groupMgr,
+        ProjectManager prMgr,
+        ProjectRoleManager projectRoleManager)
     {
         this.data = data;
         this.groupMgr = groupMgr;
@@ -98,27 +95,21 @@ public class AdRoleGroupUserCfService
     public Response configureSelectedSettingsDialog(
         @Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("AdRoleGroupUserCfService::configureSelectedSettingsDialog - User is not logged");
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("jrole-group-usercf.error.notlogged")).status(401).build();
         }
 
-        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager
-            .getComponentInstanceOfType(XsrfTokenGenerator.class);
+        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
         String token = xsrfTokenGenerator.getToken(req);
         if (!xsrfTokenGenerator.generatedByAuthenticatedUser(token))
         {
             log.error("AdRoleGroupUserCfService::configureSelectedSettingsDialog - There is no token");
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.internalerror"))
-                .status(500).build();
+            return Response.ok(i18n.getText("jrole-group-usercf.error.internalerror")).status(500).build();
         }
         else
         {
@@ -126,9 +117,7 @@ public class AdRoleGroupUserCfService
             if (!atl_token.equals(token))
             {
                 log.error("AdRoleGroupUserCfService::configureSelectedSettingsDialog - Token is invalid");
-                return Response
-                    .ok(i18n.getText("jrole-group-usercf.error.internalerror"))
-                    .status(500).build();
+                return Response.ok(i18n.getText("jrole-group-usercf.error.internalerror")).status(500).build();
             }
         }
 
@@ -154,8 +143,7 @@ public class AdRoleGroupUserCfService
         }
 
         data.storeUsers(cfIdStr, setUsers);
-        data.setAutocompleteView(cfIdStr,
-            Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
+        data.setAutocompleteView(cfIdStr, Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
 
         return Response.ok().build();
     }
@@ -165,20 +153,16 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response configureSingleField(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("AdRoleGroupUserCfService::configureSingleField - User is not logged");
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("jrole-group-usercf.error.notlogged")).status(401).build();
         }
 
-        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager
-            .getComponentInstanceOfType(XsrfTokenGenerator.class);
+        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
         String token = xsrfTokenGenerator.getToken(req);
         if (!xsrfTokenGenerator.generatedByAuthenticatedUser(token))
         {
@@ -193,9 +177,7 @@ public class AdRoleGroupUserCfService
             if (!atl_token.equals(token))
             {
                 log.error("AdRoleGroupUserCfService::configureSingleField - Token is invalid");
-                return Response
-                    .ok(i18n.getText("jrole-group-usercf.error.internalerror"))
-                    .status(500).build();
+                return Response.ok(i18n.getText("jrole-group-usercf.error.internalerror")).status(500).build();
             }
         }
 
@@ -217,9 +199,7 @@ public class AdRoleGroupUserCfService
         }
         catch (JSONException e)
         {
-            log.error(
-                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
-                e);
+            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
             return Response.status(500).build();
         }
 
@@ -237,8 +217,7 @@ public class AdRoleGroupUserCfService
         }
 
         data.storeRoleGroupFieldData(cfIdStr, shares_data);
-        data.setAutocompleteView(cfIdStr,
-            Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
+        data.setAutocompleteView(cfIdStr, Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
         data.storeHighlightedRoleGroupFieldData(cfIdStr, highlighted_data);
 
         return Response.ok().build();
@@ -249,20 +228,16 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response initSelectedSettingsDialog(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("AdRoleGroupUserCfService::initSelectedSettingsDialog - User is not logged");
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("jrole-group-usercf.error.notlogged")).status(401).build();
         }
 
-        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager
-            .getComponentInstanceOfType(XsrfTokenGenerator.class);
+        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
         String atl_token = xsrfTokenGenerator.generateToken(req);
 
         String cfIdStr = req.getParameter("cfId");
@@ -273,8 +248,7 @@ public class AdRoleGroupUserCfService
         }
 
         Map<String, String> userMap = new LinkedHashMap<String, String>();
-        Collection<User> users = ComponentManager.getInstance().getUserUtil()
-            .getUsers();
+        Collection<User> users = ComponentManager.getInstance().getUserUtil().getUsers();
         for (User userObj : users)
         {
             userMap.put(userObj.getName(), userObj.getDisplayName());
@@ -291,18 +265,13 @@ public class AdRoleGroupUserCfService
 
         try
         {
-            String body = ComponentAccessor.getVelocityManager().getBody(
-                "templates/aduserpicker/", "selectedsettingsdlg.vm", params);
+            String body = ComponentAccessor.getVelocityManager().getBody("templates/aduserpicker/", "selectedsettingsdlg.vm", params);
             return Response.ok(new HtmlEntity(body)).build();
         }
         catch (VelocityException vex)
         {
-            log.error(
-                "AdRoleGroupUserCfService::initSelectedSettingsDialog - Velocity parsing error",
-                vex);
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.internalerror"))
-                .status(500).build();
+            log.error("AdRoleGroupUserCfService::initSelectedSettingsDialog - Velocity parsing error", vex);
+            return Response.ok(i18n.getText("jrole-group-usercf.error.internalerror")).status(500).build();
         }
     }
 
@@ -311,20 +280,16 @@ public class AdRoleGroupUserCfService
     @Produces({MediaType.APPLICATION_JSON})
     public Response initSettingsDialog(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("AdRoleGroupUserCfService::initSettingsDialog - User is not logged");
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("jrole-group-usercf.error.notlogged")).status(401).build();
         }
 
-        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager
-            .getComponentInstanceOfType(XsrfTokenGenerator.class);
+        XsrfTokenGenerator xsrfTokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
         String atl_token = xsrfTokenGenerator.generateToken(req);
 
         String cfIdStr = req.getParameter("cfId");
@@ -335,8 +300,7 @@ public class AdRoleGroupUserCfService
         }
 
         Map<String, String> projs = new TreeMap<String, String>();
-        CustomField cf = ComponentManager.getInstance().getCustomFieldManager()
-            .getCustomFieldObject(cfIdStr);
+        CustomField cf = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(cfIdStr);
         if (!cf.isAllProjects())
         {
             List<GenericValue> aProjs = cf.getAssociatedProjects();
@@ -397,9 +361,7 @@ public class AdRoleGroupUserCfService
         }
         catch (JSONException e)
         {
-            log.error(
-                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
-                e);
+            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
             return Response.status(500).build();
         }
 
@@ -421,18 +383,13 @@ public class AdRoleGroupUserCfService
 
         try
         {
-            String body = ComponentAccessor.getVelocityManager().getBody(
-                "templates/aduserpicker/", "settingsdlg.vm", params);
+            String body = ComponentAccessor.getVelocityManager().getBody("templates/aduserpicker/", "settingsdlg.vm", params);
             return Response.ok(new HtmlEntity(body)).build();
         }
         catch (VelocityException vex)
         {
-            log.error(
-                "AdRoleGroupUserCfService::initSettingsDialog - Velocity parsing error",
-                vex);
-            return Response
-                .ok(i18n.getText("jrole-group-usercf.error.internalerror"))
-                .status(500).build();
+            log.error("AdRoleGroupUserCfService::initSettingsDialog - Velocity parsing error", vex);
+            return Response.ok(i18n.getText("jrole-group-usercf.error.internalerror")).status(500).build();
         }
     }
 }

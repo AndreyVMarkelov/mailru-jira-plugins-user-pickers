@@ -1,9 +1,8 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up.common;
-
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,14 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import ru.mail.jira.plugins.up.structures.ProjRole;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.project.Project;
@@ -39,7 +34,6 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.plugin.PluginAccessor;
 
-
 /**
  * This class contains utility methods.
  * 
@@ -48,69 +42,26 @@ import com.atlassian.plugin.PluginAccessor;
 public class Utils
 {
     private static final String CF_RIGHTS_CLASS_NAME = "ru.mail.jira.plugins.settings.IMailRuCFRights";
-    private static final String CF_RIGHTS_METHOD_CAN_EDIT_NAME = "canEdit";
-    private static final String CF_RIGHTS_METHOD_CAN_VIEW_NAME = "canView";
 
-    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+    private static final String CF_RIGHTS_METHOD_CAN_EDIT_NAME = "canEdit";
+
+    private static final String CF_RIGHTS_METHOD_CAN_VIEW_NAME = "canView";
 
     private static Object cfRightsInstance;
 
-    private static Object getCfRightsClass()
-    {
-        if (cfRightsInstance == null)
-        {
-            PluginAccessor pluginAccessor = ComponentManager.getInstance()
-                .getPluginAccessor();
-            Class<?> mailRuCfRightsClass;
-            try
-            {
-                mailRuCfRightsClass = pluginAccessor.getClassLoader()
-                    .loadClass(CF_RIGHTS_CLASS_NAME);
-            }
-            catch (ClassNotFoundException e)
-            {
-                log.info("Utils::getCfRightsClass - ClassNotfoundException "
-                    + CF_RIGHTS_CLASS_NAME
-                    + " not found. It is possible that plugin is turned off");
-                return null;
-            }
-            cfRightsInstance = ComponentManager
-                .getOSGiComponentInstanceOfType(mailRuCfRightsClass);
-            if (cfRightsInstance == null)
-            {
-                log.info("Utils::getCfRightsClass - Class "
-                    + CF_RIGHTS_CLASS_NAME
-                    + ". Method getOSGiComponentInstanceOfType failed to load component");
-            }
-        }
-        return cfRightsInstance;
-    }
-
-    private static boolean canEditCF(User user, String cfId, Project project)
-    {
-        return getPermission(user, cfId, project,
-            CF_RIGHTS_METHOD_CAN_EDIT_NAME, "canEditCF");
-    }
-
-    private static boolean canViewCF(User user, String cfId, Project project)
-    {
-        return getPermission(user, cfId, project,
-            CF_RIGHTS_METHOD_CAN_VIEW_NAME, "canViewCF");
-    }
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
 
     /**
      * adds "canView" and "canEdit" keys to map
      */
-    public static void addViewAndEditParameters(Map<String, Object> params,
+    public static void addViewAndEditParameters(
+        Map<String, Object> params,
         String cfId)
     {
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        UserProjectHistoryManager userProjectHistoryManager = ComponentManager.getComponentInstanceOfType(UserProjectHistoryManager.class);
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         User currentUser = authCtx.getLoggedInUser();
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, currentUser);
+        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, currentUser);
 
         boolean canEdit = Utils.canEditCF(currentUser, cfId, currentProject);
         params.put("canEdit", canEdit);
@@ -120,110 +71,77 @@ public class Utils
         }
         else
         {
-            params.put("canView",
-                Utils.canViewCF(currentUser, cfId, currentProject));
+            params.put("canView", Utils.canViewCF(currentUser, cfId, currentProject));
         }
     }
 
-    private static boolean getPermission(User user, String cfId,
-        Project project, String externalMethodName, String internalMethodName)
+    /**
+     * Build user list.
+     */
+    public static SortedSet<User> buildUsersList(
+        GroupManager groupManager,
+        ProjectRoleManager projectRoleManager,
+        Project project,
+        List<String> groups,
+        List<ProjRole> projRoles)
     {
-        Object cfRights = getCfRightsClass();
-
-        // occurs only if class not found or not load
-        // it's possible that parent plugin was disabled manually
-        // so we should return true
-        if (cfRights == null)
+        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>()
         {
-            return true;
-        }
-
-        Method[] methods = cfRights.getClass().getMethods();
-        for (int i = 0; i < methods.length; i++)
-        {
-            if (externalMethodName.equals(methods[i].getName()))
+            @Override
+            public int compare(User o1, User o2)
             {
-                Boolean result = Boolean.FALSE;
-                try
-                {
-                    result = (Boolean) methods[i].invoke(cfRights, user, cfId,
-                        project);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "IllegalArgumentException"));
-                }
-                catch (IllegalAccessException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "IllegalAccessException"));
-                }
-                catch (InvocationTargetException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "InvocationTargetException"));
-                    cfRightsInstance = null; // set instance to null it's
-                                             // possible that class was disabled
-                }
+                return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+            }
+        });
 
-                return result;
+        for (String group : groups)
+        {
+            Collection<User> users = groupManager.getUsersInGroup(group);
+            if (users != null)
+            {
+                usersList.addAll(users);
             }
         }
-        return false;
-    }
 
-    private static String getErrorMessage(User user, String cfId,
-        Project project, String internalMethodName, String externalMethodName,
-        String exception)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Utils::");
-        sb.append(internalMethodName);
-        sb.append(" - Class ");
-        sb.append(CF_RIGHTS_CLASS_NAME);
-        sb.append(". ");
-        sb.append(exception);
-        sb.append(" occured invoking ");
-        sb.append(externalMethodName);
-        sb.append(" method ");
-
-        return sb.toString();
-    }
-
-    public static boolean isValidStr(String str)
-    {
-        return (str != null && str.length() > 0);
-    }
-
-    public static boolean isValidLongParam(String str)
-    {
-        boolean isValidLong = true;
-
-        try
+        for (ProjRole projRole : projRoles)
         {
-            Long.valueOf(str);
+            if (project != null && project.getId().toString().equals(projRole.getProject()))
+            {
+                if (projRole.getRole().equals(""))
+                {
+                    Collection<ProjectRole> projectRoles = projectRoleManager.getProjectRoles();
+                    for (ProjectRole projectRole : projectRoles)
+                    {
+                        ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                        usersList.addAll(projectRoleActors.getUsers());
+                    }
+                }
+                else
+                {
+                    ProjectRole projectRole = projectRoleManager.getProjectRole(Long.valueOf(projRole.getRole()));
+                    ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projectRole, project);
+                    usersList.addAll(projectRoleActors.getUsers());
+                }
+            }
         }
-        catch (NumberFormatException e)
-        {
-            isValidLong = false;
-        }
-        return isValidLong;
+
+        return usersList;
     }
 
-    public static boolean isOfMultiUserType(String cfType)
+    private static boolean canEditCF(
+        User user,
+        String cfId,
+        Project project)
     {
-        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
-            || Consts.CF_KEY_MULTI_USER_SELECT.equals(cfType);
+        return getPermission(user, cfId, project, CF_RIGHTS_METHOD_CAN_EDIT_NAME, "canEditCF");
     }
 
-    public static boolean isOfGroupRoleUserPickerType(String cfType)
+    private static boolean canViewCF(
+        User user,
+        String cfId,
+        Project project)
     {
-        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
-            || Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT.equals(cfType);
+        return getPermission(user, cfId, project, CF_RIGHTS_METHOD_CAN_VIEW_NAME, "canViewCF");
     }
 
     /**
@@ -258,16 +176,15 @@ public class Utils
 
         return set;
     }
-    
+
     public static String convertSetToString(Set<String> set)
     {
         StringBuilder result = new StringBuilder(Consts.EMPTY_STRING);
-        
         if (set == null || set.size() <= 0)
         {
             return result.toString();
         }
-        
+
         boolean isFirstPassed = false;
         for (String str : set)
         {
@@ -281,12 +198,15 @@ public class Utils
             }
             result.append(str);
         }
-        
+
         return result.toString();
     }
 
-    public static void fillDataLists(String shares_data, List<String> groups,
-        List<ProjRole> projRoles) throws JSONException
+    public static void fillDataLists(
+        String shares_data,
+        List<String> groups,
+        List<ProjRole> projRoles)
+    throws JSONException
     {
         if (shares_data == null || shares_data.length() == 0)
         {
@@ -304,8 +224,7 @@ public class Utils
             }
             else
             {
-                ProjRole pr = new ProjRole(obj.getString("proj"),
-                    obj.getString("role"));
+                ProjRole pr = new ProjRole(obj.getString("proj"), obj.getString("role"));
                 projRoles.add(pr);
             }
         }
@@ -316,76 +235,117 @@ public class Utils
      */
     public static String getBaseUrl(HttpServletRequest req)
     {
-        return (req.getScheme() + "://" + req.getServerName() + ":"
-            + req.getServerPort() + req.getContextPath());
+        return (req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath());
     }
 
-    public static SortedSet<User> buildUsersList(GroupManager groupManager,
-        ProjectRoleManager projectRoleManager, Project project,
-        List<String> groups, List<ProjRole> projRoles)
+    private static Object getCfRightsClass()
     {
-        SortedSet<User> usersList = new TreeSet<User>(new Comparator<User>()
+        if (cfRightsInstance == null)
         {
-            @Override
-            public int compare(User o1, User o2)
+            PluginAccessor pluginAccessor = ComponentManager.getInstance().getPluginAccessor();
+            Class<?> mailRuCfRightsClass;
+            try
             {
-                return o1.getDisplayName().compareToIgnoreCase(
-                    o2.getDisplayName());
+                mailRuCfRightsClass = pluginAccessor.getClassLoader().loadClass(CF_RIGHTS_CLASS_NAME);
             }
-        });
-        for (String group : groups)
-        {
-            Collection<User> users = groupManager.getUsersInGroup(group);
-            if (users != null)
+            catch (ClassNotFoundException e)
             {
-                usersList.addAll(users);
+                log.info("Utils::getCfRightsClass - ClassNotfoundException " + CF_RIGHTS_CLASS_NAME + " not found. It is possible that plugin is turned off");
+                return null;
             }
-        }
-
-        for (ProjRole projRole : projRoles)
-        {
-            if (project != null
-                && project.getId().toString().equals(projRole.getProject()))
+            cfRightsInstance = ComponentManager.getOSGiComponentInstanceOfType(mailRuCfRightsClass);
+            if (cfRightsInstance == null)
             {
-                if (projRole.getRole().equals(""))
-                {
-                    Collection<ProjectRole> projectRoles = projectRoleManager
-                        .getProjectRoles();
-                    for (ProjectRole projectRole : projectRoles)
-                    {
-                        ProjectRoleActors projectRoleActors = projectRoleManager
-                            .getProjectRoleActors(projectRole, project);
-                        usersList.addAll(projectRoleActors.getUsers());
-                    }
-                }
-                else
-                {
-                    ProjectRole projectRole = projectRoleManager
-                        .getProjectRole(Long.valueOf(projRole.getRole()));
-                    ProjectRoleActors projectRoleActors = projectRoleManager
-                        .getProjectRoleActors(projectRole, project);
-                    usersList.addAll(projectRoleActors.getUsers());
-                }
+                log.info("Utils::getCfRightsClass - Class " + CF_RIGHTS_CLASS_NAME + ". Method getOSGiComponentInstanceOfType failed to load component");
             }
         }
 
-        return usersList;
+        return cfRightsInstance;
+    }
+
+    private static String getErrorMessage(
+        User user, String cfId,
+        Project project,
+        String internalMethodName,
+        String externalMethodName,
+        String exception)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Utils::");
+        sb.append(internalMethodName);
+        sb.append(" - Class ");
+        sb.append(CF_RIGHTS_CLASS_NAME);
+        sb.append(". ");
+        sb.append(exception);
+        sb.append(" occured invoking ");
+        sb.append(externalMethodName);
+        sb.append(" method ");
+
+        return sb.toString();
+    }
+
+    private static boolean getPermission(
+        User user,
+        String cfId,
+        Project project,
+        String externalMethodName,
+        String internalMethodName)
+    {
+        Object cfRights = getCfRightsClass();
+
+        // occurs only if class not found or not load
+        // it's possible that parent plugin was disabled manually
+        // so we should return true
+        if (cfRights == null)
+        {
+            return true;
+        }
+
+        Method[] methods = cfRights.getClass().getMethods();
+        for (int i = 0; i < methods.length; i++)
+        {
+            if (externalMethodName.equals(methods[i].getName()))
+            {
+                Boolean result = Boolean.FALSE;
+                try
+                {
+                    result = (Boolean) methods[i].invoke(cfRights, user, cfId, project);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project, internalMethodName, externalMethodName, "IllegalArgumentException"));
+                }
+                catch (IllegalAccessException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project, internalMethodName, externalMethodName, "IllegalAccessException"));
+                }
+                catch (InvocationTargetException e)
+                {
+                    log.error(getErrorMessage(user, cfId, project, internalMethodName, externalMethodName, "InvocationTargetException"));
+                    cfRightsInstance = null;
+                }
+
+                return result;
+            }
+        }
+
+        return false;
     }
 
     @SuppressWarnings({"rawtypes"})
     public static Map<String, String> getProjectRoleUsers(
-        ProjectRoleManager projectRoleManager, String role, Project currProj)
+        ProjectRoleManager projectRoleManager,
+        String role,
+        Project currProj)
     {
         Map<String, String> map = new HashMap<String, String>();
 
         if (role.equals(""))
         {
-            Collection<ProjectRole> projRoles = projectRoleManager
-                .getProjectRoles();
+            Collection<ProjectRole> projRoles = projectRoleManager.getProjectRoles();
             for (ProjectRole pRole : projRoles)
             {
-                ProjectRoleActors projectRoleActors = projectRoleManager
-                    .getProjectRoleActors(pRole, currProj);
+                ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(pRole, currProj);
                 Set users = projectRoleActors.getUsers();
                 for (Object obj : users)
                 {
@@ -399,10 +359,8 @@ public class Utils
         }
         else
         {
-            ProjectRole projRole = projectRoleManager.getProjectRole(Long
-                .valueOf(role));
-            ProjectRoleActors projectRoleActors = projectRoleManager
-                .getProjectRoleActors(projRole, currProj);
+            ProjectRole projRole = projectRoleManager.getProjectRole(Long.valueOf(role));
+            ProjectRoleActors projectRoleActors = projectRoleManager.getProjectRoleActors(projRole, currProj);
             Set users = projectRoleActors.getUsers();
             for (Object obj : users)
             {
@@ -417,6 +375,41 @@ public class Utils
         return map;
     }
 
+    public static boolean isOfGroupRoleUserPickerType(String cfType)
+    {
+        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
+            || Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT.equals(cfType);
+    }
+
+    public static boolean isOfMultiUserType(String cfType)
+    {
+        return Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT.equals(cfType)
+            || Consts.CF_KEY_MULTI_USER_SELECT.equals(cfType);
+    }
+
+    public static boolean isValidLongParam(String str)
+    {
+        boolean isValidLong = true;
+
+        try
+        {
+            Long.valueOf(str);
+        }
+        catch (NumberFormatException e)
+        {
+            isValidLong = false;
+        }
+        return isValidLong;
+    }
+
+    public static boolean isValidStr(String str)
+    {
+        return (str != null && str.length() > 0);
+    }
+
+    /**
+     * Convert set collection to string.
+     */
     public static String setToStr(Set<String> set)
     {
         StringBuilder sb = new StringBuilder();
@@ -434,7 +427,5 @@ public class Utils
     /**
      * Private constructor.
      */
-    private Utils()
-    {
-    }
+    private Utils() {}
 }

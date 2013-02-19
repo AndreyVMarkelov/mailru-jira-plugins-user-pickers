@@ -1,23 +1,21 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-
 
 /**
  * Implementation of <code>PluginData</code>.
  * 
  * @author Andrey Markelov
  */
-public class PluginDataImpl implements PluginData
+public class PluginDataImpl
+    implements PluginData
 {
     /**
      * PlugIn key.
@@ -40,19 +38,22 @@ public class PluginDataImpl implements PluginData
     }
 
     @Override
-    public String getRoleGroupFieldData(String cfId)
-    {
-        return getStringProperty(cfId + ".grcf");
-    }
-
-    @Override
-    public String getHighlightedRoleGroupFieldData(String cfId)
+    public String getHighlightedRoleGroupFieldData(
+        String cfId)
     {
         return getStringProperty(cfId + ".ghrcf");
     }
 
     @Override
-    public Set<String> getStoredUsers(String cfId)
+    public String getRoleGroupFieldData(
+        String cfId)
+    {
+        return getStringProperty(cfId + ".grcf");
+    }
+
+    @Override
+    public Set<String> getStoredUsers(
+        String cfId)
     {
         Set<String> users = new LinkedHashSet<String>();
 
@@ -71,31 +72,56 @@ public class PluginDataImpl implements PluginData
         return users;
     }
 
-    private String getStringProperty(String key)
+    private String getStringProperty(
+        String key)
     {
-        return (String) pluginSettingsFactory.createSettingsForKey(PLUGIN_KEY)
-            .get(key);
+        return (String) pluginSettingsFactory.createSettingsForKey(PLUGIN_KEY).get(key);
     }
 
-    private void setStringProperty(String key, String value)
+    @Override
+    public boolean isAutocompleteView(
+        String cfId)
+    {
+        String value = getStringProperty(cfId + POSTFIX_AUTOCOMPLETE);
+
+        return Boolean.valueOf(value);
+    }
+
+    @Override
+    public void setAutocompleteView(
+        String cfId,
+        boolean flag)
+    {
+        setStringProperty(cfId + POSTFIX_AUTOCOMPLETE, String.valueOf(flag));
+    }
+
+    private void setStringProperty(
+        String key,
+        String value)
     {
         pluginSettingsFactory.createSettingsForKey(PLUGIN_KEY).put(key, value);
     }
 
     @Override
-    public void storeRoleGroupFieldData(String cfId, String data)
-    {
-        setStringProperty(cfId + ".grcf", data);
-    }
-
-    @Override
-    public void storeHighlightedRoleGroupFieldData(String cfId, String data)
+    public void storeHighlightedRoleGroupFieldData(
+        String cfId,
+        String data)
     {
         setStringProperty(cfId + ".ghrcf", data);
     }
 
     @Override
-    public void storeUsers(String cfId, Set<String> users)
+    public void storeRoleGroupFieldData(
+        String cfId,
+        String data)
+    {
+        setStringProperty(cfId + ".grcf", data);
+    }
+
+    @Override
+    public void storeUsers(
+        String cfId,
+        Set<String> users)
     {
         if (users == null)
         {
@@ -109,19 +135,5 @@ public class PluginDataImpl implements PluginData
         }
 
         setStringProperty(cfId + ".grscf", sb.toString());
-    }
-
-    @Override
-    public boolean isAutocompleteView(String cfId)
-    {
-        String value = getStringProperty(cfId + POSTFIX_AUTOCOMPLETE);
-
-        return Boolean.valueOf(value);
-    }
-
-    @Override
-    public void setAutocompleteView(String cfId, boolean flag)
-    {
-        setStringProperty(cfId + POSTFIX_AUTOCOMPLETE, String.valueOf(flag));
     }
 }

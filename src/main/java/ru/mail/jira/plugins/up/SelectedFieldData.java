@@ -1,9 +1,8 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +32,11 @@ public class SelectedFieldData
     private boolean isAllProjects;
 
     /**
+     * Is autocomplete?
+     */
+    private boolean isAutocomplete;
+
+    /**
      * Projects.
      */
     private List<String> projects;
@@ -41,8 +45,6 @@ public class SelectedFieldData
      * Groups.
      */
     private Set<String> users;
-
-    private boolean isAutocomplete;
 
     /**
      * Constructor.
@@ -79,6 +81,11 @@ public class SelectedFieldData
         return projects;
     }
 
+    public Set<String> getUsers()
+    {
+        return users;
+    }
+
     public String getUsersStr()
     {
         StringBuilder sb = new StringBuilder();
@@ -91,24 +98,9 @@ public class SelectedFieldData
         return sb.toString();
     }
 
-    public Set<String> getUsers()
-    {
-        return users;
-    }
-
     public boolean isAllProjects()
     {
         return isAllProjects;
-    }
-
-    public void setAllProjects(boolean isAllProjects)
-    {
-        this.isAllProjects = isAllProjects;
-    }
-
-    public void setProjects(List<String> projects)
-    {
-        this.projects = projects;
     }
 
     public boolean isAutocomplete()
@@ -116,9 +108,19 @@ public class SelectedFieldData
         return isAutocomplete;
     }
 
+    public void setAllProjects(boolean isAllProjects)
+    {
+        this.isAllProjects = isAllProjects;
+    }
+
     public void setAutocomplete(boolean isAutocomplete)
     {
         this.isAutocomplete = isAutocomplete;
+    }
+
+    public void setProjects(List<String> projects)
+    {
+        this.projects = projects;
     }
 
     @Override

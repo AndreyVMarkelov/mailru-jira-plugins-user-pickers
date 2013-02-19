@@ -1,9 +1,8 @@
 /*
- * Created by Dmitry Miroshnichenko 12-02-2013. Copyright Mail.Ru Group 2013.
- * All rights reserved.
+ * Created by Dmitry Miroshnichenko 12-02-2013.
+ * Copyright Mail.Ru Group 2013. All rights reserved.
  */
 package ru.mail.jira.plugins.up.structures;
-
 
 public class SingleValueData
 {
@@ -11,7 +10,12 @@ public class SingleValueData
 
     private String comment;
 
-    public SingleValueData(String value, String comment)
+    /**
+     * Constructor.
+     */
+    public SingleValueData(
+        String value,
+        String comment)
     {
         this.value = value;
         this.comment = comment;
@@ -35,5 +39,11 @@ public class SingleValueData
     public void setComment(String comment)
     {
         this.comment = comment;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SingleValueData[value=" + value + ", comment=" + comment + "]";
     }
 }

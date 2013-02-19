@@ -1,9 +1,8 @@
 /*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
+ * Created by Andrey Markelov 11-11-2012.
+ * Copyright Mail.Ru Group 2012. All rights reserved.
  */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,14 +10,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.ofbiz.core.entity.GenericValue;
-
 import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.FieldData;
 import ru.mail.jira.plugins.up.structures.ProjRole;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.fields.CustomField;
@@ -31,13 +27,13 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.sal.api.ApplicationProperties;
 
-
 /**
  * Plug-In configure page.
  * 
  * @author Andrey Markelov
  */
-public class UserPickerAdminAction extends JiraWebActionSupport
+public class UserPickerAdminAction
+    extends JiraWebActionSupport
 {
     /**
      * Unique ID.
@@ -92,9 +88,12 @@ public class UserPickerAdminAction extends JiraWebActionSupport
     /**
      * Constructor.
      */
-    public UserPickerAdminAction(ApplicationProperties applicationProperties,
-        CustomFieldManager cfMgr, ProjectManager prMgr,
-        ProjectRoleManager projectRoleManager, PluginData data)
+    public UserPickerAdminAction(
+        ApplicationProperties applicationProperties,
+        CustomFieldManager cfMgr,
+        ProjectManager prMgr,
+        ProjectRoleManager projectRoleManager,
+        PluginData data)
     {
         this.applicationProperties = applicationProperties;
         this.cfMgr = cfMgr;
@@ -108,15 +107,14 @@ public class UserPickerAdminAction extends JiraWebActionSupport
     }
 
     @Override
-    public String doDefault() throws Exception
+    public String doDefault()
+    throws Exception
     {
         List<CustomField> cgList = cfMgr.getCustomFieldObjects();
         for (CustomField cf : cgList)
         {
-            if (cf.getCustomFieldType().getKey()
-                .equals(Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT)
-                || cf.getCustomFieldType().getKey()
-                    .equals(Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT))
+            if (cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT)
+                || cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_MULTI_USER_GR_ROLE_SELECT))
             {
                 FieldData fdata = new FieldData(cf.getId(), cf.getName());
                 if (cf.isAllProjects())
@@ -140,14 +138,11 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 List<ProjRole> projRoles = new ArrayList<ProjRole>();
                 try
                 {
-                    Utils.fillDataLists(data.getRoleGroupFieldData(cf.getId()),
-                        groups, projRoles);
+                    Utils.fillDataLists(data.getRoleGroupFieldData(cf.getId()), groups, projRoles);
                 }
                 catch (JSONException e)
                 {
-                    log.error(
-                        "AdRoleGroupUserCfService::fillLists - Incorrect field data",
-                        e);
+                    log.error("AdRoleGroupUserCfService::fillLists - Incorrect field data", e);
                     // --> impossible
                 }
                 fdata.setAutocomplete(data.isAutocompleteView(cf.getId()));
@@ -168,8 +163,7 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 fdata.getHighlightedGroups().addAll(highlightedGroups);
                 fdata.getHighlightedRoles().addAll(highlightedProjRoles);
 
-                if (cf.getCustomFieldType().getKey()
-                    .equals(Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT))
+                if (cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_SINGLE_USER_GR_ROLE_SELECT))
                 {
                     singleFields.put(fdata.getFieldId(), fdata);
                 }
@@ -178,13 +172,10 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                     multiFields.put(fdata.getFieldId(), fdata);
                 }
             }
-            else if (cf.getCustomFieldType().getKey()
-                .equals(Consts.CF_KEY_SINGLE_USER_SELECT)
-                || cf.getCustomFieldType().getKey()
-                    .equals(Consts.CF_KEY_MULTI_USER_SELECT))
+            else if (cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_SINGLE_USER_SELECT)
+                || cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_MULTI_USER_SELECT))
             {
-                SelectedFieldData fdata = new SelectedFieldData(cf.getId(),
-                    cf.getName());
+                SelectedFieldData fdata = new SelectedFieldData(cf.getId(), cf.getName());
                 fdata.addUsers(data.getStoredUsers(cf.getId()));
                 if (cf.isAllProjects())
                 {
@@ -204,8 +195,7 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 }
                 fdata.setAutocomplete(data.isAutocompleteView(cf.getId()));
 
-                if (cf.getCustomFieldType().getKey()
-                    .equals(Consts.CF_KEY_SINGLE_USER_SELECT))
+                if (cf.getCustomFieldType().getKey().equals(Consts.CF_KEY_SINGLE_USER_SELECT))
                 {
                     singleSelectedFields.put(fdata.getFieldId(), fdata);
                 }
@@ -294,8 +284,7 @@ public class UserPickerAdminAction extends JiraWebActionSupport
             return false;
         }
 
-        if (getPermissionManager().hasPermission(Permissions.ADMINISTER,
-            getLoggedInUser()))
+        if (getPermissionManager().hasPermission(Permissions.ADMINISTER, getLoggedInUser()))
         {
             return true;
         }

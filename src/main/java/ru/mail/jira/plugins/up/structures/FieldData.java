@@ -96,8 +96,8 @@ public class FieldData
     public String toString()
     {
         return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName +
-                ", groups=" + groups + ", roles=" + roles +
-                ", highlightedGroups=" + highlightedGroups + ", highlightedRoles=" + highlightedRoles +
-                ", isAllProjects=" + isAllProjects + ", projects=" + projects + "]";
+            ", groups=" + groups + ", roles=" + roles + ", highlightedGroups=" +
+            highlightedGroups + ", highlightedRoles=" + highlightedRoles +
+            ", isAllProjects=" + isAllProjects + ", projects=" + projects + "]";
     }
 }
