@@ -21,10 +21,11 @@
                         <div id="project$pRole.getProject()role$pRole.getRole()">
                             #if($pRole.getRole() != "")
                                 <span>$i18n.getText("jrole-group-usercf.share_project_role", $projs.get($pRole.getProject()), $roleProjs.get($pRole.getRole()))</span>
-                            #else
-                                <span>$i18n.getText("jrole-group-usercf.share_project", $projs.get($pRole.getProject()))</span>
+                                #else
+                                    <span>$i18n.getText("jrole-group-usercf.share_project", $projs.get($pRole.getProject()))</span>
                             #end
-                            <img onclick="removeGroup(event, 'shares_data');" id="share_trash" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
+                            <img onclick="removeGroup(event, 'shares_data');" id="share_trash" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/>
+                            <input id="share_type_hidden" name="shareValues" type="hidden"/>
                         </div>
                     #end
                     <img id="share_trash_sh" style="display: none;" onclick="removeGroup(event, 'shares_data');" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/>
@@ -33,8 +34,11 @@
                     <div id="share_display_component">
                         <div>
                             <div>
-                                <input name="sharesel" onclick="setShareGroup();" type="radio" checked="checked"/><span>$i18n.getText("jrole-group-usercf.cfgroups")</span>&nbsp;&nbsp;
-                                <input name="sharesel" onclick="setShareProject();" type="radio" /><span>$i18n.getText("jrole-group-usercf.cfroles")</span>
+                                <input name="sharesel" onclick="setShareGroup();" type="radio" checked="checked"/>
+                                <span>$i18n.getText("jrole-group-usercf.cfgroups")</span>
+                                &nbsp;&nbsp;
+                                <input name="sharesel" onclick="setShareProject();" type="radio" />
+                                <span>$i18n.getText("jrole-group-usercf.cfroles")</span>
                             </div>
                             <span id="share_group">
                                 <select id="groupShare">
@@ -42,7 +46,9 @@
                                         <option value="$group.getName()">$group.getName()</option>
                                     #end
                                 </select>
-                                <span onclick="addGroup('shares_data', 'share_display_div', 'groupShare');" id="share_add_group"><img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                                <span onclick="addGroup('shares_data', 'share_display_div', 'groupShare');" id="share_add_group">
+                                    <img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>
+                                    Add</span>
                             </span>
                             <span id="share_project" style="display:none">
                                 <select id="projectShare-project">
@@ -59,23 +65,26 @@
                                         #end
                                     </optgroup>
                                 </select>
-                                <span onclick="addProject('shares_data', 'share_display_div', 'projectShare-project', 'projectShare-role');" class="addShare grcf_pointer" id="share_add_project"><img src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                                <span onclick="addProject('shares_data', 'share_display_div', 'projectShare-project', 'projectShare-role');" class="addShare grcf_pointer" id="share_add_project">
+                                    <img src="$baseUrl/images/icons/16add_blue.png"/>
+                                    Add</span>
                             </span>
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
-		</tr>
-		    <td valign="top">
-                <b>$i18n.getText("jrole-group-usercf.cfautocomplete")<b>
+</tr>
+<td valign="top">
+    <b>$i18n.getText("jrole-group-usercf.cfautocomplete")<b>
             </td>
-			<td valign="top">
-				<input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
-			</td>
-		</tr>
-    ##<input id="shares_data" name="shares_data" style="display:none;" value='$storedShares'/>
-    ##<img onclick="removeGroup(event);" id="share_trash_sh" height="16px" width="16px" style="display: none" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/> <input id="share_type_hidden" name="shareValues" type="hidden"/>
+            <td valign="top">
+                <input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
+            </td>
+        </tr>
+        ##<input id="shares_data" name="shares_data" style="display:none;" value='$storedShares'/>
+        ##<img onclick="removeGroup(event);" id="share_trash_sh" height="16px" width="16px" style="display: none" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/>
+        <input id="share_type_hidden" name="shareValues" type="hidden"/>
         <tr>
             <td valign="top">
                 <b>$i18n.getText("jrole-group-usercf.cfhighlightedgroupsroles")</b>
@@ -92,8 +101,8 @@
                         <div id="project$pRole.getProject()role$pRole.getRole()">
                             #if($pRole.getRole() != "")
                                 <span>$i18n.getText("jrole-group-usercf.share_project_role", $projs.get($pRole.getProject()), $roleProjs.get($pRole.getRole()))</span>
-                            #else
-                                <span>$i18n.getText("jrole-group-usercf.share_project", $projs.get($pRole.getProject()))</span>
+                                #else
+                                    <span>$i18n.getText("jrole-group-usercf.share_project", $projs.get($pRole.getProject()))</span>
                             #end
                             <img onclick="removeGroup(event, 'ad_highlighted_data');" height="16px" width="16px" class="shareTrash grcf_pointer" src="$baseUrl/images/icons/trash_16.gif" title="Delete Share" alt="Delete Share"/>
                         </div>
@@ -102,8 +111,13 @@
                 </div>
                 <div>
                     <div>
-                        <label><input type="radio" name="ad_highlighted_type_switch" onclick="adHighlightedGroupsSwitchClick();" checked="checked"/>$i18n.getText("jrole-group-usercf.cfgroups")</label>&nbsp;&nbsp;
-                        <label><input type="radio" name="ad_highlighted_type_switch" onclick="adHighlightedRolesSwitchClick();"/>$i18n.getText("jrole-group-usercf.cfroles")</label>
+                        <label>
+                            <input type="radio" name="ad_highlighted_type_switch" onclick="adHighlightedGroupsSwitchClick();" checked="checked"/>
+                            $i18n.getText("jrole-group-usercf.cfgroups")</label>
+                            &nbsp;&nbsp;
+                            <label>
+                                <input type="radio" name="ad_highlighted_type_switch" onclick="adHighlightedRolesSwitchClick();"/>
+                                $i18n.getText("jrole-group-usercf.cfroles")</label>
                     </div>
                     <div id="ad_highlighted_groups">
                         <select id="ad_highlighted_groups_select">
@@ -111,7 +125,9 @@
                                 <option value="$group.getName()">$group.getName()</option>
                             #end
                         </select>
-                        <span onclick="addGroup('ad_highlighted_data', 'ad_highlighted_groups_and_roles', 'ad_highlighted_groups_select');"><img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                        <span onclick="addGroup('ad_highlighted_data', 'ad_highlighted_groups_and_roles', 'ad_highlighted_groups_select');">
+                            <img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>
+                            Add</span>
                     </div>
                     <div id="ad_highlighted_roles" style="display: none;">
                         <select id="ad_highlighted_projects_select">
@@ -128,7 +144,9 @@
                                 #end
                             </optgroup>
                         </select>
-                        <span onclick="addProject('ad_highlighted_data', 'ad_highlighted_groups_and_roles', 'ad_highlighted_projects_select', 'ad_highlighted_roles_select');"><img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>Add</span>
+                        <span onclick="addProject('ad_highlighted_data', 'ad_highlighted_groups_and_roles', 'ad_highlighted_projects_select', 'ad_highlighted_roles_select');">
+                            <img class="grcf_pointer" src="$baseUrl/images/icons/16add_blue.png"/>
+                            Add</span>
                     </div>
                 </div>
             </td>

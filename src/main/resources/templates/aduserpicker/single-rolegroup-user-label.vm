@@ -1,9 +1,10 @@
 ## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #if ($value)
-#if ($urlPrefix && $urlPrefix != '')
-<a href="${urlPrefix}">$textutils.htmlEncode($value.fullName)</a>
-#else
-$value.fullName
+    #if ($urlPrefix && $urlPrefix != '')
+        <a href="${urlPrefix}">$textutils.htmlEncode($value.fullName)</a>
+        #else
+            $value.fullName
+    #end
 #end
-#end
+    

@@ -1,9 +1,10 @@
 ## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #if($canView)
-#if ($value)
-#foreach ($singleValue in $value)
-<customfieldvalue><![CDATA[$xmlutils.escapeForCdata($!singleValue.toString())]]></customfieldvalue>
-#end
+    #if ($value)
+        #foreach ($singleValue in $value)
+            <customfieldvalue><![CDATA[$xmlutils.escapeForCdata($!singleValue.toString())]]></customfieldvalue>
+        #end
     #end
 #end
+    
