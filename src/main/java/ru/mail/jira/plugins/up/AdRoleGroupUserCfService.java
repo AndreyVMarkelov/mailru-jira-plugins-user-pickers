@@ -202,7 +202,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(shares_data, groups, projRoles, true);
+            Utils.fillDataLists(shares_data, groups, projRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {
@@ -215,7 +215,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles, true);
+            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {
@@ -349,7 +349,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(sharedData, groups, projRoles, true);
+            Utils.fillDataLists(sharedData, groups, projRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {
@@ -366,7 +366,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles, true);
+            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {

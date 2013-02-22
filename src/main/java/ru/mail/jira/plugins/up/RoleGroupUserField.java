@@ -14,6 +14,7 @@ import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
 
+import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
@@ -120,7 +121,7 @@ public class RoleGroupUserField
         {
             Utils.fillDataLists(
                 data.getHighlightedRoleGroupFieldData(field.getId()),
-                highlightedGroups, highlightedProjRoles, data.isRestricted(field.getId()));
+                highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {

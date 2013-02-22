@@ -16,6 +16,7 @@ import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
 
+import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
@@ -125,7 +126,7 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles, data.isRestricted(field.getId()));
+            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
         }
         catch (JSONException e)
         {

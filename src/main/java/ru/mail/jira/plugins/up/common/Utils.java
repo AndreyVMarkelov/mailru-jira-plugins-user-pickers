@@ -58,6 +58,12 @@ public class Utils
     private static Object cfRightsInstance;
 
     private static final Logger log = LoggerFactory.getLogger(Utils.class);
+    
+    private static UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+            .getComponentInstanceOfType(UserProjectHistoryManager.class);
+    
+    private static ProjectRoleManager roleManager = ComponentManager
+            .getComponentInstanceOfType(ProjectRoleManager.class);
 
     /**
      * adds "canView" and "canEdit" keys to map
@@ -65,8 +71,6 @@ public class Utils
     public static void addViewAndEditParameters(Map<String, Object> params,
         String cfId)
     {
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
         JiraAuthenticationContext authCtx = ComponentManager.getInstance()
             .getJiraAuthenticationContext();
         User currentUser = authCtx.getLoggedInUser();
@@ -260,16 +264,12 @@ public class Utils
                 groups.add(group.getName());
             }
 
-            UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-                .getComponentInstanceOfType(UserProjectHistoryManager.class);
-            JiraAuthenticationContext authCtx = ComponentManager.getInstance()
+            JiraAuthenticationContext authCtx = ComponentAccessor
                 .getJiraAuthenticationContext();
             User currentUser = authCtx.getLoggedInUser();
             Project currentProject = userProjectHistoryManager
                 .getCurrentProject(Permissions.BROWSE, currentUser);
 
-            ProjectRoleManager roleManager = ComponentManager
-                .getComponentInstanceOfType(ProjectRoleManager.class);
             Collection<ProjectRole> allRoles = roleManager.getProjectRoles();
             for (ProjectRole projectRole : allRoles)
             {
