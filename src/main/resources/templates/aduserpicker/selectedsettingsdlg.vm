@@ -7,14 +7,18 @@
     <div class="field-group">
         <label for="selUsers">$i18n.getText("jrole-group-usercf.cfusers")</label>
         <select name="selUsers" id="selUsers" multiple="multiple" size="8">
-        #foreach($entry in $userMap.entrySet())
-            <option #if($selData.contains($entry.key))selected="selected"#end value="$entry.key">$entry.value</option>
-        #end
+            #foreach($entry in $userMap.entrySet())
+                <option #if($selData.contains($entry.key))selected="selected"#end value="$entry.key">$entry.value</option>
+            #end
             <option value=""> </option>
         </select>
     </div>
-	<div class="field-group">
-		<label for="autocomplete-flag">$i18n.getText("jrole-group-usercf.cfautocomplete")</label>
-		<input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
-	</div>
+    <div class="field-group">
+        <label for="autocomplete-flag">$i18n.getText("jrole-group-usercf.cfautocomplete")</label>
+        <input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
+    </div>
+    <div class="field-group">
+        <label for="restricted-flag">$i18n.getText("jrole-group-usercf.restrictionstatus")</label>
+        <input name="restricted-flag" type="checkbox" #if($isrestricted) checked #end />
+    </div>
 </form>

@@ -11,9 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+
 import org.apache.log4j.Logger;
+
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -103,7 +106,7 @@ public class RoleGroupUserField
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles);
+            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles, data.isRestricted(field.getId()));
         }
         catch (JSONException e)
         {
@@ -117,7 +120,7 @@ public class RoleGroupUserField
         {
             Utils.fillDataLists(
                 data.getHighlightedRoleGroupFieldData(field.getId()),
-                highlightedGroups, highlightedProjRoles);
+                highlightedGroups, highlightedProjRoles, data.isRestricted(field.getId()));
         }
         catch (JSONException e)
         {
@@ -159,6 +162,7 @@ public class RoleGroupUserField
         params.put("allUsers", allUsers);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
+        params.put("isrestricted", data.isRestricted(field.getId()));
         params.put("highlightedUsersSorted", highlightedUsersSorted);
         params.put("otherUsersSorted", otherUsersSorted);
 

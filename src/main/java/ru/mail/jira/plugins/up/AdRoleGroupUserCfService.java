@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,13 +21,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.apache.log4j.Logger;
 import org.apache.velocity.exception.VelocityException;
 import org.ofbiz.core.entity.GenericValue;
+
 import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.HtmlEntity;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -124,6 +128,7 @@ public class AdRoleGroupUserCfService
         String[] selUsers = req.getParameterValues("selUsers");
         String cfIdStr = req.getParameter("cfId");
         String autocompleteFlag = req.getParameter("autocomplete-flag");
+        String restrictedFlag = req.getParameter("restricted-flag");
 
         if (cfIdStr == null || cfIdStr.length() == 0)
         {
@@ -144,6 +149,7 @@ public class AdRoleGroupUserCfService
 
         data.storeUsers(cfIdStr, setUsers);
         data.setAutocompleteView(cfIdStr, Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
+        data.setRestricted(cfIdStr, Consts.CHECKBOX_CHECKED.equals(restrictedFlag));
 
         return Response.ok().build();
     }
@@ -184,6 +190,7 @@ public class AdRoleGroupUserCfService
         String cfIdStr = req.getParameter("cfId");
         String shares_data = req.getParameter("shares_data");
         String autocompleteFlag = req.getParameter("autocomplete-flag");
+        String restrictedFlag = req.getParameter("restricted-flag");
 
         if (cfIdStr == null || cfIdStr.length() == 0)
         {
@@ -195,7 +202,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(shares_data, groups, projRoles);
+            Utils.fillDataLists(shares_data, groups, projRoles, true);
         }
         catch (JSONException e)
         {
@@ -208,7 +215,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
@@ -218,6 +225,7 @@ public class AdRoleGroupUserCfService
 
         data.storeRoleGroupFieldData(cfIdStr, shares_data);
         data.setAutocompleteView(cfIdStr, Consts.CHECKBOX_CHECKED.equals(autocompleteFlag));
+        data.setRestricted(cfIdStr, Consts.CHECKBOX_CHECKED.equals(restrictedFlag));
         data.storeHighlightedRoleGroupFieldData(cfIdStr, highlighted_data);
 
         return Response.ok().build();
@@ -262,6 +270,7 @@ public class AdRoleGroupUserCfService
         params.put("userMap", userMap);
         params.put("selData", data.getStoredUsers(cfIdStr));
         params.put("isautocomplete", data.isAutocompleteView(cfIdStr));
+        params.put("isrestricted", data.isRestricted(cfIdStr));
 
         try
         {
@@ -340,7 +349,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(sharedData, groups, projRoles);
+            Utils.fillDataLists(sharedData, groups, projRoles, true);
         }
         catch (JSONException e)
         {
@@ -357,7 +366,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
@@ -377,6 +386,7 @@ public class AdRoleGroupUserCfService
         params.put("groups", groups);
         params.put("projRoles", projRoles);
         params.put("isautocomplete", data.isAutocompleteView(cfIdStr));
+        params.put("isrestricted", data.isRestricted(cfIdStr));
         params.put("highlightedData", highlightedData);
         params.put("highlightedGroups", highlightedGroups);
         params.put("highlightedProjRoles", highlightedProjRoles);

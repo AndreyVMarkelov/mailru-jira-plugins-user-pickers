@@ -1,8 +1,9 @@
 /*
- * Created by Dmitry Miroshnichenko 12-02-2013.
- * Copyright Mail.Ru Group 2013. All rights reserved.
+ * Created by Dmitry Miroshnichenko 12-02-2013. Copyright Mail.Ru Group 2013.
+ * All rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,10 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.log4j.Logger;
+
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 import ru.mail.jira.plugins.up.structures.SingleValueData;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.CustomFieldManager;
@@ -29,8 +33,8 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.sal.api.ApplicationProperties;
 
-public class MailRuUserPickerValuePickerAction
-    extends JiraWebActionSupport
+
+public class MailRuUserPickerValuePickerAction extends JiraWebActionSupport
 {
     private static final long serialVersionUID = 1305062002511270932L;
 
@@ -44,7 +48,8 @@ public class MailRuUserPickerValuePickerAction
 
     private String inputid;
 
-    private final Logger log = Logger.getLogger(MailRuUserPickerValuePickerAction.class);
+    private final Logger log = Logger
+        .getLogger(MailRuUserPickerValuePickerAction.class);
 
     private final ProjectRoleManager projectRoleManager;
 
@@ -52,12 +57,9 @@ public class MailRuUserPickerValuePickerAction
 
     private PluginData settings;
 
-    public MailRuUserPickerValuePickerAction(
-        CustomFieldManager cfMgr,
-        ApplicationProperties applicationProperties,
-        PluginData settings,
-        GroupManager grMgr,
-        ProjectRoleManager projectRoleManager)
+    public MailRuUserPickerValuePickerAction(CustomFieldManager cfMgr,
+        ApplicationProperties applicationProperties, PluginData settings,
+        GroupManager grMgr, ProjectRoleManager projectRoleManager)
     {
         this.applicationProperties = applicationProperties;
         this.settings = settings;
@@ -68,11 +70,15 @@ public class MailRuUserPickerValuePickerAction
     @Override
     protected String doExecute() throws Exception
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager.getComponentInstanceOfType(UserProjectHistoryManager.class);
-        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
+            .getJiraAuthenticationContext();
+        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+            .getComponentInstanceOfType(UserProjectHistoryManager.class);
+        Project currentProject = userProjectHistoryManager.getCurrentProject(
+            Permissions.BROWSE, authCtx.getLoggedInUser());
 
-        CustomField cf = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(getCfid());
+        CustomField cf = ComponentManager.getInstance().getCustomFieldManager()
+            .getCustomFieldObject(getCfid());
         if (cf == null)
         {
             log.error("MailRuUserPickerValuePickerAction::doExecute - Invalid cf id");
@@ -87,11 +93,14 @@ public class MailRuUserPickerValuePickerAction
             List<ProjRole> projRoles = new ArrayList<ProjRole>();
             try
             {
-                Utils.fillDataLists(settings.getRoleGroupFieldData(getCfid()), groups, projRoles);
+                Utils.fillDataLists(settings.getRoleGroupFieldData(getCfid()),
+                    groups, projRoles, settings.isRestricted(cf.getId()));
             }
             catch (JSONException e)
             {
-                log.error("MailRuUserPickerValuePickerAction::doExecute - Incorrect field data", e);
+                log.error(
+                    "MailRuUserPickerValuePickerAction::doExecute - Incorrect field data",
+                    e);
                 // --> impossible
             }
 
@@ -102,37 +111,58 @@ public class MailRuUserPickerValuePickerAction
                 {
                     for (User user : users)
                     {
-                        map.put(user.getName(), new SingleValueData(user.getName(), user.getDisplayName()));
+                        map.put(
+                            user.getName(),
+                            new SingleValueData(user.getName(), user
+                                .getDisplayName()));
                     }
                 }
             }
 
             for (ProjRole pr : projRoles)
             {
-                if (currentProject != null && currentProject.getId().toString().equals(pr.getProject()))
+                if (currentProject != null
+                    && currentProject.getId().toString()
+                        .equals(pr.getProject()))
                 {
-                    Set<String> rolesUsers = Utils.getProjectRoleUsers(projectRoleManager, pr.getRole(), currentProject).keySet();
+                    Set<String> rolesUsers = Utils.getProjectRoleUsers(
+                        projectRoleManager, pr.getRole(), currentProject)
+                        .keySet();
                     for (String roleUser : rolesUsers)
                     {
                         User user = userUtil.getUserObject(roleUser);
                         if (user != null)
                         {
-                            map.put( user.getName(), new SingleValueData(user.getName(), user.getDisplayName()));
+                            map.put(
+                                user.getName(),
+                                new SingleValueData(user.getName(), user
+                                    .getDisplayName()));
                         }
                     }
                 }
             }
-        }
+        } 
         else
         {
             map = new LinkedHashMap<String, SingleValueData>();
-            Set<String> simpleUsers = settings.getStoredUsers(getCfid());
+            Set<String> simpleUsers;
+
+            if (settings.isRestricted(getCfid()))
+            {
+                simpleUsers = settings.getStoredUsers(getCfid());
+            }
+            else
+            {
+                simpleUsers = Utils.getAllUsers();
+            }
+
             for (String simpleUser : simpleUsers)
             {
                 User user = userUtil.getUserObject(simpleUser);
                 if (user != null)
                 {
-                    map.put(user.getName(), new SingleValueData(user.getName(), user.getDisplayName()));
+                    map.put(user.getName(), new SingleValueData(user.getName(),
+                        user.getDisplayName()));
                 }
             }
         }

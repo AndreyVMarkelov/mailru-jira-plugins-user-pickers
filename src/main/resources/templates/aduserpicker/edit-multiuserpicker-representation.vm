@@ -2,15 +2,15 @@
 ## rights reserved.
 <dd class="mail_simple_user" id="internal-${cfid}_${data.name}">
     <div class="link-content">
-            <span title="${data.name}: $!{data.description}">
-				<img src="$!{data.typeimage}" width="16" height="16" title="${data.name} avatar" alt="${data.name} avatar">
+        <span title="${data.name}: $!{data.description}">
+            <img src="$!{data.typeimage}" width="16" height="16" title="${data.name} avatar" alt="${data.name} avatar">
                 <a href="$baseUrl/secure/ViewProfile.jspa?name=${data.name}" class="link-title">${data.name}</a>
                 <span class="link-summary">$!{data.description}</span>
-				<span class="delete-link" id="delete_internal-${cfid}_${data.name}">
-					<a class="icon icon-delete" title="$i18n.getText("jrole-group-usercf.autocomp.button.link.delete")" id="delete-link_internal-${cfid}_${data.name}" href="javascript:removeDependantUser('${cfid}', '${data.name}');">
-						<span>$i18n.getText("jrole-group-usercf.autocomp.button.link.delete")</span>
-					</a>
-				</span>
-            </span>
-	</div>
+                <span class="delete-link" id="delete_internal-${cfid}_${data.name}">
+                    <a class="icon icon-delete" title="$i18n.getText("jrole-group-usercf.autocomp.button.link.delete")" id="delete-link_internal-${cfid}_${data.name}" href="javascript:removeDependantUser('${cfid}', '${data.name}');">
+                        <span>$i18n.getText("jrole-group-usercf.autocomp.button.link.delete")</span>
+                    </a>
+                </span>
+</span>
+</div>
 </dd>

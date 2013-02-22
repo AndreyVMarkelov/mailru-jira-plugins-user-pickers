@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,13 +20,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.apache.log4j.Logger;
 import org.apache.velocity.exception.VelocityException;
+
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.AutocompleteUniversalData;
 import ru.mail.jira.plugins.up.structures.HtmlEntity;
 import ru.mail.jira.plugins.up.structures.ISQLDataBean;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.avatar.Avatar.Size;
@@ -104,7 +108,7 @@ public class UserPickerAutocompleteService
                 List<ProjRole> projRoles = new ArrayList<ProjRole>();
                 try
                 {
-                    Utils.fillDataLists(settings.getRoleGroupFieldData(cfId), groups, projRoles);
+                    Utils.fillDataLists(settings.getRoleGroupFieldData(cfId), groups, projRoles, settings.isRestricted(cf.getId()));
                 }
                 catch (JSONException e)
                 {
@@ -135,7 +139,14 @@ public class UserPickerAutocompleteService
             }
             else
             {
-                storedData = settings.getStoredUsers(cfId);
+                if (settings.isRestricted(cfId))
+                {
+                    storedData = settings.getStoredUsers(cfId);
+                }
+                else
+                {
+                    storedData = Utils.getAllUsers();
+                }
             }
 
             if (storedData != null)

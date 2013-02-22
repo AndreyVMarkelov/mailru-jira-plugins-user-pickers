@@ -7,6 +7,7 @@ package ru.mail.jira.plugins.up;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 
 /**
@@ -23,6 +24,8 @@ public class PluginDataImpl
     private static final String PLUGIN_KEY = "MAIL_RU_USER_PICKER";
 
     private static final String POSTFIX_AUTOCOMPLETE = ".grcfisautocomp";
+
+    private static final String POSTFIX_RESTRICTED = ".grrestricted";
 
     /**
      * Plug-In settings factory.
@@ -135,5 +138,19 @@ public class PluginDataImpl
         }
 
         setStringProperty(cfId + ".grscf", sb.toString());
+    }
+
+    @Override
+    public boolean isRestricted(String cfId)
+    {
+        String value = getStringProperty(cfId + POSTFIX_RESTRICTED);
+
+        return Boolean.valueOf(value);
+    }
+
+    @Override
+    public void setRestricted(String cfId, boolean flag)
+    {
+        setStringProperty(cfId + POSTFIX_RESTRICTED, String.valueOf(flag));
     }
 }

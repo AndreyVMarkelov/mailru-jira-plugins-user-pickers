@@ -6,10 +6,12 @@
             #foreach ($singleValue in $value)
                 #if ($displayParameters && $displayParameters.nolink)
                     $textutils.htmlEncode($singleValue.displayName)#commaonly ($value)
-                #else
-                    <span class="tinylink">$userformat.formatUser($singleValue.name, 'profileLink', "multiuser_cf")</span>#commaonly ($value)
+                    #else
+                        <span class="tinylink">$userformat.formatUser($singleValue.name, 'profileLink', "multiuser_cf")</span>
+                        #commaonly ($value)
                 #end
             #end
         </div>
     #end
 #end
+    

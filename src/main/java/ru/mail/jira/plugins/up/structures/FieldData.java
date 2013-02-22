@@ -23,6 +23,7 @@ public class FieldData
     private boolean isAllProjects;
     private List<String> projects;
     private boolean isAutocomplete;
+    private boolean isRestricted;
 
     public FieldData(
         String fieldId,
@@ -90,6 +91,16 @@ public class FieldData
     public void setAutocomplete(boolean isAutocomplete)
     {
         this.isAutocomplete = isAutocomplete;
+    }
+
+    public boolean isRestricted()
+    {
+        return isRestricted;
+    }
+
+    public void setRestricted(boolean isRestricted)
+    {
+        this.isRestricted = isRestricted;
     }
 
     @Override

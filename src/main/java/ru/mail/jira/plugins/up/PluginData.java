@@ -39,6 +39,16 @@ public interface PluginData
     void setAutocompleteView(String cfId, boolean flag);
 
     /**
+     * Is restricted
+     */
+    boolean isRestricted(String cfId);
+    
+    /**
+     * Set restricted.
+     */
+    void setRestricted(String cfId, boolean flag);
+
+    /**
      * Store highlighted role group field Data.
      */
     void storeHighlightedRoleGroupFieldData(String cfId, String data);

@@ -1,14 +1,17 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import ru.mail.jira.plugins.up.common.Utils;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -22,6 +25,7 @@ import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
+
 
 /**
  * Single selected users field.
@@ -45,40 +49,39 @@ public class SelectedUsersCf extends UserCFType
     /**
      * Constructor.
      */
-    public SelectedUsersCf(
-        CustomFieldValuePersister customFieldValuePersister,
+    public SelectedUsersCf(CustomFieldValuePersister customFieldValuePersister,
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService,
-        JiraBaseUrls jiraBaseUrls,
-        PluginData data,
-        UserManager userMgr,
+        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
+        PluginData data, UserManager userMgr,
         com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(
-            customFieldValuePersister,
-            new UserConverterImpl(userMgr),
-            genericConfigManager,
-            applicationProperties,
-            authenticationContext,
-            searchService,
-            jiraBaseUrls);
+        super(customFieldValuePersister, new UserConverterImpl(userMgr),
+            genericConfigManager, applicationProperties, authenticationContext,
+            searchService, jiraBaseUrls);
         this.data = data;
         this.userMgr = userMgr;
         this.baseUrl = appProp.getBaseUrl();
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(
-        Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
+    public Map<String, Object> getVelocityParameters(Issue issue,
+        CustomField field, FieldLayoutItem fieldLayoutItem)
     {
-        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field,
+            fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
-        Set<String> users = data.getStoredUsers(field.getId());
+        Set<String> users;
+        if (data.isRestricted(field.getId()))
+        {
+            users = data.getStoredUsers(field.getId());
+        }
+        else
+        {
+            users = Utils.getAllUsers();
+        }
         for (String user : users)
         {
             User userObj = userMgr.getUserObject(user);
@@ -88,11 +91,13 @@ public class SelectedUsersCf extends UserCFType
             }
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
+            new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
+        params.put("isrestricted", data.isRestricted(field.getId()));
         Utils.addViewAndEditParameters(params, field.getId());
 
         return params;

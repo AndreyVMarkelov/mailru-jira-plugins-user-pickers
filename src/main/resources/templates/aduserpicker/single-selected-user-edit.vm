@@ -1,46 +1,47 @@
 ## Created by Andrey Markelov 11-11-2012.
 ## Copyright Mail.Ru Group 2012. All rights reserved.
 #if($canView)
-	#if($canEdit)
+    #if($canEdit)
         #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
         #if ($isautocomplete)
-        		<div class="cf-single-up-autocomplete" input-id="$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
-        			<div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
-        				<input class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" autocomplete="off">
-        				<a href="javascript:upChooseValFromNewWindow('$customField.id', '$baseUrl', '$customField.id');" class="popup-trigger">
-        				<img height="16" src="$baseUrl/images/icons/filter_public.gif" title="Select value" width="16"></a>
-        				<div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
-        			</div>
-        		</div>
-        #else
-            <select id="$customField.id" name="$customField.id">
-        		#foreach($entry in $map.entrySet())
-        			<option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
-        		#end
-        		<option #if(!$value)selected="selected"#end></option>
-            </select>
+            <div class="cf-single-up-autocomplete" input-id="$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
+                <div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
+                    <input class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" autocomplete="off">
+                        <a href="javascript:upChooseValFromNewWindow('$customField.id', '$baseUrl', '$customField.id', $isrestricted);" class="popup-trigger">
+                            <img height="16" src="$baseUrl/images/icons/filter_public.gif" title="Select value" width="16"></a>
+                            <div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
+</div>
+</div>
+#else
+    <select id="$customField.id" name="$customField.id">
+        #foreach($entry in $map.entrySet())
+            <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+        #end
+        <option #if(!$value)selected="selected"#end></option>
+    </select>
         #end
         #customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
-	#else
-		#if($value && $value != "")
-    		#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
-    		<span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
-    			<input style="background-color: #CCCCCC" class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
-    		</span>
-    		#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
-		#else
-			<input class="hidden" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
-		#end
-	#end
+        #else
+            #if($value && $value != "")
+                #customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+                <span title="$i18n.getText("jrole-group-usercf.restricted.hint")">
+                    <input style="background-color: #CCCCCC" class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
+</span>
+#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
 #else
-	#if ($isautocomplete)
-		<input class="hidden" value="$!value" type="text" name="$customField.id" id="$customField.id">
-	#else
-		<select class="hidden" id="$customField.id" name="$customField.id">
-    		#foreach($entry in $map.entrySet())
-    			<option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
-    		#end
-    		<option #if(!$value)selected="selected"#end></option>
-        </select>
-	#end
+    <input class="hidden" value="$!value" type="text" name="$customField.id" id="$customField.id" readonly>
+            #end
+    #end
+    #else
+        #if ($isautocomplete)
+            <input class="hidden" value="$!value" type="text" name="$customField.id" id="$customField.id">
+                #else
+                    <select class="hidden" id="$customField.id" name="$customField.id">
+                        #foreach($entry in $map.entrySet())
+                            <option #if($value && $entry.key == $value)selected="selected"#end value="$entry.key">$entry.value</option>
+                        #end
+                        <option #if(!$value)selected="selected"#end></option>
+                    </select>
+        #end
 #end
+    

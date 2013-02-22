@@ -13,9 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+
 import org.apache.log4j.Logger;
+
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.avatar.Avatar.Size;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -110,19 +113,19 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles);
+            Utils.fillDataLists(data.getRoleGroupFieldData(field.getId()), groups, projRoles, data.isRestricted(field.getId()));
         }
         catch (JSONException e)
         {
             log.error("AdRoleGroupUserCfService::getVelocityParameters - Incorrect field data", e);
             // --> impossible
         }
-
+         
         List<String> highlightedGroups = new ArrayList<String>();
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles);
+            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles, data.isRestricted(field.getId()));
         }
         catch (JSONException e)
         {

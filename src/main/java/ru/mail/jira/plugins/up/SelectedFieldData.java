@@ -37,6 +37,11 @@ public class SelectedFieldData
     private boolean isAutocomplete;
 
     /**
+     * Is restricted?
+     */
+    private boolean isRestricted;
+
+    /**
      * Projects.
      */
     private List<String> projects;
@@ -121,6 +126,16 @@ public class SelectedFieldData
     public void setProjects(List<String> projects)
     {
         this.projects = projects;
+    }
+
+    public boolean isRestricted()
+    {
+        return isRestricted;
+    }
+
+    public void setRestricted(boolean isRestricted)
+    {
+        this.isRestricted = isRestricted;
     }
 
     @Override
