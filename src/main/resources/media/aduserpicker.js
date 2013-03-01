@@ -2,8 +2,7 @@
 // Copyright Mail.Ru Group 2012. All rights reserved.
 
 //--> init settings dialog
-function initSettingsDlg(baseUrl, cfId)
-{
+function initSettingsDlg(baseUrl, cfId) {
     var res = "";
     jQuery.ajax({
         url: baseUrl + "/rest/rolegroupusercfws/1.0/usrpickerssrv/initsettingsdlg",
@@ -28,8 +27,7 @@ function initSettingsDlg(baseUrl, cfId)
 }
 
 //--> init selected settings dialog
-function initSelectedSettingsDlg(baseUrl, cfId)
-{
+function initSelectedSettingsDlg(baseUrl, cfId) {
     var res = "";
     jQuery.ajax({
         url: baseUrl + "/rest/rolegroupusercfws/1.0/usrpickerssrv/initselectedsettingsdlg",
@@ -58,8 +56,7 @@ function configureSingleField(event, baseUrl, cfId) {
     event.preventDefault();
 
     var dialogBody = initSettingsDlg(baseUrl, cfId);
-    if (!dialogBody)
-    {
+    if (!dialogBody) {
         return;
     }
 
@@ -112,8 +109,7 @@ function configureSelectedSingleField(event, baseUrl, cfId) {
     event.preventDefault();
  
     var dialogBody = initSelectedSettingsDlg(baseUrl, cfId);
-    if (!dialogBody)
-    {
+    if (!dialogBody) {
         return;
     }
 
@@ -264,22 +260,19 @@ function adHighlightedRolesSwitchClick() {
 //<--
 
 function selectAndReturnValue(value, returnId) {
-	var returnElem = window.opener.jQuery("#" + returnId);
+    var returnElem = window.opener.jQuery("#" + returnId);
 
-	if (returnElem.length > 0) {
-		if ('INPUT' == returnElem.attr('tagName').toString()) {
-			returnElem.val(value);
-			returnElem.trigger('input');
-		} else if ('SELECT' == returnElem.attr('tagName').toString()) {
-			var option = window.opener.jQuery("#" + returnId
-					+ " option:contains(" + value + ")");
-			if (option != null) {
-				option.attr('selected', 'selected');
-				returnElem.change();
-			}
-		}
-
-	}
-	window.close();
+    if (returnElem.length > 0) {
+        if ('INPUT' == returnElem.attr('tagName').toString()) {
+            returnElem.val(value);
+            returnElem.trigger('input');
+        } else if ('SELECT' == returnElem.attr('tagName').toString()) {
+            var option = window.opener.jQuery("#" + returnId + " option:contains(" + value + ")");
+            if (option != null) {
+                option.attr('selected', 'selected');
+                returnElem.change();
+            }
+        }
+    }
+    window.close();
 };
-
