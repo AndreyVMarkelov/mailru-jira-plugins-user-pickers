@@ -14,7 +14,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.userpickers:jrole-grou
             </thead>
             <tbody>
                 #foreach ($value in $action.cfValues.keySet())
-                    <tr id="value_row_$value" title="$action.getText('jrole-group-usercf.userpicker.hint', $value)" onclick="javascript:selectAndReturnValue(getElementById('id_$value').getAttribute('value'), '$returnid');">
+                    <tr id="value_row_$value" title="$action.getText('jrole-group-usercf.userpicker.hint', $value)" onclick="javascript:mail_ru_up_selectAndReturnValue(getElementById('id_$value').getAttribute('value'), '$returnid');">
                         <td class="hidden">
                             <div id="id_$value" value="$value" style="visibility: hidden"></div>
                         </td>

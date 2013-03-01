@@ -7,7 +7,7 @@
             <div class="cf-single-up-autocomplete" input-id="$customField.id" cf-id="$customField.id" issue-id="$!issue.key" cf-base-url="$baseUrl">
                 <div class="ajax_autocomplete atlassian-autocomplete" id="${customField.id}_container">
                     <input class="text long-field" value="$!value" type="text" name="$customField.id" id="$customField.id" autocomplete="off">
-                        <a href="javascript:upChooseValFromNewWindow('$customField.id', '$baseUrl', '$customField.id', $isrestricted);" class="popup-trigger">
+                        <a href="javascript:mail_ru_up_upChooseValFromNewWindow('$customField.id', '$baseUrl', '$customField.id', $isrestricted);" class="popup-trigger">
                             <img height="16" src="$baseUrl/images/icons/filter_public.gif" title="Select value" width="16"></a>
                             <div class="description">$i18n.getText("jrole-group-usercf.autocomp.hint")</div>
 </div>
