@@ -263,10 +263,10 @@ function adHighlightedRolesSwitchClick() {
 }
 //<--
 
-function selectAndReturnValue(value, returnId) {
-	var returnElem = window.opener.jQuery("#" + returnId);
+function ru_mail_up_selectAndReturnValue(value, returnId) {
+    var returnElem = window.opener.jQuery("#" + returnId);
 
-	if (returnElem.length > 0) {
+    if (returnElem.length > 0) {
 		if ('INPUT' == returnElem.prop('tagName').toString()) {
 			returnElem.val(value);
 			returnElem.trigger('input');
