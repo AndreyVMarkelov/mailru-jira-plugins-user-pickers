@@ -1,0 +1,11 @@
+# JIRA plugins gitignore
+# ignore all files except src/, README.MD, .gitignore and pom.xml
+
+.classpath
+.project
+target/
+bin/
+test/
+.settings
+
+!.gitignore
