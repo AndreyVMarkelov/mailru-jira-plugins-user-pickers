@@ -132,39 +132,31 @@
 	</customfield-searcher>
 	<!-- End -->
 
-	<web-item key="role-group-usercf-configuration" name="Role Group User Fields configuration"
-		section="system.admin/globalsettings" weight="95">
-		<label key="jrole-group-usercf.admin.title" />
-		<condition
-			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-			<param name="permission">admin</param>
-		</condition>
-		<link linkId="role-group-usercf-configuration">/secure/UserPickerAdminAction!default.jspa</link>
-	</web-item>
+    <web-item key="role-group-usercf-configuration" name="Role Group User Fields configuration" section="admin_system_menu/top_system_section" weight="95">
+        <label key="jrole-group-usercf.admin.title" />
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+            <param name="permission">admin</param>
+        </condition>
+        <link linkId="role-group-usercf-configuration">/secure/UserPickerAdminAction!default.jspa</link>
+    </web-item>
 
-	<webwork1 key="role-group-usercf-action" name="Role Group User Fields configure action"
-		class="java.lang.Object">
-		<actions>
-			<action name="ru.mail.jira.plugins.up.UserPickerAdminAction"
-				alias="UserPickerAdminAction">
-				<view name="input">/templates/aduserpicker/adrolegroupuser-config.vm
-				</view>
-				<view name="success">/templates/aduserpicker/adrolegroupuser-config.vm
-				</view>
-			</action>
-		</actions>
-	</webwork1>
+    <webwork1 key="role-group-usercf-action" name="Role Group User Fields configure action" class="java.lang.Object">
+        <actions>
+            <action name="ru.mail.jira.plugins.up.UserPickerAdminAction" alias="UserPickerAdminAction">
+                <view name="input">/templates/aduserpicker/adrolegroupuser-config.vm</view>
+                <view name="success">/templates/aduserpicker/adrolegroupuser-config.vm</view>
+            </action>
+        </actions>
+    </webwork1>
 
-	<webwork1 key="mailru-usercf-userpicker-action" name="usercf user picker"
-		class="java.lang.Object">
-		<actions>
-			<action name="ru.mail.jira.plugins.up.MailRuUserPickerValuePickerAction"
-				alias="MailRuUserPickerValuePickerAction">
-				<view name="input">/templates/aduserpicker/usercf-user-picker.vm</view>
-				<view name="success">/templates/aduserpicker/usercf-user-picker.vm</view>
-			</action>
-		</actions>
-	</webwork1>
+    <webwork1 key="mailru-usercf-userpicker-action" name="usercf user picker" class="java.lang.Object">
+        <actions>
+            <action name="ru.mail.jira.plugins.up.MailRuUserPickerValuePickerAction" alias="MailRuUserPickerValuePickerAction">
+                <view name="input">/templates/aduserpicker/usercf-user-picker.vm</view>
+                <view name="success">/templates/aduserpicker/usercf-user-picker.vm</view>
+            </action>
+        </actions>
+    </webwork1>
 
 	<web-resource key="jrole-group-usercf-field"
 		name="Role Group User Fields Resources For Fields">

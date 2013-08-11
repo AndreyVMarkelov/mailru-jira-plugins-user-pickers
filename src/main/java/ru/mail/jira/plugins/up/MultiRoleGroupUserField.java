@@ -184,11 +184,8 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         return params;
     }
 
-    private String getUserAvatarUrl(User user)
-    {
-        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(
-            user, user.getName(), Size.SMALL);
-
+    private String getUserAvatarUrl(User user) {
+        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(user, user.getName(), Size.SMALL);
         return uri.toString();
     }
 }

@@ -1,5 +1,6 @@
-## Created by Andrey Markelov 12-11-2012.
-## Copyright Mail.Ru Group 2012. All rights reserved.
+#disable_html_escaping()
+#searcherHeader ($customField)
 #if ($value)
-    <span class="tinylink">$userformat.formatUser($value.name, 'profileLink', "user_cf")</span>
+$value
 #end
+#searcherFooter ($customField)

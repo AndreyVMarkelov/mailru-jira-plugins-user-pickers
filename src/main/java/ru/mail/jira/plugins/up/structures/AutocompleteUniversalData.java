@@ -8,10 +8,6 @@ package ru.mail.jira.plugins.up.structures;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.jcip.annotations.Immutable;
-
-
-@Immutable
 @XmlRootElement
 public class AutocompleteUniversalData extends AbstractSQLDataBean
 {

@@ -1,6 +1,8 @@
-## Created by Andrey Markelov 11-11-2012.
-## Copyright Mail.Ru Group 2012. All rights reserved.
-#if($canView)
+#disable_html_escaping()
 #if ($value)
-    <span class="tinylink">$userformat.formatUser($value.name, 'profileLink', "user_cf")</span>
-#end#end
+    #if ($displayParameters && $displayParameters.nolink)
+        $textutils.htmlEncode($value.displayName)
+    #else
+    <span class="tinylink">$userformat.formatUserkey($value.key, 'profileLink', "user_cf")</span>
+    #end
+#end

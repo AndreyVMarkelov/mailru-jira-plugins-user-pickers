@@ -29,6 +29,7 @@ import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersist
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -77,7 +78,8 @@ public class RoleGroupUserField extends UserCFType
         UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
         UserHistoryManager userHistoryManager, PluginData data,
         GroupManager grMgr, ProjectRoleManager projectRoleManager,
-        UserManager userMgr, com.atlassian.sal.api.ApplicationProperties appProp)
+        UserManager userMgr,
+        com.atlassian.sal.api.ApplicationProperties appProp)
     {
         super(customFieldValuePersister, new UserConverterImpl(userMgr),
             genericConfigManager, applicationProperties, authenticationContext,
@@ -89,14 +91,13 @@ public class RoleGroupUserField extends UserCFType
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(Issue issue,
-        CustomField field, FieldLayoutItem fieldLayoutItem)
-    {
-        Map<String, Object> params = super.getVelocityParameters(issue, field,
-            fieldLayoutItem);
+    public Map<String, Object> getVelocityParameters(
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         /* Load custom field parameters */
-
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
@@ -129,24 +130,22 @@ public class RoleGroupUserField extends UserCFType
         }
 
         /* Build possible values list */
-
-        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr,
-            projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        Project pr = null;
+        if (issue != null) {
+            pr = issue.getProjectObject();
+        }
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, pr, groups, projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
-        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr,
-            projectRoleManager, issue.getProjectObject(), highlightedGroups,
-            highlightedProjRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, pr, highlightedGroups, highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
 
         Map<String, String> highlightedUsersSorted = new LinkedHashMap<String, String>();
         Map<String, String> otherUsersSorted = new LinkedHashMap<String, String>();
-        for (User user : highlightedUsers)
-        {
+        for (User user : highlightedUsers) {
             highlightedUsersSorted.put(user.getName(), user.getDisplayName());
         }
-        for (User user : possibleUsers)
-        {
+        for (User user : possibleUsers) {
             otherUsersSorted.put(user.getName(), user.getDisplayName());
         }
 
