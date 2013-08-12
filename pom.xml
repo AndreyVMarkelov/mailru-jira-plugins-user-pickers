@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -10,8 +9,8 @@
     <version>2.0.12</version>
 
     <organization>
-        <name>Andrey Markelov|Mail.Ru Group</name>
-        <url>http://corp.mail.ru/en</url>
+        <name>Andrey Markelov</name>
+        <url>http://ru.linkedin.com/in/andreymarkelov/</url>
     </organization>
 
     <name>Custom User Pickers</name>
@@ -24,7 +23,7 @@
             <artifactId>atlassian-jira</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -87,14 +86,7 @@
 
     <properties>
         <jira.version>5.0</jira.version>
-        <jira.data.version>5.0</jira.data.version>
-        <amps.version>4.0</amps.version>
-        <!-- <jira.version>4.3.4</jira.version>
-        <jira.data.version>4.3</jira.data.version>
-        <amps.version>4.0</amps.version-->
-        <!-- <jira.version>4.4.3</jira.version>
-        <jira.data.version>4.4</jira.data.version>
-        <amps.version>4.0</amps.version-->
+        <amps.version>4.1.6</amps.version>
+        <useFastdevCli>false</useFastdevCli>
     </properties>
-
 </project>

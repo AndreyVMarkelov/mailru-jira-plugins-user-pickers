@@ -5,6 +5,7 @@
 package ru.mail.jira.plugins.up;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,6 +60,11 @@ public class RoleGroupUserField
     private final GroupManager grMgr;
 
     /**
+     * User manager.
+     */
+    private final UserManager userMgr;
+
+    /**
      * Project role manager.
      */
     private final ProjectRoleManager projectRoleManager;
@@ -92,6 +98,7 @@ public class RoleGroupUserField
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
         this.baseUrl = appProp.getBaseUrl();
+        this.userMgr = userMgr;
     }
 
     @Override
@@ -166,6 +173,7 @@ public class RoleGroupUserField
         params.put("isrestricted", data.isRestricted(field.getId()));
         params.put("highlightedUsersSorted", highlightedUsersSorted);
         params.put("otherUsersSorted", otherUsersSorted);
+        params.put("map", otherUsersSorted);
 
         Utils.addViewAndEditParameters(params, field.getId());
 

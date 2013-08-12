@@ -102,6 +102,7 @@
                                                             #end
                                                         </td>
                                                         <td width="10%">
+                                                            <a href="$baseUrl//secure/ApplySettingsUserPickerAction!default.jspa">deded</a>
                                                             <a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a>
                                                         </td>
                                                     </tr>
