@@ -1,10 +1,5 @@
-## Created by Andrey Markelov 11-11-2012.
-## Copyright Mail.Ru Group 2012. All rights reserved.
+#searcherHeader ($customField)
 #if ($value)
-    #if ($urlPrefix && $urlPrefix != '')
-        <a href="${urlPrefix}">$textutils.htmlEncode($value.displayName)</a>
-        #else
-            $value.displayName
-    #end
+$value
 #end
-    
+#searcherFooter ($customField)

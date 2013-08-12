@@ -10,7 +10,9 @@ public class ApplySettingsUserPickerAction extends JiraWebActionSupport {
 
     @Override
     public String doDefault() throws Exception {
-        return super.doDefault();
+        
+
+        return SUCCESS;
     }
 
     @Override
