@@ -1,7 +1,3 @@
-/* Created by Dmitry Miroshnichenko 11-02-2013. Copyright Mail.Ru Group 2013. All
- rights reserved. */
-
-// constants here
 var upCfValsMethod = 'getcfvals';
 var upUserHtmlMethod = 'getuserhtml';
 var upRepresentationTagPostfix = '-userpicker-representation';
@@ -12,94 +8,83 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 (function($) {
     $.fn.upcfautocomplete = function(cfId, issueId, baseUrl, restUrlPart, minlength) {
         callback = typeof minlength == "function" ? minlength
-				: (typeof callback == "function" ? callback : function() {
-				});
-		minlength = !isNaN(Number(minlength)) ? minlength
-				: UP_AUTOCOMPLETE_STARTS_AFTER;
-		var getValsUrl = baseUrl + restUrlPart + upCfValsMethod;
-		var getIssueHtmlUrl = baseUrl + restUrlPart + upUserHtmlMethod;
-		var input = this;
-		input[0].lastSelectedValue = input.val();
+            : (typeof callback == "function" ? callback : function() {
+        });
+        minlength = !isNaN(Number(minlength)) ? minlength : UP_AUTOCOMPLETE_STARTS_AFTER;
+        var getValsUrl = baseUrl + restUrlPart + upCfValsMethod;
+        var getIssueHtmlUrl = baseUrl + restUrlPart + upUserHtmlMethod;
+        var input = this;
+        input[0].lastSelectedValue = input.val();
 
-		var listDiv = $(document.createElement("div"));
+        var listDiv = $(document.createElement("div"));
 
-		listDiv.css({
-			top : "24px"
-		});
-		listDiv.addClass("suggestions");
+        listDiv.css({
+            top : "24px"
+        });
+        listDiv.addClass("suggestions");
 
-		this.after(listDiv);
+        this.after(listDiv);
 
-		listDiv.hide();
-		function hideDropDown() {
-			listDiv.hide();
-			$(document).unbind("click", hideDropDown);
-		}
-		function suggest() {
-			var currentTextfieldValue = input.val();
+        listDiv.hide();
+        function hideDropDown() {
+            listDiv.hide();
+            $(document).unbind("click", hideDropDown);
+        }
+        function suggest() {
+            var currentTextfieldValue = input.val();
 
-			var lastQuery = input[0].lastQuery ? input[0].lastQuery
-					.toLowerCase() : "";
-			var lastSelectedValue = input[0].lastQuery ? input[0].lastSelectedValue
-					.toLowerCase()
-					: "";
-			if (currentTextfieldValue.length >= minlength
-					&& currentTextfieldValue.trim().toLowerCase() != lastQuery
-					&& currentTextfieldValue.trim().toLowerCase() != lastSelectedValue) {
+            var lastQuery = input[0].lastQuery ? input[0].lastQuery.toLowerCase() : "";
+            var lastSelectedValue = input[0].lastQuery ? input[0].lastSelectedValue.toLowerCase() : "";
+            if (currentTextfieldValue.length >= minlength
+                    && jQuery.trim(currentTextfieldValue).toLowerCase() != lastQuery
+                    && jQuery.trim(currentTextfieldValue).toLowerCase() != lastSelectedValue) {
+                jQuery.ajax({
+                    url : getValsUrl,
+                    type : "POST",
+                    dataType : "json",
+                    data : {
+                        "cf_id" : cfId,
+                        "issue_id" : issueId,
+                        "pattern" : currentTextfieldValue,
+                        "rowcount" : UP_MAX_DISPLAY_ROWS + 1
+                        // we need to know if there are more elements to
+                        // announce user
+                    },
+                    async : false,
+                    error : function(xhr, ajaxOptions, thrownError) {
+                        handleError(xhr, ajaxOptions, thrownError)
+                    },
+                    success : function(data) {
+                        var html = "<div class=\"aui-list\">";
+                        currentTextfieldValue = jQuery.trim(currentTextfieldValue).toLowerCase();
+                        if (data != null) {
+                            var listBody = "<ul class=\"aui-list-section suggestions_ul_" + cfId + "\">";
 
-				jQuery
-						.ajax({
-							url : getValsUrl,
-							type : "POST",
-							dataType : "json",
-							data : {
-								"cf_id" : cfId,
-								"issue_id" : issueId,
-								"pattern" : currentTextfieldValue,
-								"rowcount" : UP_MAX_DISPLAY_ROWS + 1
-							// we need to know if there are more elements to
-							// announce user
-							},
-							async : false,
-							error : function(xhr, ajaxOptions, thrownError) {
-								handleError(xhr, ajaxOptions, thrownError)
-							},
-							success : function(data) {
-								var html = "<div class=\"aui-list\">";
-								currentTextfieldValue = currentTextfieldValue
-										.trim().toLowerCase();
-								if (data != null) {
+                            var displayRowsCount = 0;
+                            var i = 0;
+                            while (i < data.length
+                                   && displayRowsCount < UP_MAX_DISPLAY_ROWS) {
 
-									var listBody = "<ul class=\"aui-list-section suggestions_ul_"
-											+ cfId + "\">";
+                            var obj_name = data[i].name;
+                            var obj_type = data[i].type;
+                            var obj_typeimage = data[i].typeimage;
+                            var obj_descr = data[i].description;
+                            var obj_state = data[i].state;
+                            var obj_stateimage = data[i].stateimage;
+                            var obj_preference = data[i].preference;
+                            var obj_preferenceimage = data[i].preferenceimage;
 
-									var displayRowsCount = 0;
-									var i = 0;
-									while (i < data.length
-											&& displayRowsCount < UP_MAX_DISPLAY_ROWS) {
+                            var searchableData = obj_name;
+                            var tag_title = obj_name;
+                            if (obj_descr) {
+                                searchableData += " - " + obj_descr;
+                                tag_title += " - " + obj_descr;
+                            }
 
-										var obj_name = data[i].name;
-										var obj_type = data[i].type;
-										var obj_typeimage = data[i].typeimage;
-										var obj_descr = data[i].description;
-										var obj_state = data[i].state;
-										var obj_stateimage = data[i].stateimage;
-										var obj_preference = data[i].preference;
-										var obj_preferenceimage = data[i].preferenceimage;
-
-										var searchableData = obj_name;
-										var tag_title = obj_name;
-										if (obj_descr) {
-											searchableData += " - " + obj_descr;
-											tag_title += " - " + obj_descr;
-										}
-
-										var startIndex = searchableData
-												.toLowerCase().indexOf(
-														currentTextfieldValue);
-										if (startIndex != -1) {
-											displayRowsCount++;
-											var dataToList = "";
+                            var startIndex = searchableData.toLowerCase().indexOf(currentTextfieldValue);
+                            if (startIndex != -1) {
+                                displayRowsCount++;
+                                var dataToList = "";
 
 											var lastIndex = startIndex;
 											var dataPos = 0;
@@ -336,42 +321,41 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 })(jQuery);
 
 function removeDependantUser(cfId, user) {
-	var element = jQuery('#internal-' + cfId + '_' + user);
+    var element = jQuery('#internal-' + cfId + '_' + user);
 
-	if (element.length == 1) {
-		element.remove();
-	}
+    if (element.length == 1) {
+        element.remove();
+    }
 
-	var associatedOption = jQuery('#' + cfId + '_' + user);
+    var associatedOption = jQuery('#' + cfId + '_' + user);
 
-	if (associatedOption.length == 1) {
-		associatedOption.remove();
-	}
+    if (associatedOption.length == 1) {
+        associatedOption.remove();
+    }
 };
 
 function setDependatUsers(restUrl, cfId, user) {
-	jQuery.ajax({
-		url : restUrl + upUserHtmlMethod,
-		type : "POST",
-		dataType : "json",
-		data : {
-			"cf_id" : cfId,
-			"cf_value" : user
-		},
-		async : false,
-		error : function(xhr, ajaxOptions, thrownError) {
-			handleError(xhr, ajaxOptions, thrownError)
-		},
-		success : function(data) {
-			if (jQuery('.' + cfId + upRepresentationTagPostfix).length > 0) {
-				if (data) {
-					var representation = jQuery('.' + cfId
-							+ upRepresentationTagPostfix);
-					if (representation.length == 1) {
-						representation.html(representation.html() + data.html);
-					}
-				}
-			}
-		}
-	});
+    jQuery.ajax({
+        url : restUrl + upUserHtmlMethod,
+        type : "POST",
+        dataType : "json",
+        data : {
+            "cf_id" : cfId,
+            "cf_value" : user
+        },
+        async : false,
+        error : function(xhr, ajaxOptions, thrownError) {
+            handleError(xhr, ajaxOptions, thrownError)
+        },
+        success : function(data) {
+            if (jQuery('.' + cfId + upRepresentationTagPostfix).length > 0) {
+                if (data) {
+                    var representation = jQuery('.' + cfId + upRepresentationTagPostfix);
+                    if (representation.length == 1) {
+                        representation.html(representation.html() + data.html);
+                    }
+                }
+            }
+        }
+    });
 };

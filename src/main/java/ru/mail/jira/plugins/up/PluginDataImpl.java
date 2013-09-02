@@ -1,7 +1,3 @@
-/*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
- */
 package ru.mail.jira.plugins.up;
 
 import java.util.LinkedHashSet;
@@ -15,9 +11,7 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
  * 
  * @author Andrey Markelov
  */
-public class PluginDataImpl
-    implements PluginData
-{
+public class PluginDataImpl implements PluginData {
     /**
      * PlugIn key.
      */
