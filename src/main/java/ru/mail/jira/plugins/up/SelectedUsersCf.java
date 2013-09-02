@@ -24,6 +24,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 
 
@@ -46,20 +47,26 @@ public class SelectedUsersCf extends UserCFType
 
     private final String baseUrl;
 
-    /**
-     * Constructor.
-     */
-    public SelectedUsersCf(CustomFieldValuePersister customFieldValuePersister,
-        GenericConfigManager genericConfigManager,
-        ApplicationProperties applicationProperties,
-        JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
-        PluginData data, UserManager userMgr,
-        com.atlassian.sal.api.ApplicationProperties appProp)
-    {
-        super(customFieldValuePersister, new UserConverterImpl(userMgr),
-            genericConfigManager, applicationProperties, authenticationContext,
-            searchService, jiraBaseUrls);
+    public SelectedUsersCf(
+            CustomFieldValuePersister customFieldValuePersister,
+            GenericConfigManager genericConfigManager,
+            ApplicationProperties applicationProperties,
+            JiraAuthenticationContext authenticationContext,
+            UserPickerSearchService searchService,
+            JiraBaseUrls jiraBaseUrls,
+            UserHistoryManager userHistoryManager,
+            PluginData data,
+            UserManager userMgr,
+            com.atlassian.sal.api.ApplicationProperties appProp) {
+        super(
+            customFieldValuePersister,
+            new UserConverterImpl(userMgr),
+            genericConfigManager,
+            applicationProperties,
+            authenticationContext,
+            searchService,
+            jiraBaseUrls,
+            userHistoryManager);
         this.data = data;
         this.userMgr = userMgr;
         this.baseUrl = appProp.getBaseUrl();

@@ -5,7 +5,6 @@
 package ru.mail.jira.plugins.up;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,9 +29,11 @@ import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersist
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 
@@ -71,21 +72,19 @@ public class RoleGroupUserField
 
     private final String baseUrl;
 
-    /**
-     * Constructor.
-     */
     public RoleGroupUserField(
-        CustomFieldValuePersister customFieldValuePersister,
-        GenericConfigManager genericConfigManager,
-        ApplicationProperties applicationProperties,
-        JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService,
-        JiraBaseUrls jiraBaseUrls,
-        PluginData data, GroupManager grMgr,
-        ProjectRoleManager projectRoleManager,
-        UserManager userMgr,
-        com.atlassian.sal.api.ApplicationProperties appProp)
-    {
+            CustomFieldValuePersister customFieldValuePersister,
+            GenericConfigManager genericConfigManager,
+            ApplicationProperties applicationProperties,
+            JiraAuthenticationContext authenticationContext,
+            UserPickerSearchService searchService,
+            JiraBaseUrls jiraBaseUrls,
+            UserHistoryManager userHistoryManager,
+            PluginData data,
+            GroupManager grMgr,
+            ProjectRoleManager projectRoleManager,
+            UserManager userMgr,
+            com.atlassian.sal.api.ApplicationProperties appProp) {
         super(
             customFieldValuePersister,
             new UserConverterImpl(userMgr),
@@ -93,13 +92,15 @@ public class RoleGroupUserField
             applicationProperties,
             authenticationContext,
             searchService,
-            jiraBaseUrls);
+            jiraBaseUrls,
+            userHistoryManager);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
         this.baseUrl = appProp.getBaseUrl();
         this.userMgr = userMgr;
     }
+
 
     @Override
     public Map<String, Object> getVelocityParameters(
@@ -140,17 +141,21 @@ public class RoleGroupUserField
 
         /* Build possible values list */
 
+        Project proj = null;
+        if (issue != null) {
+            proj = issue.getProjectObject();
+        }
         SortedSet<User> possibleUsers = Utils.buildUsersList(
             grMgr,
             projectRoleManager,
-            issue.getProjectObject(),
+            proj,
             groups,
             projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
         SortedSet<User> highlightedUsers = Utils.buildUsersList(
             grMgr,
             projectRoleManager,
-            issue.getProjectObject(),
+            proj,
             highlightedGroups,
             highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);

@@ -1,3 +1,7 @@
+##disable_html_escaping() TODO REENABLE
+#if ($isKickass)
+    #userSearcher($customField.id $values $hasPermissionToPickUsers $suggestedUsers $placeholderText false false $customField.descriptionProperty.viewHtml)
+#else
 $!{auiparams.put("controlHeaderClass", "aui-field-userpicker")}
 #searcherEditHeader ($customField.id $customField.name)
     <div class="ajax_autocomplete" id="searcher-${customField.id}_container">
@@ -14,5 +18,6 @@ $!{auiparams.put("controlHeaderClass", "aui-field-userpicker")}
         #end
         <div class="description" id="searcher-${customField.id}_desc" style="display:none;">${i18n.getText('user.picker.ajax.desc')}</div>
     </div>
-#searcherEditFooter ($customField.id $customField.description)
+#searcherEditFooter ($customField.id $customField.descriptionProperty.viewHtml)
+#end
 $!{auiparams.clear()}

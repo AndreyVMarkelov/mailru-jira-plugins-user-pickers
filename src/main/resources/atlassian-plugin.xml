@@ -155,4 +155,10 @@
     <component-import key="applicationProperties">
         <interface>com.atlassian.sal.api.ApplicationProperties</interface>
     </component-import>
+    <component key="ComponentFactory" class="com.atlassian.jira.util.JiraComponentFactory">
+        <interface>com.atlassian.jira.util.ComponentFactory</interface>
+    </component>
+    <component key="ComponentLocator" class="com.atlassian.jira.util.JiraComponentLocator">
+        <interface>com.atlassian.jira.util.ComponentLocator</interface>
+    </component>
 </atlassian-plugin>

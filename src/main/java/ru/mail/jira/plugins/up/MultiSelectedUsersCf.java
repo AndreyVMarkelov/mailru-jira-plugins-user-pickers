@@ -57,17 +57,24 @@ public class MultiSelectedUsersCf extends MultiUserCFType
      */
     public MultiSelectedUsersCf(
         CustomFieldValuePersister customFieldValuePersister,
-        GenericConfigManager genericConfigManager, UserManager userMgr,
+        GenericConfigManager genericConfigManager,
+        UserManager userMgr,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
         UserPickerSearchService searchService,
         FieldVisibilityManager fieldVisibilityManager,
-        JiraBaseUrls jiraBaseUrls, PluginData data,
+        JiraBaseUrls jiraBaseUrls,
+        PluginData data,
         com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(customFieldValuePersister, genericConfigManager,
-            new MultiUserConverterImpl(userMgr), applicationProperties,
-            authenticationContext, searchService, fieldVisibilityManager,
+        super(
+            customFieldValuePersister,
+            genericConfigManager,
+            new MultiUserConverterImpl(userMgr),
+            applicationProperties,
+            authenticationContext,
+            searchService,
+            fieldVisibilityManager,
             jiraBaseUrls);
         this.userMgr = userMgr;
         this.data = data;
@@ -107,15 +114,17 @@ public class MultiSelectedUsersCf extends MultiUserCFType
             }
         }
 
-        Object issueValObj = issue.getCustomFieldValue(field);
-        Set<String> issueVal = Utils.convertList(issueValObj);
-        params.put("selectVal", Utils.convertSetToString(issueVal));
+        if (issue != null) {
+            Object issueValObj = issue.getCustomFieldValue(field);
+            Set<String> issueVal = Utils.convertList(issueValObj);
+            params.put("selectVal", Utils.convertSetToString(issueVal));
+            params.put("issueVal", issueVal);
+        }
 
         TreeMap<String, String> sorted_map = new TreeMap<String, String>(
             new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
-        params.put("issueVal", issueVal);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 

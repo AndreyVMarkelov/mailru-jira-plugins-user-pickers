@@ -151,14 +151,6 @@
                 <input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
             </td>
         </tr>
-        <tr>
-            <td valign="top">
-                <b>$i18n.getText("jrole-group-usercf.restrictionstatus")<b>
-</td>
-<td valign="top">
-    <input name="restricted-flag" type="checkbox" #if($isrestricted) checked #end />
-</td>
-</tr>
 </table>
 <input type="hidden" id="shares_data" name="shares_data" value='$storedShares'/>
 <input type="hidden" id="ad_highlighted_data" name="highlighted_data" value='$highlightedData'/>
