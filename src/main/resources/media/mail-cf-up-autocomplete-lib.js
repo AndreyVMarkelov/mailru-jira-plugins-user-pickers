@@ -39,40 +39,30 @@ var PREVENT_DEFAULT_FLAG = false; // firefox has problems with preventDefault
 		function suggest() {
 			var currentTextfieldValue = input.val();
 
-			var lastQuery = input[0].lastQuery ? input[0].lastQuery
-					.toLowerCase() : "";
-			var lastSelectedValue = input[0].lastQuery ? input[0].lastSelectedValue
-					.toLowerCase()
-					: "";
-			if (currentTextfieldValue.length >= minlength
-					&& currentTextfieldValue.trim().toLowerCase() != lastQuery
-					&& currentTextfieldValue.trim().toLowerCase() != lastSelectedValue) {
-
-				jQuery
-						.ajax({
-							url : getValsUrl,
-							type : "POST",
-							dataType : "json",
-							data : {
-								"cf_id" : cfId,
-								"issue_id" : issueId,
-								"pattern" : currentTextfieldValue,
-								"rowcount" : UP_MAX_DISPLAY_ROWS + 1
-							// we need to know if there are more elements to
-							// announce user
-							},
-							async : false,
-							error : function(xhr, ajaxOptions, thrownError) {
-								handleError(xhr, ajaxOptions, thrownError)
-							},
-							success : function(data) {
-								var html = "<div class=\"aui-list\">";
-								currentTextfieldValue = currentTextfieldValue
-										.trim().toLowerCase();
-								if (data != null) {
-
-									var listBody = "<ul class=\"aui-list-section suggestions_ul_"
-											+ cfId + "\">";
+            var lastQuery = input[0].lastQuery ? input[0].lastQuery.toLowerCase() : "";
+            var lastSelectedValue = input[0].lastQuery ? input[0].lastSelectedValue.toLowerCase() : "";
+            if (currentTextfieldValue.length >= minlength
+                    && jQuery.trim(currentTextfieldValue).toLowerCase() != lastQuery
+                    && jQuery.trim(currentTextfieldValue).toLowerCase() != lastSelectedValue) {
+                jQuery.ajax({
+                    url : getValsUrl,
+                    type : "POST",
+                    dataType : "json",
+                    data : {
+                        "cf_id" : cfId,
+                        "issue_id" : issueId,
+                        "pattern" : currentTextfieldValue,
+                        "rowcount" : UP_MAX_DISPLAY_ROWS + 1
+                    },
+                    async : false,
+                    error : function(xhr, ajaxOptions, thrownError) {
+                        handleError(xhr, ajaxOptions, thrownError)
+                    },
+                    success : function(data) {
+                        var html = "<div class=\"aui-list\">";
+                        currentTextfieldValue = jQuery.trim(currentTextfieldValue).toLowerCase();
+                        if (data != null) {
+                            var listBody = "<ul class=\"aui-list-section suggestions_ul_" + cfId + "\">";
 
 									var displayRowsCount = 0;
 									var i = 0;

@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>userpickers</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 
     <organization>
         <name>Andrey Markelov | Mail.Ru Group</name>
