@@ -141,7 +141,7 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 try
                 {
                     Utils.fillDataLists(data.getRoleGroupFieldData(cf.getId()),
-                        groups, projRoles, Consts.DO_NOT_RESTRICT_FLAG);
+                        groups, projRoles, true);
                 }
                 catch (JSONException e)
                 {
@@ -161,7 +161,7 @@ public class UserPickerAdminAction extends JiraWebActionSupport
                 {
                     Utils.fillDataLists(
                         data.getHighlightedRoleGroupFieldData(cf.getId()),
-                        highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
+                        highlightedGroups, highlightedProjRoles, true);
                 }
                 catch (JSONException e)
                 {

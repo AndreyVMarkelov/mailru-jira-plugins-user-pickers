@@ -125,6 +125,7 @@ public class MultiSelectedUsersCf extends MultiUserCFType
             new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
+
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 

@@ -16,7 +16,6 @@ import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
 
-import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
@@ -101,7 +100,7 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
-        baseUrl = appProp.getBaseUrl();
+        this.baseUrl = appProp.getBaseUrl();
     }
 
     private String getUserAvatarUrl(User user)
@@ -135,7 +134,7 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
+            Utils.fillDataLists(data.getHighlightedRoleGroupFieldData(field.getId()), highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
@@ -151,8 +150,6 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, groups, projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
         SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, highlightedGroups, highlightedProjRoles);
-        highlightedUsers.retainAll(possibleUsers);
-        possibleUsers.removeAll(highlightedUsers);
 
         Map<String, String> highlightedUsersSorted = new LinkedHashMap<String, String>();
         Map<String, String> otherUsersSorted = new LinkedHashMap<String, String>();
@@ -180,6 +177,15 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
         
+        usersAvatars = new HashMap<String, String>(allUsers.size());
+        for (User user : allUsers)
+        {
+            usersAvatars.put(user.getName(), getUserAvatarUrl(user));
+        }
+        params.put("usersAvatars", usersAvatars);
+
+        Utils.addViewAndEditParameters(params, field.getId());
+
         usersAvatars = new HashMap<String, String>(allUsers.size());
         for (User user : allUsers)
         {

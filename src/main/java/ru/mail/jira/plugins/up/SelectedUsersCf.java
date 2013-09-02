@@ -107,6 +107,8 @@ public class SelectedUsersCf extends UserCFType
         params.put("isrestricted", data.isRestricted(field.getId()));
         Utils.addViewAndEditParameters(params, field.getId());
 
+        Utils.addViewAndEditParameters(params, field.getId());
+
         return params;
     }
 }

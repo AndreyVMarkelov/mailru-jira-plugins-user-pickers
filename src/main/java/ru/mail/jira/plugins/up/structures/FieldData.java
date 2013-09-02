@@ -1,11 +1,13 @@
 /*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
+ * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
+ * rights reserved.
  */
 package ru.mail.jira.plugins.up.structures;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * This structure keeps custom field settings.
@@ -25,9 +27,7 @@ public class FieldData
     private boolean isAutocomplete;
     private boolean isRestricted;
 
-    public FieldData(
-        String fieldId,
-        String fieldName)
+    public FieldData(String fieldId, String fieldName)
     {
         this.fieldId = fieldId;
         this.fieldName = fieldName;
@@ -82,7 +82,7 @@ public class FieldData
     {
         this.projects = projects;
     }
-    
+
     public boolean isAutocomplete()
     {
         return isAutocomplete;
@@ -104,11 +104,11 @@ public class FieldData
     }
 
     @Override
-    public String toString()
-    {
-        return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName +
-            ", groups=" + groups + ", roles=" + roles + ", highlightedGroups=" +
-            highlightedGroups + ", highlightedRoles=" + highlightedRoles +
-            ", isAllProjects=" + isAllProjects + ", projects=" + projects + "]";
+    public String toString() {
+        return "FieldData[fieldId=" + fieldId + ", fieldName=" + fieldName
+            + ", groups=" + groups + ", roles=" + roles
+            + ", highlightedGroups=" + highlightedGroups
+            + ", highlightedRoles=" + highlightedRoles + ", isAllProjects="
+            + isAllProjects + ", projects=" + projects + "]";
     }
 }

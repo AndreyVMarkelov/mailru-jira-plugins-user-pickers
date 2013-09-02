@@ -24,6 +24,4 @@ public interface Consts
     String ELEMENTS_DIVIDER = ", ";
 
     String EMPTY_STRING = "";
-    
-    boolean DO_NOT_RESTRICT_FLAG = true;
 }

@@ -12,11 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.apache.log4j.Logger;
-
-import ru.mail.jira.plugins.up.common.Consts;
 import ru.mail.jira.plugins.up.common.Utils;
 import ru.mail.jira.plugins.up.structures.ProjRole;
+import org.apache.log4j.Logger;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -129,7 +127,7 @@ public class RoleGroupUserField
         {
             Utils.fillDataLists(
                 data.getHighlightedRoleGroupFieldData(field.getId()),
-                highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
+                highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
@@ -179,6 +177,8 @@ public class RoleGroupUserField
         params.put("highlightedUsersSorted", highlightedUsersSorted);
         params.put("otherUsersSorted", otherUsersSorted);
         params.put("map", otherUsersSorted);
+
+        Utils.addViewAndEditParameters(params, field.getId());
 
         Utils.addViewAndEditParameters(params, field.getId());
 

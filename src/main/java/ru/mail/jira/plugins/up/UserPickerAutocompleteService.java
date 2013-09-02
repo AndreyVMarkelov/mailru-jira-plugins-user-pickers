@@ -33,6 +33,7 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.avatar.Avatar.Size;
+import com.atlassian.jira.avatar.AvatarServiceImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.project.Project;
@@ -55,15 +56,18 @@ public class UserPickerAutocompleteService
     private final GroupManager grMgr;
 
     private final ProjectRoleManager projectRoleManager;
-    
+
+    private final AvatarServiceImpl avatarService;
+
     public UserPickerAutocompleteService(
-        PluginData settings,
-        GroupManager grMgr,
-        ProjectRoleManager projectRoleManager)
-    {
+            PluginData settings,
+            GroupManager grMgr,
+            ProjectRoleManager projectRoleManager) {
         this.settings = settings;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
+        this.avatarService = ComponentManager
+            .getComponentInstanceOfType(AvatarServiceImpl.class);
     }
 
     @POST
@@ -162,12 +166,13 @@ public class UserPickerAutocompleteService
                 {
                     user = userUtil.getUserObject(username);
                     if (user.getName().toUpperCase().indexOf(pattern) != -1
-                        || (user.getDisplayName() != null && user.getDisplayName().toUpperCase().indexOf(pattern) != -1))
+                        || (user.getDisplayName() != null && user
+                            .getDisplayName().toUpperCase().indexOf(pattern) != -1))
                     {
                         data = new AutocompleteUniversalData();
                         data.setName(user.getName());
                         data.setDescription(user.getDisplayName());
-                        URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(user, user.getName(), Size.SMALL);
+                        URI uri = avatarService.getAvatarURL(user, user.getName(), Size.SMALL);
                         if (uri != null)
                         {
                             data.setTypeimage(uri.toString());
@@ -249,7 +254,7 @@ public class UserPickerAutocompleteService
             {
                 entity.setName(userParam.getName());
                 entity.setDescription(userParam.getDisplayName());
-                URI uri = ComponentAccessor.getAvatarService().getAvatarAbsoluteURL(userParam, userParam.getName(), Size.SMALL);
+                URI uri = avatarService.getAvatarURL(userParam, userParam.getName(), Size.SMALL);
                 if (uri != null)
                 {
                     entity.setTypeimage(uri.toString());

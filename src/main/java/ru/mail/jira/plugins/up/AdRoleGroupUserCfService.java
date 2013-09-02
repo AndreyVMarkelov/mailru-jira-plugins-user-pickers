@@ -202,7 +202,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(shares_data, groups, projRoles, Consts.DO_NOT_RESTRICT_FLAG);
+            Utils.fillDataLists(shares_data, groups, projRoles, true);
         }
         catch (JSONException e)
         {
@@ -215,11 +215,13 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
+            Utils.fillDataLists(highlighted_data, highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            log.error(
+                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
+                e);
             return Response.status(500).build();
         }
 
@@ -349,11 +351,13 @@ public class AdRoleGroupUserCfService
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(sharedData, groups, projRoles, Consts.DO_NOT_RESTRICT_FLAG);
+            Utils.fillDataLists(sharedData, groups, projRoles, true);
         }
         catch (JSONException e)
         {
-            log.error("AdRoleGroupUserCfService::configureSingleField - Incorrect parameters", e);
+            log.error(
+                "AdRoleGroupUserCfService::configureSingleField - Incorrect parameters",
+                e);
             return Response.status(500).build();
         }
 
@@ -366,7 +370,7 @@ public class AdRoleGroupUserCfService
         List<ProjRole> highlightedProjRoles = new ArrayList<ProjRole>();
         try
         {
-            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles, Consts.DO_NOT_RESTRICT_FLAG);
+            Utils.fillDataLists(highlightedData, highlightedGroups, highlightedProjRoles, true);
         }
         catch (JSONException e)
         {
