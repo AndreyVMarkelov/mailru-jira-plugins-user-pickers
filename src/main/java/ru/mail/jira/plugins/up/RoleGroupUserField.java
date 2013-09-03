@@ -1,9 +1,4 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,7 +31,6 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
-
 
 /**
  * Role group single custom field.
@@ -75,15 +69,24 @@ public class RoleGroupUserField extends UserCFType
         GenericConfigManager genericConfigManager,
         ApplicationProperties applicationProperties,
         JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
-        UserHistoryManager userHistoryManager, PluginData data,
-        GroupManager grMgr, ProjectRoleManager projectRoleManager,
+        UserPickerSearchService searchService,
+        JiraBaseUrls jiraBaseUrls,
+        UserHistoryManager userHistoryManager,
+        PluginData data,
+        GroupManager grMgr,
+        ProjectRoleManager projectRoleManager,
         UserManager userMgr,
         com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(customFieldValuePersister, new UserConverterImpl(userMgr),
-            genericConfigManager, applicationProperties, authenticationContext,
-            searchService, jiraBaseUrls, userHistoryManager);
+        super(
+            customFieldValuePersister,
+            new UserConverterImpl(userMgr),
+            genericConfigManager,
+            applicationProperties,
+            authenticationContext,
+            searchService,
+            jiraBaseUrls,
+            userHistoryManager);
         this.data = data;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;

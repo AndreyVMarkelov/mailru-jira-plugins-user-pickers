@@ -1,9 +1,4 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +22,6 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.UserHistoryManager;
 import com.atlassian.jira.user.util.UserManager;
 
-
 /**
  * Single selected users field.
  * 
@@ -50,28 +44,38 @@ public class SelectedUsersCf extends UserCFType
     /**
      * Constructor.
      */
-    public SelectedUsersCf(CustomFieldValuePersister customFieldValuePersister,
-        GenericConfigManager genericConfigManager,
-        ApplicationProperties applicationProperties,
-        JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService, JiraBaseUrls jiraBaseUrls,
-        UserHistoryManager userHistoryManager, PluginData data,
-        UserManager userMgr, com.atlassian.sal.api.ApplicationProperties appProp)
+    public SelectedUsersCf(
+            CustomFieldValuePersister customFieldValuePersister,
+            GenericConfigManager genericConfigManager,
+            ApplicationProperties applicationProperties,
+            JiraAuthenticationContext authenticationContext,
+            UserPickerSearchService searchService,
+            JiraBaseUrls jiraBaseUrls,
+            UserHistoryManager userHistoryManager,
+            PluginData data,
+            UserManager userMgr,
+            com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(customFieldValuePersister, new UserConverterImpl(userMgr),
-            genericConfigManager, applicationProperties, authenticationContext,
-            searchService, jiraBaseUrls, userHistoryManager);
+        super(
+            customFieldValuePersister,
+            new UserConverterImpl(userMgr),
+            genericConfigManager,
+            applicationProperties,
+            authenticationContext,
+            searchService,
+            jiraBaseUrls,
+            userHistoryManager);
         this.data = data;
         this.userMgr = userMgr;
         baseUrl = appProp.getBaseUrl();
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(Issue issue,
-        CustomField field, FieldLayoutItem fieldLayoutItem)
-    {
-        Map<String, Object> params = super.getVelocityParameters(issue, field,
-            fieldLayoutItem);
+    public Map<String, Object> getVelocityParameters(
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
         Set<String> users = data.getStoredUsers(field.getId());
@@ -84,8 +88,7 @@ public class SelectedUsersCf extends UserCFType
             }
         }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
-            new ValueComparator(map));
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));

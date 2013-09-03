@@ -1,9 +1,4 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up;
-
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,6 +28,7 @@ import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersist
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -40,14 +36,12 @@ import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.web.FieldVisibilityManager;
 
-
 /**
  * Role group multi custom field.
  * 
  * @author Andrey Markelov
  */
-public class MultiRoleGroupUserField extends MultiUserCFType
-{
+public class MultiRoleGroupUserField extends MultiUserCFType {
     /**
      * Logger.
      */
@@ -77,19 +71,25 @@ public class MultiRoleGroupUserField extends MultiUserCFType
      */
 
     public MultiRoleGroupUserField(
-        CustomFieldValuePersister customFieldValuePersister,
-        GenericConfigManager genericConfigManager, UserManager userMgr,
-        ApplicationProperties applicationProperties,
-        JiraAuthenticationContext authenticationContext,
-        UserPickerSearchService searchService,
-        FieldVisibilityManager fieldVisibilityManager,
-        JiraBaseUrls jiraBaseUrls, PluginData data, GroupManager grMgr,
-        ProjectRoleManager projectRoleManager,
-        com.atlassian.sal.api.ApplicationProperties appProp)
+            CustomFieldValuePersister customFieldValuePersister,
+            GenericConfigManager genericConfigManager,
+            UserManager userMgr,
+            ApplicationProperties applicationProperties,
+            JiraAuthenticationContext authenticationContext,
+            UserPickerSearchService searchService,
+            FieldVisibilityManager fieldVisibilityManager,
+            JiraBaseUrls jiraBaseUrls, PluginData data, GroupManager grMgr,
+            ProjectRoleManager projectRoleManager,
+            com.atlassian.sal.api.ApplicationProperties appProp)
     {
-        super(customFieldValuePersister, genericConfigManager,
-            new MultiUserConverterImpl(userMgr), applicationProperties,
-            authenticationContext, searchService, fieldVisibilityManager,
+        super(
+            customFieldValuePersister,
+            genericConfigManager,
+            new MultiUserConverterImpl(userMgr),
+            applicationProperties,
+            authenticationContext,
+            searchService,
+            fieldVisibilityManager,
             jiraBaseUrls);
         this.data = data;
         this.grMgr = grMgr;
@@ -98,14 +98,13 @@ public class MultiRoleGroupUserField extends MultiUserCFType
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(Issue issue,
-        CustomField field, FieldLayoutItem fieldLayoutItem)
-    {
-        Map<String, Object> params = super.getVelocityParameters(issue, field,
-            fieldLayoutItem);
+    public Map<String, Object> getVelocityParameters(
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         /* Load custom field parameters */
-
         List<String> groups = new ArrayList<String>();
         List<ProjRole> projRoles = new ArrayList<ProjRole>();
         try
@@ -138,13 +137,13 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         }
 
         /* Build possible values list */
-
-        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr,
-            projectRoleManager, issue.getProjectObject(), groups, projRoles);
+        Project proj = null;
+        if (issue != null) {
+            proj = issue.getProjectObject();
+        }
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, groups, projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
-        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr,
-            projectRoleManager, issue.getProjectObject(), highlightedGroups,
-            highlightedProjRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, highlightedGroups, highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
 
@@ -164,11 +163,13 @@ public class MultiRoleGroupUserField extends MultiUserCFType
         params.put("otherUsersSorted", otherUsersSorted);
 
         /* Prepare selected values */
-        Object issueValObj = issue.getCustomFieldValue(field);
-        Set<String> issueVal = Utils.convertList(issueValObj);
+        if (issue != null) {
+            Object issueValObj = issue.getCustomFieldValue(field);
+            Set<String> issueVal = Utils.convertList(issueValObj);
+            params.put("selectVal", Utils.convertSetToString(issueVal));
+            params.put("issueVal", issueVal);
+        }
 
-        params.put("selectVal", Utils.convertSetToString(issueVal));
-        params.put("issueVal", issueVal);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 
