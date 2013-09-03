@@ -1,12 +1,5 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up.common;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,9 +11,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ru.mail.jira.plugins.up.structures.ProjRole;
 
@@ -39,8 +29,6 @@ import com.atlassian.jira.user.UserProjectHistoryManager;
 import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
-import com.atlassian.plugin.PluginAccessor;
-
 
 /**
  * This class contains utility methods.
@@ -49,45 +37,13 @@ import com.atlassian.plugin.PluginAccessor;
  */
 public class Utils
 {
-    private static final String CF_RIGHTS_CLASS_NAME = "ru.mail.jira.plugins.settings.IMailRuCFRights";
+    private static UserProjectHistoryManager userProjectHistoryManager = ComponentManager.getComponentInstanceOfType(UserProjectHistoryManager.class);
 
-    private static final String CF_RIGHTS_METHOD_CAN_EDIT_NAME = "canEdit";
+    private static ProjectRoleManager roleManager = ComponentManager.getComponentInstanceOfType(ProjectRoleManager.class);
 
-    private static final String CF_RIGHTS_METHOD_CAN_VIEW_NAME = "canView";
-
-    private static Object cfRightsInstance;
-
-    private static final Logger log = LoggerFactory.getLogger(Utils.class);
-    
-    private static UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-    
-    private static ProjectRoleManager roleManager = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleManager.class);
-
-    /**
-     * adds "canView" and "canEdit" keys to map
-     */
-    public static void addViewAndEditParameters(Map<String, Object> params,
-        String cfId)
-    {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
-        User currentUser = authCtx.getLoggedInUser();
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, currentUser);
-
-        boolean canEdit = Utils.canEditCF(currentUser, cfId, currentProject);
-        params.put("canEdit", canEdit);
-        if (canEdit)
-        {
-            params.put("canView", true);
-        }
-        else
-        {
-            params.put("canView",
-                Utils.canViewCF(currentUser, cfId, currentProject));
-        }
+    public static void addViewAndEditParameters(Map<String, Object> params, String cfId) {
+        params.put("canEdit", true);
+        params.put("canView", true);
     }
 
     /**
@@ -144,18 +100,6 @@ public class Utils
         }
 
         return usersList;
-    }
-
-    private static boolean canEditCF(User user, String cfId, Project project)
-    {
-        return getPermission(user, cfId, project,
-            CF_RIGHTS_METHOD_CAN_EDIT_NAME, "canEditCF");
-    }
-
-    private static boolean canViewCF(User user, String cfId, Project project)
-    {
-        return getPermission(user, cfId, project,
-            CF_RIGHTS_METHOD_CAN_VIEW_NAME, "canViewCF");
     }
 
     /**
@@ -287,107 +231,6 @@ public class Utils
     {
         return (req.getScheme() + "://" + req.getServerName() + ":"
             + req.getServerPort() + req.getContextPath());
-    }
-
-    private static Object getCfRightsClass()
-    {
-        if (cfRightsInstance == null)
-        {
-            PluginAccessor pluginAccessor = ComponentManager.getInstance()
-                .getPluginAccessor();
-            Class<?> mailRuCfRightsClass;
-            try
-            {
-                mailRuCfRightsClass = pluginAccessor.getClassLoader()
-                    .loadClass(CF_RIGHTS_CLASS_NAME);
-            }
-            catch (ClassNotFoundException e)
-            {
-                log.info("Utils::getCfRightsClass - ClassNotfoundException "
-                    + CF_RIGHTS_CLASS_NAME
-                    + " not found. It is possible that plugin is turned off");
-                return null;
-            }
-            cfRightsInstance = ComponentManager
-                .getOSGiComponentInstanceOfType(mailRuCfRightsClass);
-            if (cfRightsInstance == null)
-            {
-                log.info("Utils::getCfRightsClass - Class "
-                    + CF_RIGHTS_CLASS_NAME
-                    + ". Method getOSGiComponentInstanceOfType failed to load component");
-            }
-        }
-
-        return cfRightsInstance;
-    }
-
-    private static String getErrorMessage(User user, String cfId,
-        Project project, String internalMethodName, String externalMethodName,
-        String exception)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Utils::");
-        sb.append(internalMethodName);
-        sb.append(" - Class ");
-        sb.append(CF_RIGHTS_CLASS_NAME);
-        sb.append(". ");
-        sb.append(exception);
-        sb.append(" occured invoking ");
-        sb.append(externalMethodName);
-        sb.append(" method ");
-
-        return sb.toString();
-    }
-
-    private static boolean getPermission(User user, String cfId,
-        Project project, String externalMethodName, String internalMethodName)
-    {
-        Object cfRights = getCfRightsClass();
-
-        // occurs only if class not found or not load
-        // it's possible that parent plugin was disabled manually
-        // so we should return true
-        if (cfRights == null)
-        {
-            return true;
-        }
-
-        Method[] methods = cfRights.getClass().getMethods();
-        for (int i = 0; i < methods.length; i++)
-        {
-            if (externalMethodName.equals(methods[i].getName()))
-            {
-                Boolean result = Boolean.FALSE;
-                try
-                {
-                    result = (Boolean) methods[i].invoke(cfRights, user, cfId,
-                        project);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "IllegalArgumentException"));
-                }
-                catch (IllegalAccessException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "IllegalAccessException"));
-                }
-                catch (InvocationTargetException e)
-                {
-                    log.error(getErrorMessage(user, cfId, project,
-                        internalMethodName, externalMethodName,
-                        "InvocationTargetException"));
-                    cfRightsInstance = null;
-                }
-
-                return result;
-            }
-        }
-
-        return false;
     }
 
     @SuppressWarnings({"rawtypes"})

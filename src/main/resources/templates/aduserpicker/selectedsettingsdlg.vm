@@ -17,8 +17,4 @@
         <label for="autocomplete-flag">$i18n.getText("jrole-group-usercf.cfautocomplete")</label>
         <input name="autocomplete-flag" type="checkbox" #if($isautocomplete) checked #end />
     </div>
-    <div class="field-group">
-        <label for="restricted-flag">$i18n.getText("jrole-group-usercf.restrictionstatus")</label>
-        <input name="restricted-flag" type="checkbox" #if($isrestricted) checked #end />
-    </div>
 </form>

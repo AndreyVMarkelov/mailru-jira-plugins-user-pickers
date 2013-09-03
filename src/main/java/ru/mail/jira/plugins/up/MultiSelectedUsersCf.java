@@ -82,11 +82,12 @@ public class MultiSelectedUsersCf extends MultiUserCFType
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(Issue issue,
-        CustomField field, FieldLayoutItem fieldLayoutItem)
+    public Map<String, Object> getVelocityParameters(
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem)
     {
-        Map<String, Object> params = super.getVelocityParameters(issue, field,
-            fieldLayoutItem);
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
         Set<String> users;
@@ -107,15 +108,16 @@ public class MultiSelectedUsersCf extends MultiUserCFType
             }
         }
 
-        Object issueValObj = issue.getCustomFieldValue(field);
-        Set<String> issueVal = Utils.convertList(issueValObj);
-        params.put("selectVal", Utils.convertSetToString(issueVal));
+        if (issue != null) {
+            Object issueValObj = issue.getCustomFieldValue(field);
+            Set<String> issueVal = Utils.convertList(issueValObj);
+            params.put("selectVal", Utils.convertSetToString(issueVal));
+            params.put("issueVal", issueVal);
+        }
 
-        TreeMap<String, String> sorted_map = new TreeMap<String, String>(
-            new ValueComparator(map));
+        TreeMap<String, String> sorted_map = new TreeMap<String, String>(new ValueComparator(map));
         sorted_map.putAll(map);
         params.put("map", sorted_map);
-        params.put("issueVal", issueVal);
         params.put("isautocomplete", data.isAutocompleteView(field.getId()));
         params.put("baseUrl", baseUrl);
 

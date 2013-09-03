@@ -34,7 +34,6 @@
                                                     <th width="40%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
                                                     <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
-                                                    <th width="10%">$action.getText("jrole-group-usercf.restrictionstatus")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                                                 </tr>
                                             </thead>
@@ -91,18 +90,6 @@
                                                             #end
                                                         </td>
                                                         <td width="10%">
-                                                            #if($entry.value.isRestricted())
-                                                                <p style="color:#009933">
-                                                                    <b>$action.getText("jrole-group-usercf.statuson")</b>
-                                                                </p>
-                                                                #else
-                                                                    <p style="color:#CC0000">
-                                                                        <b>$action.getText("jrole-group-usercf.statusoff")</b>
-                                                                    </p>
-                                                            #end
-                                                        </td>
-                                                        <td width="10%">
-                                                            <a href="$baseUrl//secure/ApplySettingsUserPickerAction!default.jspa">deded</a>
                                                             <a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a>
                                                         </td>
                                                     </tr>
@@ -133,7 +120,6 @@
                                                     <th width="40%">$action.getText("jrole-group-usercf.cfgroupsroles")</th>
                                                     <th width="25%">$action.getText("jrole-group-usercf.cfhighlightedgroupsroles")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
-                                                    <th width="10%">$action.getText("jrole-group-usercf.restrictionstatus")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                                                 </tr>
                                             </thead>
@@ -190,17 +176,6 @@
                                                             #end
                                                         </td>
                                                         <td width="10%">
-                                                            #if($entry.value.isRestricted())
-                                                                <p style="color:#009933">
-                                                                    <b>$action.getText("jrole-group-usercf.statuson")</b>
-                                                                </p>
-                                                                #else
-                                                                    <p style="color:#CC0000">
-                                                                        <b>$action.getText("jrole-group-usercf.statusoff")</b>
-                                                                    </p>
-                                                            #end
-                                                        </td>
-                                                        <td width="10%">
                                                             <a href="#" onclick="configureSingleField(event, '$baseUrl', '$entry.key');">$action.getText("jrole-group-usercf.cfactionconfigure")</a>
                                                         </td>
                                                     </tr>
@@ -230,7 +205,6 @@
                                                     <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
                                                     <th width="40%">$action.getText("jrole-group-usercf.cfusers")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
-                                                    <th width="10%">$action.getText("jrole-group-usercf.restrictionstatus")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                                                 </tr>
                                             </thead>
@@ -254,17 +228,6 @@
                                                         </td>
                                                         <td width="10%">
                                                             #if($entry.value.isAutocomplete())
-                                                                <p style="color:#009933">
-                                                                    <b>$action.getText("jrole-group-usercf.statuson")</b>
-                                                                </p>
-                                                                #else
-                                                                    <p style="color:#CC0000">
-                                                                        <b>$action.getText("jrole-group-usercf.statusoff")</b>
-                                                                    </p>
-                                                            #end
-                                                        </td>
-                                                        <td width="10%">
-                                                            #if($entry.value.isRestricted())
                                                                 <p style="color:#009933">
                                                                     <b>$action.getText("jrole-group-usercf.statuson")</b>
                                                                 </p>
@@ -304,7 +267,6 @@
                                                     <th width="20%">$action.getText("jrole-group-usercf.cfassociatedprojects")</th>
                                                     <th width="40%">$action.getText("jrole-group-usercf.cfusers")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfautocompletestatus")</th>
-                                                    <th width="10%">$action.getText("jrole-group-usercf.restrictionstatus")</th>
                                                     <th width="10%">$action.getText("jrole-group-usercf.cfactions")</th>
                                                 </tr>
                                             </thead>
@@ -328,17 +290,6 @@
                                                         </td>
                                                         <td width="10%">
                                                             #if($entry.value.isAutocomplete())
-                                                                <p style="color:#009933">
-                                                                    <b>$action.getText("jrole-group-usercf.statuson")</b>
-                                                                </p>
-                                                                #else
-                                                                    <p style="color:#CC0000">
-                                                                        <b>$action.getText("jrole-group-usercf.statusoff")</b>
-                                                                    </p>
-                                                            #end
-                                                        </td>
-                                                        <td width="10%">
-                                                            #if($entry.value.isRestricted())
                                                                 <p style="color:#009933">
                                                                     <b>$action.getText("jrole-group-usercf.statuson")</b>
                                                                 </p>

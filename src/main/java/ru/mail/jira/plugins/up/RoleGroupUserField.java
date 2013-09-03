@@ -5,7 +5,6 @@
 package ru.mail.jira.plugins.up;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +29,7 @@ import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersist
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
@@ -58,11 +58,6 @@ public class RoleGroupUserField
      * Group manager.
      */
     private final GroupManager grMgr;
-
-    /**
-     * User manager.
-     */
-    private final UserManager userMgr;
 
     /**
      * Project role manager.
@@ -98,15 +93,13 @@ public class RoleGroupUserField
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
         this.baseUrl = appProp.getBaseUrl();
-        this.userMgr = userMgr;
     }
 
     @Override
     public Map<String, Object> getVelocityParameters(
-        Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
-    {
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         /* Load custom field parameters */
@@ -139,20 +132,13 @@ public class RoleGroupUserField
         }
 
         /* Build possible values list */
-
-        SortedSet<User> possibleUsers = Utils.buildUsersList(
-            grMgr,
-            projectRoleManager,
-            issue.getProjectObject(),
-            groups,
-            projRoles);
+        Project proj = null;
+        if (issue != null) {
+            proj = issue.getProjectObject();
+        }
+        SortedSet<User> possibleUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, groups, projRoles);
         Set<User> allUsers = new HashSet<User>(possibleUsers);
-        SortedSet<User> highlightedUsers = Utils.buildUsersList(
-            grMgr,
-            projectRoleManager,
-            issue.getProjectObject(),
-            highlightedGroups,
-            highlightedProjRoles);
+        SortedSet<User> highlightedUsers = Utils.buildUsersList(grMgr, projectRoleManager, proj, highlightedGroups, highlightedProjRoles);
         highlightedUsers.retainAll(possibleUsers);
         possibleUsers.removeAll(highlightedUsers);
 
