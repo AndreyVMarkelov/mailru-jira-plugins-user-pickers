@@ -1,7 +1,3 @@
-/*
- * Created by Andrey Markelov 12-02-2013.
- * Copyright Mail.Ru Group 2013. All rights reserved.
- */
 package ru.mail.jira.plugins.up.common;
 
 /**
@@ -20,7 +16,7 @@ public interface Consts
     String CF_KEY_SINGLE_USER_SELECT = "ru.mail.jira.plugins.userpickers:single_selected_usercf";
 
     String CHECKBOX_CHECKED = "on";
-    
+
     String ELEMENTS_DIVIDER = ", ";
 
     String EMPTY_STRING = "";

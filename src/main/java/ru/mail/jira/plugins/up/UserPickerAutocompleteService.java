@@ -33,7 +33,7 @@ import ru.mail.jira.plugins.up.structures.ProjRole;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.avatar.Avatar.Size;
-import com.atlassian.jira.avatar.AvatarServiceImpl;
+import com.atlassian.jira.avatar.AvatarService;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.project.Project;
@@ -57,7 +57,7 @@ public class UserPickerAutocompleteService
 
     private final ProjectRoleManager projectRoleManager;
 
-    private final AvatarServiceImpl avatarService;
+    private final AvatarService avatarService;
 
     public UserPickerAutocompleteService(
             PluginData settings,
@@ -66,8 +66,7 @@ public class UserPickerAutocompleteService
         this.settings = settings;
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
-        this.avatarService = ComponentManager
-            .getComponentInstanceOfType(AvatarServiceImpl.class);
+        this.avatarService = ComponentAccessor.getOSGiComponentInstanceOfType(AvatarService.class);
     }
 
     @POST
@@ -97,7 +96,7 @@ public class UserPickerAutocompleteService
         if (Utils.isValidStr(cfId) && issueKey != null
             && Utils.isValidLongParam(rowCount) && pattern != null)
         {
-            CustomField cf = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(cfId);
+            CustomField cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(cfId);
             if (cf == null)
             {
                 log.error("UserPickerAutocompleteService::getCfVals - Custom field is null. Incorrect data in plugin settings");
@@ -155,7 +154,7 @@ public class UserPickerAutocompleteService
 
             if (storedData != null)
             {
-                UserUtil userUtil = ComponentManager.getInstance().getUserUtil();
+                UserUtil userUtil = ComponentAccessor.getUserUtil();
                 values = new ArrayList<ISQLDataBean>();
                 User user;
 
@@ -217,7 +216,7 @@ public class UserPickerAutocompleteService
     @Produces({MediaType.APPLICATION_JSON})
     public Response getUserHtml(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentAccessor.getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
@@ -235,7 +234,7 @@ public class UserPickerAutocompleteService
             return Response.ok(i18n.getText("mailru.service.error.parameters.invalid")).status(400).build();
         }
 
-        CustomField cf = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(cfId);
+        CustomField cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(cfId);
         if (cf == null)
         {
             log.error("UserPickerAutocompleteService::validateInput - Custom field is null. Incorrect data in plugin settings");
@@ -245,7 +244,7 @@ public class UserPickerAutocompleteService
         AutocompleteUniversalData entity = new AutocompleteUniversalData();
         if (Utils.isOfMultiUserType(cf.getCustomFieldType().getKey()))
         {
-            User userParam = ComponentManager.getInstance().getUserUtil().getUserObject(cfValue);
+            User userParam = ComponentAccessor.getUserUtil().getUserObject(cfValue);
             if (userParam == null)
             {
                 // nothing to do. Sending object with empty key

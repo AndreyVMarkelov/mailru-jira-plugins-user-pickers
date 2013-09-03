@@ -1,9 +1,4 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up;
-
 
 import java.net.URI;
 import java.util.HashMap;
@@ -29,7 +24,6 @@ import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.FieldVisibilityManager;
-
 
 /**
  * Multi selected users field.
@@ -89,11 +83,11 @@ public class MultiSelectedUsersCf extends MultiUserCFType
     }
 
     @Override
-    public Map<String, Object> getVelocityParameters(Issue issue,
-        CustomField field, FieldLayoutItem fieldLayoutItem)
-    {
-        Map<String, Object> params = super.getVelocityParameters(issue, field,
-            fieldLayoutItem);
+    public Map<String, Object> getVelocityParameters(
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
+        Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         Map<String, String> map = new HashMap<String, String>();
         Set<String> users;

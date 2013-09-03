@@ -59,11 +59,6 @@ public class RoleGroupUserField
     private final GroupManager grMgr;
 
     /**
-     * User manager.
-     */
-    private final UserManager userMgr;
-
-    /**
      * Project role manager.
      */
     private final ProjectRoleManager projectRoleManager;
@@ -96,7 +91,6 @@ public class RoleGroupUserField
         this.grMgr = grMgr;
         this.projectRoleManager = projectRoleManager;
         this.baseUrl = appProp.getBaseUrl();
-        this.userMgr = userMgr;
     }
 
 

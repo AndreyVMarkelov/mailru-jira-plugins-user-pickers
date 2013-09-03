@@ -1,7 +1,3 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up.common;
 
 import java.util.Collection;
@@ -34,43 +30,19 @@ import com.atlassian.jira.util.json.JSONArray;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
 
-
 /**
  * This class contains utility methods.
  * 
  * @author Andrey Markelov
  */
-public class Utils
-{
-    private static UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-    
-    private static ProjectRoleManager roleManager = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleManager.class);
+public class Utils {
+    private static UserProjectHistoryManager userProjectHistoryManager = ComponentManager.getComponentInstanceOfType(UserProjectHistoryManager.class);
 
-    /**
-     * adds "canView" and "canEdit" keys to map
-     */
-    public static void addViewAndEditParameters(Map<String, Object> params,
-        String cfId)
-    {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
-        User currentUser = authCtx.getLoggedInUser();
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, currentUser);
+    private static ProjectRoleManager roleManager = ComponentManager.getComponentInstanceOfType(ProjectRoleManager.class);
 
-        boolean canEdit = Utils.canEditCF(currentUser, cfId, currentProject);
-        params.put("canEdit", canEdit);
-        if (canEdit)
-        {
-            params.put("canView", true);
-        }
-        else
-        {
-            params.put("canView",
-                Utils.canViewCF(currentUser, cfId, currentProject));
-        }
+    public static void addViewAndEditParameters(Map<String, Object> params, String cfId) {
+        params.put("canEdit", true);
+        params.put("canView", true);
     }
 
     /**
@@ -130,16 +102,6 @@ public class Utils
         }
 
         return usersList;
-    }
-
-    private static boolean canEditCF(User user, String cfId, Project project)
-    {
-        return true;
-    }
-
-    private static boolean canViewCF(User user, String cfId, Project project)
-    {
-        return true;
     }
 
     /**
@@ -367,10 +329,5 @@ public class Utils
         return sb.toString();
     }
 
-    /**
-     * Private constructor.
-     */
-    private Utils()
-    {
-    }
+    private Utils(){}
 }

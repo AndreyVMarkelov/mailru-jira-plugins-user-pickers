@@ -1,9 +1,4 @@
-/*
- * Created by Andrey Markelov 11-11-2012. Copyright Mail.Ru Group 2012. All
- * rights reserved.
- */
 package ru.mail.jira.plugins.up.structures;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +9,7 @@ import java.util.List;
  * 
  * @author Andrey Markelov
  */
-public class FieldData
-{
+public class FieldData {
     private final String fieldId;
     private final String fieldName;
     private final List<String> groups = new ArrayList<String>();

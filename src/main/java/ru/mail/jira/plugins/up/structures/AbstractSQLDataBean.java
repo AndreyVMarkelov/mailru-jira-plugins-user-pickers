@@ -1,7 +1,3 @@
-/*
- * Created by Dmitry Miroshnichenko 12-02-2013.
- * Copyright Mail.Ru Group 2013. All rights reserved.
- */
 package ru.mail.jira.plugins.up.structures;
 
 public abstract class AbstractSQLDataBean

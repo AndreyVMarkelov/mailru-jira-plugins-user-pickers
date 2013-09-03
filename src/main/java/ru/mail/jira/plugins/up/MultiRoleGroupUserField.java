@@ -1,7 +1,3 @@
-/*
- * Created by Andrey Markelov 11-11-2012.
- * Copyright Mail.Ru Group 2012. All rights reserved.
- */
 package ru.mail.jira.plugins.up;
 
 import java.net.URI;
@@ -45,8 +41,7 @@ import com.atlassian.jira.web.FieldVisibilityManager;
  * 
  * @author Andrey Markelov
  */
-public class MultiRoleGroupUserField extends MultiUserCFType
-{
+public class MultiRoleGroupUserField extends MultiUserCFType {
     private final String baseUrl;
 
     /**
@@ -111,10 +106,9 @@ public class MultiRoleGroupUserField extends MultiUserCFType
 
     @Override
     public Map<String, Object> getVelocityParameters(
-        Issue issue,
-        CustomField field,
-        FieldLayoutItem fieldLayoutItem)
-    {
+            Issue issue,
+            CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
 
         /* Load custom field parameters */
